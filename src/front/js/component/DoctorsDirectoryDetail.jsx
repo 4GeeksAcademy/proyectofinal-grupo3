@@ -12,7 +12,6 @@ const DoctorsDirectoryDetail = () => {
 
     const doctorsList = require("../../../../public/doctors.json");
 
-
     useEffect(() => {
         const foundDoctor = doctorsList.find(doc => doc.id === parseInt(id));
         if (!foundDoctor) {
@@ -20,8 +19,6 @@ const DoctorsDirectoryDetail = () => {
         }
         setDoctor(foundDoctor);
     }, [id]);
-
-
 
     const handleOpenModal = () => {
         setModalOpen(true);
@@ -43,8 +40,10 @@ const DoctorsDirectoryDetail = () => {
         return <div>Cargando...</div>;
     }
 
+    const overlayActive = modalOpen || appointmentOpen;
+
     return (
-        <div>
+        <div className={`position-relative ${overlayActive ? 'overlay-active' : ''}`}>
             <div className="p-4 d-flex justify-content-center">
                 <div className="card-custom card-body p-4 text-center">
                     <div className="d-flex justify-content-center mb-3">
@@ -84,13 +83,14 @@ const DoctorsDirectoryDetail = () => {
                     {appointmentOpen && <AppointmentForm doctor={doctor} onClose={handleCloseAppointment} />}
                 </div>
             </div>
-            <div className='container'>
-                {/* Integrar el componente ReviewComments */}
+            <div className='container position-relative' style={{ zIndex: overlayActive ? 0 : 2 }}>
                 <ReviewComments reviews_comments={doctor.reviews_comments} />
             </div>
+            {(modalOpen || appointmentOpen) && (
+                <div className="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-50" style={{ zIndex: 1 }}></div>
+            )}
         </div>
     );
-
 };
 
 export default DoctorsDirectoryDetail;

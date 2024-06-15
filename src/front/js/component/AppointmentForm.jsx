@@ -14,7 +14,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
     };
 
     return (
-        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50">
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50" style={{ zIndex: 3 }}>
             <div className="bg-white p-4 rounded-element box-shadow-blue d-flex flex-column flex-md-row align-items-center w-90 w-md-100">
                 <img
                     src="https://s3-alpha-sig.figma.com/img/d644/d085/17d322a1229d3f38b1cd1c71f7fbd812?Expires=1719187200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=R7Mk9HXigfYjBoOOgy8CzjScZAH7vCpaRvwtagrHbjZqzqnfg3ORFE-7XlKikVGUQIASvEdfDnJNQLR8w~Nujdq1f2YerI6psS3y13q~zjzoiXNVip2GwMgiZPE0eVr8d~L~6xSTROgBbZ2MUnCILr2XfLGkYwaSsksKuwCPGA8FCw5IlT5AA6bC0LA-Ee2n4Eb0tophbZXtD6NmuPQ0owx~ujB52UcNSvdctw1U9hQcbxXRjOuzVcE6ZKZbeR08sADr7ghHMZqLjGH4lcTmgkaT2h5CVU42DQr6jvuy3tzQSzyuZdYRtZkmW5MVf1YPA8O7cMZEWtExbyozpenSZw__"
