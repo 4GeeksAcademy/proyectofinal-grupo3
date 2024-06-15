@@ -11,6 +11,7 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import DoctorsDirectory  from "./component/DoctorsDirectory.jsx";
+import DoctorsDirectoryDetail from "./component/DoctorsDirectoryDetail.jsx";
 import ContactSection from "./component/ContactSection.jsx";
 
 //create your first component
@@ -31,6 +32,7 @@ const Layout = () => {
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route path="/doctors" element={<DoctorsDirectory />} />
+                        <Route path="/doctor/:id" element={<DoctorsDirectoryDetail />} />
                         <Route path="/contact" element={<ContactSection />} /> {/* Agrega esta ruta para el contacto */}
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>

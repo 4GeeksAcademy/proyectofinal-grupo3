@@ -12,9 +12,24 @@
     min-height: 300px; /* Ajusta la altura mínima de las tarjetas */
     box-shadow: 0 4px 8px rgba(0, 164, 244, 0.2); /* Sombra azul */
     transition: box-shadow 0.3s ease;
+    border-radius: 20px; /* Redondea más los bordes de la tarjeta */
 }
 
 .card-custom:hover {
+    box-shadow: 0 8px 16px rgba(0, 164, 244, 0.4); /* Sombra azul al pasar el mouse */
+}
+
+
+.card-reviews {
+    width: 100%;
+    max-width: 300px; /* Ajusta el ancho máximo de las tarjetas */
+    min-height: 100px; /* Ajusta la altura mínima de las tarjetas */
+    box-shadow: 0 4px 8px rgba(0, 164, 244, 0.2); /* Sombra azul */
+    transition: box-shadow 0.3s ease;
+    border-radius: 20px; /* Redondea más los bordes de la tarjeta */
+}
+
+.card-reviews:hover {
     box-shadow: 0 8px 16px rgba(0, 164, 244, 0.4); /* Sombra azul al pasar el mouse */
 }
 
@@ -23,7 +38,7 @@
 }
 
 .card-body-custom {
-    flex-direction: column;
+    /*flex-direction: column;*/
     align-items: center;
     text-align: center;
 }
@@ -46,4 +61,34 @@
 .btn-search:hover {
     background-color: #007bb5;
     color: white;
+}
+
+.btn-cancelar {
+    background-color: white;
+    color: #00a4f4;
+    border: none;
+}
+
+.btn-cancelar:hover {
+    background-color: #007bb5;
+    color: white;
+}
+
+.box-shadow-blue {
+    box-shadow: 0 8px 16px rgba(0, 164, 244, 0.4); 
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #0000ff, #87cefa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.rounded-element {
+    border-radius: 20px; 
+}
+
+.size_img_reviews {
+    width: 65px;
+    height: 65px;
 }
