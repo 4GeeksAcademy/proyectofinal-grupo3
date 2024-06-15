@@ -161,7 +161,15 @@ const ProfileDoctor = () => {
                         />
                     </div>
                     <div className="d-flex justify-content-center">
-                        <button type="submit" className="btn btn-search box-shadow-blue px-5">Registrarse</button>
+                        <button type="submit" className="btn btn-search">
+                            <div className='d-flex flex-row align-items-center'>
+                                <span>Regístrate</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" className="bi bi-arrow-right-circle ms-2" viewBox="0 0 16 16">
+                                    <circle cx="8" cy="8" r="8" fill="white" />
+                                    <path fillRule="evenodd" d="M4.5 8a.5.5 0 0 1 .5-.5h4.793L8.146 5.854a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L9.793 8.5H5a.5.5 0 0 1-.5-.5z" fill="#00a4f4" />
+                                </svg>
+                            </div>
+                        </button>
                     </div>
                 </form>
             </div>
