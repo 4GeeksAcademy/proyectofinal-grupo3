@@ -1,0 +1,105 @@
+.container-text-2 {
+    height: 55vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* Alinea el contenido verticalmente en la parte superior */
+
+}
+
+.container-img-2 {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+}
+
+.container-list-group {
+    display: flex;
+    /* Activate flexbox layout */
+    justify-content: flex-end;
+    /* Align items to the right */
+}
+
+.btn-hero-2 {
+    background: linear-gradient(to bottom right, rgb(7, 137, 212), rgb(255, 255, 255));
+    border: none;
+    /* Remove the default border */
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    /* Adjust padding as needed */
+    /* Adjust padding as needed */
+    border-radius: 0.5rem;
+    /* Adjust border radius as needed */
+    bottom: 20px;
+    /* Set a bottom margin from the edge of the container */
+    margin: 0 auto;
+    /* Center button horizontally */
+    cursor: pointer;
+    /* Indicate an interactive element */
+    transition: background-color 0.3s ease;
+    /* Add a smooth hover transition */
+}
+
+button:hover {
+    background-color: #51b0f0;
+    color: white;
+    border: 2px solid rgb(7, 137, 212);
+}
+
+/* Styles for the Heading */
+.MedicalDirectory h3 {
+    font-size: 2.5rem;
+    /* Increase font size for prominence */
+    font-weight: bold;
+    /* Make the text bold */
+    margin-bottom: 1.5rem;
+    /* Add some margin below the heading */
+}
+
+/* Styles for the Description Paragraph */
+.MedicalDirectory p {
+    font-size: 1.1rem;
+    /* Adjust font size for readability */
+    line-height: 1.6;
+    /* Increase line height for better spacing */
+    max-width: 700px;
+    /* Limit paragraph width for better layout */
+    text-align: left;
+    /* Center the text within the section */
+}
+
+/* Styles for the List of Benefits */
+.MedicalDirectory ul {
+    list-style: none;
+    /* Remove default bullet points */
+    padding: 0;
+    /* Reset default padding */
+    margin: 2rem 0;
+    /* Add some margin for spacing */
+}
+
+.MedicalDirectory li {
+    display: flex;
+    /* Arrange list items horizontally */
+    align-items: left;
+    /* Align content vertically within list items */
+    margin-bottom: 1rem;
+    /* Add margin between list items */
+}
+
+ i {
+    font-size: 1.5rem;
+    /* Increase icon size for visibility */
+    margin-right: 1rem;
+    /* Add space between icon and text */
+}
+
+.MedicalDirectory li p {
+    font-size: 1rem;
+    /* Adjust font size for readability */
+}
+
+.MedicalDirectory li i {
+    font-size: 1rem;
+    margin-right: 1rem;
+  }
