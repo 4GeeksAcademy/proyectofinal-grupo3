@@ -4,10 +4,10 @@
     "workbench.editorAssociations": {   
         "*.md": "vscode.markdown.preview.editor"
     },
-    "[javascript]": {
-        "editor.defaultFormatter": "vscode.typescript-language-features"
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
     },
-    "[css]": {
-        "editor.defaultFormatter": "vscode.css-language-features"
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
     }
 }

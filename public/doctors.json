@@ -1,0 +1,1082 @@
+[
+    {
+        "id": 1,
+        "name": "Dr. Juan Pérez",
+        "specialty": "Cardiólogo",
+        "city": "Caracas",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/1.jpg",
+        "reviews": 124,
+        "address": "Av. Urdaneta 742, Caracas",
+        "consultationCost": "VEF 2500",
+        "specialties": [
+            "Ecocardiografía",
+            "Cardiología Intervencionista",
+            "Electrofisiología"
+        ],
+        "licenseNumber": "1234567 8901234",
+        "reviews_comments": [
+            "El Dr. Pérez es muy atento y profesional.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Dra. María García",
+        "specialty": "Cardiólogo",
+        "city": "Maracaibo",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/2.jpg",
+        "reviews": 89,
+        "address": "Calle 77 123, Maracaibo",
+        "consultationCost": "VEF 3000",
+        "specialties": [
+            "Ecocardiografía",
+            "Rehabilitación Cardíaca",
+            "Cardiología Clínica"
+        ],
+        "licenseNumber": "2234567 9901234",
+        "reviews_comments": [
+            "La Dra. García es muy amable y profesional.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está bien ubicado y es fácil de encontrar.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, me explicó todo con detalle."
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Dr. Pedro López",
+        "specialty": "Cardiólogo",
+        "city": "Valencia",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/3.jpg",
+        "reviews": 134,
+        "address": "Plaza Bolívar 456, Valencia",
+        "consultationCost": "VEF 2700",
+        "specialties": [
+            "Cardiología Pediátrica",
+            "Cardiología Intervencionista",
+            "Arritmias"
+        ],
+        "licenseNumber": "3234567 1901234",
+        "reviews_comments": [
+            "El Dr. López es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Dra. Ana Martínez",
+        "specialty": "Cardiólogo",
+        "city": "Barquisimeto",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/4.jpg",
+        "reviews": 76,
+        "address": "Paseo de Los Ilustres 789, Barquisimeto",
+        "consultationCost": "VEF 2200",
+        "specialties": [
+            "Cardiopatías Congénitas",
+            "Ecocardiografía",
+            "Cardiología Clínica"
+        ],
+        "licenseNumber": "4234567 2901234",
+        "reviews_comments": [
+            "La Dra. Martínez es muy amable y profesional.",
+            "Me sentí muy bien atendido durante la consulta.",
+            "El lugar está limpio y bien organizado.",
+            "Muy buena doctora, explicó todo claramente.",
+            "Excelente trato y atención al paciente."
+        ]
+    },
+    {
+        "id": 5,
+        "name": "Dr. José González",
+        "specialty": "Cardiólogo",
+        "city": "Maracay",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/5.jpg",
+        "reviews": 91,
+        "address": "Av. Constitución 101, Maracay",
+        "consultationCost": "VEF 2600",
+        "specialties": [
+            "Cardiología Nuclear",
+            "Cardiología Preventiva",
+            "Arritmias"
+        ],
+        "licenseNumber": "5234567 3901234",
+        "reviews_comments": [
+            "El Dr. González es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 6,
+        "name": "Dra. Laura Rodríguez",
+        "specialty": "Neumólogo",
+        "city": "Ciudad Bolívar",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/6.jpg",
+        "reviews": 83,
+        "address": "Av. 5 de Julio 102, Ciudad Bolívar",
+        "consultationCost": "VEF 2000",
+        "specialties": [
+            "Neumología Pediátrica",
+            "Alergología",
+            "Neumología Intervencionista"
+        ],
+        "licenseNumber": "6234567 4901234",
+        "reviews_comments": [
+            "La Dra. Rodríguez es muy profesional y amable.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 7,
+        "name": "Dr. Carlos Hernández",
+        "specialty": "Neumólogo",
+        "city": "Maturín",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/7.jpg",
+        "reviews": 97,
+        "address": "Camino Real 103, Maturín",
+        "consultationCost": "VEF 2800",
+        "specialties": [
+            "Enfermedades Pulmonares",
+            "Cuidado Crítico Respiratorio",
+            "Neumología Clínica"
+        ],
+        "licenseNumber": "7234567 5901234",
+        "reviews_comments": [
+            "El Dr. Hernández es muy atento y profesional.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 8,
+        "name": "Dra. Isabel Fernández",
+        "specialty": "Neumólogo",
+        "city": "Puerto La Cruz",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/8.jpg",
+        "reviews": 65,
+        "address": "Calle del Parque 104, Puerto La Cruz",
+        "consultationCost": "VEF 2300",
+        "specialties": [
+            "Neumología Pediátrica",
+            "Enfermedades Pulmonares",
+            "Neumología Intervencionista"
+        ],
+        "licenseNumber": "8234567 6901234",
+        "reviews_comments": [
+            "La Dra. Fernández es muy amable y profesional.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está bien ubicado y es fácil de encontrar.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, me explicó todo con detalle."
+        ]
+    },
+    {
+        "id": 9,
+        "name": "Dr. David Ruiz",
+        "specialty": "Neumólogo",
+        "city": "San Cristóbal",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/9.jpg",
+        "reviews": 104,
+        "address": "Av. 19 de Abril 105, San Cristóbal",
+        "consultationCost": "VEF 2700",
+        "specialties": [
+            "Alergología",
+            "Cuidado Crítico Respiratorio",
+            "Neumología Clínica"
+        ],
+        "licenseNumber": "9234567 7901234",
+        "reviews_comments": [
+            "El Dr. Ruiz es muy atento y profesional.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 10,
+        "name": "Dra. Carmen Díaz",
+        "specialty": "Neumólogo",
+        "city": "Mérida",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/10.jpg",
+        "reviews": 78,
+        "address": "Paseo Los Próceres 106, Mérida",
+        "consultationCost": "VEF 2200",
+        "specialties": [
+            "Enfermedades Pulmonares",
+            "Neumología Pediátrica",
+            "Cuidado Crítico Respiratorio"
+        ],
+        "licenseNumber": "10234567 8901234",
+        "reviews_comments": [
+            "La Dra. Díaz es muy profesional y amable.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 11,
+        "name": "Dr. Alejandro Jiménez",
+        "specialty": "Dermatólogo",
+        "city": "Caracas",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/11.jpg",
+        "reviews": 110,
+        "address": "Av. Francisco de Miranda 107, Caracas",
+        "consultationCost": "VEF 2400",
+        "specialties": [
+            "Dermatología Clínica",
+            "Dermatología Pediátrica",
+            "Cirugía Dermatológica"
+        ],
+        "licenseNumber": "11234567 9901234",
+        "reviews_comments": [
+            "El Dr. Jiménez es muy profesional y atento.",
+            "Me sentí muy cómodo durante la consulta.",
+            "El lugar está limpio y bien organizado.",
+            "Excelente trato por parte del doctor.",
+            "Resolvió todas mis dudas con paciencia."
+        ]
+    },
+    {
+        "id": 12,
+        "name": "Dra. Sofía Morales",
+        "specialty": "Dermatólogo",
+        "city": "Maracaibo",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/12.jpg",
+        "reviews": 87,
+        "address": "Calle 75 108, Maracaibo",
+        "consultationCost": "VEF 2200",
+        "specialties": [
+            "Dermatología Cosmética",
+            "Dermatología Pediátrica",
+            "Alergología"
+        ],
+        "licenseNumber": "12234567 8901234",
+        "reviews_comments": [
+            "La Dra. Morales es muy profesional y amable.",
+            "La consulta fue muy completa y detallada.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, explicó todo claramente."
+        ]
+    },
+    {
+        "id": 13,
+        "name": "Dr. Ricardo Torres",
+        "specialty": "Dermatólogo",
+        "city": "Valencia",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/13.jpg",
+        "reviews": 98,
+        "address": "Av. Lara 109, Valencia",
+        "consultationCost": "VEF 2300",
+        "specialties": [
+            "Dermatología Clínica",
+            "Cirugía Dermatológica",
+            "Oncología Cutánea"
+        ],
+        "licenseNumber": "13234567 9901234",
+        "reviews_comments": [
+            "El Dr. Torres es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 14,
+        "name": "Dra. Patricia López",
+        "specialty": "Dermatólogo",
+        "city": "Barquisimeto",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/14.jpg",
+        "reviews": 75,
+        "address": "Calle Falcón 110, Barquisimeto",
+        "consultationCost": "VEF 2100",
+        "specialties": [
+            "Dermatología Pediátrica",
+            "Dermatología Cosmética",
+            "Alergología"
+        ],
+        "licenseNumber": "14234567 8901234",
+        "reviews_comments": [
+            "La Dra. López es muy amable y profesional.",
+            "Me sentí muy bien atendido durante la consulta.",
+            "El lugar está limpio y bien organizado.",
+            "Muy buena doctora, explicó todo claramente.",
+            "Excelente trato y atención al paciente."
+        ]
+    },
+    {
+        "id": 15,
+        "name": "Dr. Manuel Romero",
+        "specialty": "Dermatólogo",
+        "city": "Maracay",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/15.jpg",
+        "reviews": 112,
+        "address": "Av. Las Delicias 111, Maracay",
+        "consultationCost": "VEF 2500",
+        "specialties": [
+            "Dermatología Clínica",
+            "Oncología Cutánea",
+            "Cirugía Dermatológica"
+        ],
+        "licenseNumber": "15234567 9901234",
+        "reviews_comments": [
+            "El Dr. Romero es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 16,
+        "name": "Dra. Gabriela Fernández",
+        "specialty": "Ginecólogo",
+        "city": "Ciudad Bolívar",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/16.jpg",
+        "reviews": 84,
+        "address": "Av. Táchira 112, Ciudad Bolívar",
+        "consultationCost": "VEF 2600",
+        "specialties": [
+            "Ginecología y Obstetricia",
+            "Medicina Reproductiva",
+            "Ginecología Oncológica"
+        ],
+        "licenseNumber": "16234567 8901234",
+        "reviews_comments": [
+            "La Dra. Fernández es muy amable y profesional.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está bien ubicado y es fácil de encontrar.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, me explicó todo con detalle."
+        ]
+    },
+    {
+        "id": 17,
+        "name": "Dr. Luis Méndez",
+        "specialty": "Ginecólogo",
+        "city": "Maturín",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/17.jpg",
+        "reviews": 94,
+        "address": "Av. Libertador 113, Maturín",
+        "consultationCost": "VEF 2700",
+        "specialties": [
+            "Ginecología y Obstetricia",
+            "Medicina Reproductiva",
+            "Ginecología Oncológica"
+        ],
+        "licenseNumber": "17234567 9901234",
+        "reviews_comments": [
+            "El Dr. Méndez es muy atento y profesional.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 18,
+        "name": "Dra. Andrea Castillo",
+        "specialty": "Ginecólogo",
+        "city": "Puerto La Cruz",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/18.jpg",
+        "reviews": 80,
+        "address": "Av. Bolívar 114, Puerto La Cruz",
+        "consultationCost": "VEF 2500",
+        "specialties": [
+            "Ginecología y Obstetricia",
+            "Ginecología Infantil y Adolescente",
+            "Medicina Reproductiva"
+        ],
+        "licenseNumber": "18234567 8901234",
+        "reviews_comments": [
+            "La Dra. Castillo es muy amable y profesional.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está limpio y bien organizado.",
+            "Muy buena doctora, explicó todo claramente.",
+            "Excelente trato y atención al paciente."
+        ]
+    },
+    {
+        "id": 19,
+        "name": "Dr. Pablo Sánchez",
+        "specialty": "Ginecólogo",
+        "city": "San Cristóbal",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/19.jpg",
+        "reviews": 103,
+        "address": "Av. 19 de Abril 115, San Cristóbal",
+        "consultationCost": "VEF 2800",
+        "specialties": [
+            "Ginecología y Obstetricia",
+            "Ginecología Oncológica",
+            "Medicina Reproductiva"
+        ],
+        "licenseNumber": "19234567 9901234",
+        "reviews_comments": [
+            "El Dr. Sánchez es muy atento y profesional.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 20,
+        "name": "Dra. Natalia Vargas",
+        "specialty": "Ginecólogo",
+        "city": "Mérida",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/20.jpg",
+        "reviews": 77,
+        "address": "Av. Los Próceres 116, Mérida",
+        "consultationCost": "VEF 2600",
+        "specialties": [
+            "Ginecología y Obstetricia",
+            "Ginecología Infantil y Adolescente",
+            "Medicina Reproductiva"
+        ],
+        "licenseNumber": "20234567 8901234",
+        "reviews_comments": [
+            "La Dra. Vargas es muy amable y profesional.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está bien ubicado y es fácil de encontrar.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, me explicó todo con detalle."
+        ]
+    },
+    {
+        "id": 21,
+        "name": "Dr. Roberto Hernández",
+        "specialty": "Oftalmólogo",
+        "city": "Caracas",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/21.jpg",
+        "reviews": 120,
+        "address": "Av. Sucre 117, Caracas",
+        "consultationCost": "VEF 2700",
+        "specialties": [
+            "Oftalmología General",
+            "Cirugía Refractiva",
+            "Oftalmología Pediátrica"
+        ],
+        "licenseNumber": "21234567 9901234",
+        "reviews_comments": [
+            "El Dr. Hernández es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 22,
+        "name": "Dra. Laura Pérez",
+        "specialty": "Oftalmólogo",
+        "city": "Maracaibo",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/22.jpg",
+        "reviews": 90,
+        "address": "Calle 76 118, Maracaibo",
+        "consultationCost": "VEF 2600",
+        "specialties": [
+            "Oftalmología General",
+            "Retina y Vítreo",
+            "Oftalmología Pediátrica"
+        ],
+        "licenseNumber": "22234567 8901234",
+        "reviews_comments": [
+            "La Dra. Pérez es muy profesional y amable.",
+            "La consulta fue muy completa y detallada.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, explicó todo claramente."
+        ]
+    },
+    {
+        "id": 23,
+        "name": "Dr. Javier Martínez",
+        "specialty": "Oftalmólogo",
+        "city": "Valencia",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/23.jpg",
+        "reviews": 105,
+        "address": "Av. Bolívar 119, Valencia",
+        "consultationCost": "VEF 2800",
+        "specialties": [
+            "Oftalmología General",
+            "Cirugía Refractiva",
+            "Retina y Vítreo"
+        ],
+        "licenseNumber": "23234567 9901234",
+        "reviews_comments": [
+            "El Dr. Martínez es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 24,
+        "name": "Dra. Marta Gómez",
+        "specialty": "Oftalmólogo",
+        "city": "Barquisimeto",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/24.jpg",
+        "reviews": 85,
+        "address": "Calle Lara 120, Barquisimeto",
+        "consultationCost": "VEF 2500",
+        "specialties": [
+            "Oftalmología General",
+            "Oftalmología Pediátrica",
+            "Cirugía Refractiva"
+        ],
+        "licenseNumber": "24234567 8901234",
+        "reviews_comments": [
+            "La Dra. Gómez es muy amable y profesional.",
+            "Me sentí muy bien atendido durante la consulta.",
+            "El lugar está limpio y bien organizado.",
+            "Muy buena doctora, explicó todo claramente.",
+            "Excelente trato y atención al paciente."
+        ]
+    },
+    {
+        "id": 25,
+        "name": "Dr. Carlos Fernández",
+        "specialty": "Oftalmólogo",
+        "city": "Maracay",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/25.jpg",
+        "reviews": 115,
+        "address": "Av. Las Delicias 121, Maracay",
+        "consultationCost": "VEF 2900",
+        "specialties": [
+            "Oftalmología General",
+            "Retina y Vítreo",
+            "Cirugía Refractiva"
+        ],
+        "licenseNumber": "25234567 9901234",
+        "reviews_comments": [
+            "El Dr. Fernández es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 26,
+        "name": "Dra. Ana Ramírez",
+        "specialty": "Pediatra",
+        "city": "Ciudad Bolívar",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/26.jpg",
+        "reviews": 88,
+        "address": "Av. Táchira 122, Ciudad Bolívar",
+        "consultationCost": "VEF 2400",
+        "specialties": [
+            "Pediatría General",
+            "Neonatología",
+            "Endocrinología Pediátrica"
+        ],
+        "licenseNumber": "26234567 8901234",
+        "reviews_comments": [
+            "La Dra. Ramírez es muy amable y profesional.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está bien ubicado y es fácil de encontrar.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, me explicó todo con detalle."
+        ]
+    },
+    {
+        "id": 27,
+        "name": "Dr. Enrique López",
+        "specialty": "Pediatra",
+        "city": "Maturín",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/27.jpg",
+        "reviews": 97,
+        "address": "Av. Libertador 123, Maturín",
+        "consultationCost": "VEF 2500",
+        "specialties": [
+            "Pediatría General",
+            "Neonatología",
+            "Endocrinología Pediátrica"
+        ],
+        "licenseNumber": "27234567 9901234",
+        "reviews_comments": [
+            "El Dr. López es muy atento y profesional.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 28,
+        "name": "Dra. Carmen Ortiz",
+        "specialty": "Pediatra",
+        "city": "Puerto La Cruz",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/28.jpg",
+        "reviews": 81,
+        "address": "Av. Bolívar 124, Puerto La Cruz",
+        "consultationCost": "VEF 2300",
+        "specialties": [
+            "Pediatría General",
+            "Alergología Pediátrica",
+            "Neonatología"
+        ],
+        "licenseNumber": "28234567 8901234",
+        "reviews_comments": [
+            "La Dra. Ortiz es muy amable y profesional.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está limpio y bien organizado.",
+            "Muy buena doctora, explicó todo claramente.",
+            "Excelente trato y atención al paciente."
+        ]
+    },
+    {
+        "id": 29,
+        "name": "Dr. Fernando Salazar",
+        "specialty": "Pediatra",
+        "city": "San Cristóbal",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/29.jpg",
+        "reviews": 106,
+        "address": "Av. 19 de Abril 125, San Cristóbal",
+        "consultationCost": "VEF 2600",
+        "specialties": [
+            "Pediatría General",
+            "Alergología Pediátrica",
+            "Neonatología"
+        ],
+        "licenseNumber": "29234567 9901234",
+        "reviews_comments": [
+            "El Dr. Salazar es muy atento y profesional.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 30,
+        "name": "Dra. Beatriz Navarro",
+        "specialty": "Pediatra",
+        "city": "Mérida",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/men/30.jpg",
+        "reviews": 78,
+        "address": "Av. Los Próceres 126, Mérida",
+        "consultationCost": "VEF 2200",
+        "specialties": [
+            "Pediatría General",
+            "Neonatología",
+            "Endocrinología Pediátrica"
+        ],
+        "licenseNumber": "30234567 8901234",
+        "reviews_comments": [
+            "La Dra. Navarro es muy amable y profesional.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está bien ubicado y es fácil de encontrar.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, me explicó todo con detalle."
+        ]
+    },
+    {
+        "id": 31,
+        "name": "Dr. Ricardo Vargas",
+        "specialty": "Pediatra",
+        "city": "Barcelona",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/31.jpg",
+        "reviews": 110,
+        "address": "Av. Cumaná 127, Barcelona",
+        "consultationCost": "VEF 2700",
+        "specialties": [
+            "Pediatría General",
+            "Alergología Pediátrica",
+            "Neonatología"
+        ],
+        "licenseNumber": "31234567 9901234",
+        "reviews_comments": [
+            "El Dr. Vargas es muy atento y profesional.",
+            "La consulta fue rápida y eficiente.",
+            "El establecimiento es moderno y limpio.",
+            "Excelente trato por parte del doctor y su equipo.",
+            "Resolvió todas mis dudas con mucha paciencia."
+        ]
+    },
+    {
+        "id": 32,
+        "name": "Dra. Patricia Jiménez",
+        "specialty": "Neurólogo",
+        "city": "Valencia",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/women/32.jpg",
+        "reviews": 100,
+        "address": "Av. Bolívar 128, Valencia",
+        "consultationCost": "VEF 3000",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "32234567 8901234",
+        "reviews_comments": [
+            "La Dra. Jiménez es muy profesional y amable.",
+            "La consulta fue muy completa y detallada.",
+            "El lugar está limpio y bien organizado.",
+            "Excelente trato y atención al paciente.",
+            "Muy buena doctora, explicó todo claramente."
+        ]
+    },
+    {
+        "id": 33,
+        "name": "Dr. Sergio Gómez",
+        "specialty": "Neurólogo",
+        "city": "Caracas",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/33.jpg",
+        "reviews": 125,
+        "address": "Av. Francisco de Miranda 129, Caracas",
+        "consultationCost": "VEF 3200",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "33234567 9901234",
+        "reviews_comments": [
+            "El Dr. Gómez es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 34,
+        "name": "Dra. Silvia Torres",
+        "specialty": "Neurólogo",
+        "city": "Maracaibo",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/women/34.jpg",
+        "reviews": 95,
+        "address": "Calle 77 130, Maracaibo",
+        "consultationCost": "VEF 3100",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "34234567 8901234",
+        "reviews_comments": [
+            "La Dra. Torres es muy amable y profesional.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está bien ubicado y es fácil de encontrar.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, me explicó todo con detalle."
+        ]
+    },
+    {
+        "id": 35,
+        "name": "Dr. Alberto Sánchez",
+        "specialty": "Neurólogo",
+        "city": "Barquisimeto",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/35.jpg",
+        "reviews": 115,
+        "address": "Av. Lara 131, Barquisimeto",
+        "consultationCost": "VEF 3300",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "35234567 9901234",
+        "reviews_comments": [
+            "El Dr. Sánchez es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 36,
+        "name": "Dra. Clara Morales",
+        "specialty": "Neurólogo",
+        "city": "Maracay",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/women/36.jpg",
+        "reviews": 90,
+        "address": "Av. Las Delicias 132, Maracay",
+        "consultationCost": "VEF 3100",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "36234567 8901234",
+        "reviews_comments": [
+            "La Dra. Morales es muy profesional y amable.",
+            "La consulta fue muy completa y detallada.",
+            "El lugar está limpio y bien organizado.",
+            "Excelente trato y atención al paciente.",
+            "Muy buena doctora, explicó todo claramente."
+        ]
+    },
+    {
+        "id": 37,
+        "name": "Dr. Juan Pérez",
+        "specialty": "Neurólogo",
+        "city": "Ciudad Bolívar",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/37.jpg",
+        "reviews": 120,
+        "address": "Av. Táchira 133, Ciudad Bolívar",
+        "consultationCost": "VEF 3400",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "37234567 9901234",
+        "reviews_comments": [
+            "El Dr. Pérez es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 38,
+        "name": "Dra. Rosa García",
+        "specialty": "Neurólogo",
+        "city": "Maturín",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/women/38.jpg",
+        "reviews": 85,
+        "address": "Av. Libertador 134, Maturín",
+        "consultationCost": "VEF 3000",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "38234567 8901234",
+        "reviews_comments": [
+            "La Dra. García es muy profesional y amable.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está bien ubicado y es fácil de encontrar.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, me explicó todo con detalle."
+        ]
+    },
+    {
+        "id": 39,
+        "name": "Dr. Diego Ruiz",
+        "specialty": "Neurólogo",
+        "city": "Puerto La Cruz",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/39.jpg",
+        "reviews": 110,
+        "address": "Av. Bolívar 135, Puerto La Cruz",
+        "consultationCost": "VEF 3300",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "39234567 9901234",
+        "reviews_comments": [
+            "El Dr. Ruiz es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 40,
+        "name": "Dra. Mariana Mendoza",
+        "specialty": "Neurólogo",
+        "city": "San Cristóbal",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/women/40.jpg",
+        "reviews": 80,
+        "address": "Av. 19 de Abril 136, San Cristóbal",
+        "consultationCost": "VEF 3100",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "40234567 8901234",
+        "reviews_comments": [
+            "La Dra. Mendoza es muy profesional y amable.",
+            "La consulta fue muy completa y detallada.",
+            "El lugar está limpio y bien organizado.",
+            "Excelente trato y atención al paciente.",
+            "Muy buena doctora, explicó todo claramente."
+        ]
+    },
+    {
+        "id": 41,
+        "name": "Dr. Carlos Romero",
+        "specialty": "Neurólogo",
+        "city": "Cumaná",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/41.jpg",
+        "reviews": 115,
+        "address": "Av. Perimetral 137, Cumaná",
+        "consultationCost": "VEF 3200",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "41234567 9901234",
+        "reviews_comments": [
+            "El Dr. Romero es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 42,
+        "name": "Dra. Laura Díaz",
+        "specialty": "Neurólogo",
+        "city": "Mérida",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/women/42.jpg",
+        "reviews": 90,
+        "address": "Av. 5 de Julio 138, Mérida",
+        "consultationCost": "VEF 3100",
+        "specialties": [
+            "Neurología General",
+            "Neurocirugía",
+            "Neuropediatría"
+        ],
+        "licenseNumber": "42234567 8901234",
+        "reviews_comments": [
+            "La Dra. Díaz es muy profesional y amable.",
+            "Me sentí muy cómoda durante la consulta.",
+            "El lugar está bien ubicado y es fácil de encontrar.",
+            "Excelente servicio y atención al paciente.",
+            "Muy buena doctora, me explicó todo con detalle."
+        ]
+    },
+    {
+        "id": 43,
+        "name": "Dr. Javier Castillo",
+        "specialty": "Cardiólogo",
+        "city": "Caracas",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/43.jpg",
+        "reviews": 125,
+        "address": "Av. Los Ilustres 139, Caracas",
+        "consultationCost": "VEF 3500",
+        "specialties": [
+            "Cardiología General",
+            "Cardiología Intervencionista",
+            "Electrofisiología"
+        ],
+        "licenseNumber": "43234567 9901234",
+        "reviews_comments": [
+            "El Dr. Castillo es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    },
+    {
+        "id": 44,
+        "name": "Dra. Isabel Gómez",
+        "specialty": "Cardiólogo",
+        "city": "Maracaibo",
+        "destacado": false,
+        "image": "https://randomuser.me/api/portraits/women/44.jpg",
+        "reviews": 105,
+        "address": "Av. Libertador 140, Maracaibo",
+        "consultationCost": "VEF 3400",
+        "specialties": [
+            "Cardiología General",
+            "Cardiología Intervencionista",
+            "Electrofisiología"
+        ],
+        "licenseNumber": "44234567 8901234",
+        "reviews_comments": [
+            "La Dra. Gómez es muy profesional y amable.",
+            "La consulta fue muy completa y detallada.",
+            "El lugar está limpio y bien organizado.",
+            "Excelente trato y atención al paciente.",
+            "Muy buena doctora, explicó todo claramente."
+        ]
+    },
+    {
+        "id": 45,
+        "name": "Dr. Luis Martínez",
+        "specialty": "Cardiólogo",
+        "city": "Valencia",
+        "destacado": true,
+        "image": "https://randomuser.me/api/portraits/men/45.jpg",
+        "reviews": 130,
+        "address": "Av. Bolívar 141, Valencia",
+        "consultationCost": "VEF 3500",
+        "specialties": [
+            "Cardiología General",
+            "Cardiología Intervencionista",
+            "Electrofisiología"
+        ],
+        "licenseNumber": "45234567 9901234",
+        "reviews_comments": [
+            "El Dr. Martínez es muy profesional y atento.",
+            "La consulta fue muy completa y detallada.",
+            "Excelente atención por parte de todo el personal.",
+            "Muy buen doctor, me ayudó mucho con mi problema.",
+            "La clínica es muy moderna y bien equipada."
+        ]
+    }
+]
