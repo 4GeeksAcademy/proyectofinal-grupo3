@@ -149,6 +149,7 @@ class BloodPressure(db.Model):
 
     paciente = db.relationship('Paciente', back_populates='pressures', overlaps="paciente_pressure")
     
+    
     def __repr__(self):
         return f'<BloodPressure {self.id}>'
 
