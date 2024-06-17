@@ -5,3 +5,91 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
+
+.card-custom {
+    width: 100%;
+    max-width: 400px; /* Ajusta el ancho máximo de las tarjetas */
+    min-height: 300px; /* Ajusta la altura mínima de las tarjetas */
+    box-shadow: 0 4px 8px rgba(0, 164, 244, 0.2); /* Sombra azul */
+    transition: box-shadow 0.3s ease;
+    border-radius: 20px; /* Redondea más los bordes de la tarjeta */
+}
+
+.card-custom:hover {
+    box-shadow: 0 8px 16px rgba(0, 164, 244, 0.4); /* Sombra azul al pasar el mouse */
+}
+
+
+.card-reviews {
+    width: 100%;
+    max-width: 300px; /* Ajusta el ancho máximo de las tarjetas */
+    min-height: 100px; /* Ajusta la altura mínima de las tarjetas */
+    box-shadow: 0 4px 8px rgba(0, 164, 244, 0.2); /* Sombra azul */
+    transition: box-shadow 0.3s ease;
+    border-radius: 20px; /* Redondea más los bordes de la tarjeta */
+}
+
+.card-reviews:hover {
+    box-shadow: 0 8px 16px rgba(0, 164, 244, 0.4); /* Sombra azul al pasar el mouse */
+}
+
+.card-custom .card-footer {
+    background-color: #f8f9fa; /* Fondo claro para el footer */
+}
+
+.card-body-custom {
+    /*flex-direction: column;*/
+    align-items: center;
+    text-align: center;
+}
+
+.card-body-custom img {
+    margin-bottom: 1rem;
+}
+
+.text-blue {
+    color: #00a4f4;
+}
+
+/*SearchBar.jsx*/
+.btn-search {
+    background-color: #00a4f4;
+    color: white;
+    border: none;
+}
+
+.btn-search:hover {
+    background-color: #007bb5;
+    color: white;
+}
+
+.btn-cancelar {
+    background-color: white;
+    color: #00a4f4;
+    border: none;
+}
+
+.btn-cancelar:hover {
+    background-color: #007bb5;
+    color: white;
+}
+
+.box-shadow-blue {
+    box-shadow: 0 8px 16px rgba(0, 164, 244, 0.4); 
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #0000ff, #87cefa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.rounded-element {
+    border-radius: 20px; 
+}
+
+.size_img_reviews {
+    width: 65px;
+    height: 65px;
+}
+
