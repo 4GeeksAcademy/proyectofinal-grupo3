@@ -1,11 +1,34 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from enum import Enum
+from sqlalchemy import Enum as SqlAlchemyEnum
 
 db = SQLAlchemy()
+
+class UserRole(Enum):
+    PACIENTE = "paciente",
+    DOCTOR = "doctor"
+
+    def __repr__(self):
+        return f'<User {self.email} {self.nombre} {self.apellido} {self.role}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "nombre": self.nombre,
+            "apellido": self.apellido,
+            "role": self.role.value,
+            "is_active": self.is_active,
+        }
+
 
 class Paciente(db.Model):
     __tablename__= "paciente"
     id = db.Column(db.Integer, primary_key=True)
+    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # user = db.relationship('User', backref=db.backref('paciente', uselist=False))
+
     email = db.Column(db.String(120), unique=True, nullable=False)
     nombre = db.Column(db.String(120), nullable=False)
     apellido = db.Column(db.String(50), nullable=False)
@@ -25,6 +48,7 @@ class Paciente(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            # "user_id": self.user_id,
             "email": self.email,
             "nombre": self.nombre,
             "apellido": self.apellido,
@@ -84,7 +108,7 @@ class Doctor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
     apellido = db.Column(db.String(50), nullable=False)
-    especialidad = db.Column(db.String(50))
+    especialidad = db.Column(db.String(50), nullable=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
     numero_de_telefono = db.Column(db.String(15), nullable=True)
     password = db.Column(db.String(80), unique=False, nullable=False)
@@ -92,7 +116,7 @@ class Doctor(db.Model):
     ciudad = db.Column(db.String(50), nullable=True)
     estado = db.Column (db.String(50), nullable=True)
     costo = db.Column(db.Float, nullable=True)
-    numero_de_licencia = db.Column(db.String, nullable=False)
+    numero_de_licencia = db.Column(db.String, nullable=True)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
     appointments = db.relationship('Appointment', backref='doctor_relationship', lazy=True)
     availabilities = db.relationship('Availability', backref='doctor', lazy=True, uselist=True)
