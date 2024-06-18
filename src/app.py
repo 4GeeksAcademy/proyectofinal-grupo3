@@ -78,55 +78,56 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
-@app.route('/signup_paciente', methods=['POST'])
-def signup_paciente():
-    body= request.get_json(silent=True)
-    if body is None:
-        return jsonify({'msg': "Body is empty"}), 400
-    if "email" not in body or "password" not in body or "nombre" not in body or "apellido" not in body or "confirm_password" not in body:
-        return jsonify({'msg':"Los campos, Email, Nombre, Apellido, Password y confirm_password son obligatorios"}), 400
+# @app.route('/signup_paciente', methods=['POST'])
+# def signup_paciente():
+#     body= request.get_json(silent=True)
+#     if body is None:
+#         return jsonify({'msg': "Body is empty"}), 400
+#     if "email" not in body or "password" not in body or "nombre" not in body or "apellido" not in body or "confirm_password" not in body:
+#         return jsonify({'msg':"Los campos, Email, Nombre, Apellido, Password y confirm_password son obligatorios"}), 400
     
-    if body['password'] != body['confirm_password']:
-        return jsonify({'msg': "Los passwords no coinciden"}), 400
+#     if body['password'] != body['confirm_password']:
+#         return jsonify({'msg': "Los passwords no coinciden"}), 400
     
-    if Paciente.query.filter_by(email=body['email']).first():
-        return jsonify({'msg': "El correo electronico ya está en uso"}), 400
+#     if Paciente.query.filter_by(email=body['email']).first():
+#         return jsonify({'msg': "El correo electronico ya está en uso"}), 400
     
-    new_paciente = Paciente(
-        email=body['email'],
-        nombre = body['nombre'],
-        apellido = body ['apellido'],
-        password =bcrypt.generate_password_hash(body['password']).decode('utf-8'),
-        is_active=True
+#     if type == "paciente":
+#         new_paciente = Paciente(
+#         email=body['email'],
+#         nombre = body['nombre'],
+#         apellido = body ['apellido'],
+#         password =bcrypt.generate_password_hash(body['password']).decode('utf-8'),
+#         is_active=True
 
-    )
+#     )
 
-    db.session.add(new_paciente)
-    db.session.commit()
+#     db.session.add(new_paciente)
+#     db.session.commit()
 
-    return jsonify({'msg': 'Paciente creado exitosamente '}), 201
+#     return jsonify({'msg': 'Paciente creado exitosamente '}), 201
 
-@app.route('/login_paciente', methods=['POST'])
-def login_paciente(): 
-    body = request.get_json(silent=True)
-    if body is None:
-        return jsonify({'msg':'El cuerpo de la solicitud esta vacio'}), 400
-    if "email" not in body or "password" not in body:
-        return jsonify({'msg':'Email y password son obligatorios'}), 400
+# @app.route('/login_paciente', methods=['POST'])
+# def login_paciente(): 
+#     body = request.get_json(silent=True)
+#     if body is None:
+#         return jsonify({'msg':'El cuerpo de la solicitud esta vacio'}), 400
+#     if "email" not in body or "password" not in body:
+#         return jsonify({'msg':'Email y password son obligatorios'}), 400
     
-    paciente = Paciente.query.filter_by(email=body['email']).first()
-    if paciente is None:
-        return jsonify({'msg': 'Usuario o password invalidos'}), 400
+#     paciente = Paciente.query.filter_by(email=body['email']).first()
+#     if paciente is None:
+#         return jsonify({'msg': 'Usuario o password invalidos'}), 400
     
-    correct_password = bcrypt.check_password_hash(paciente.password, body['password'])
-    if not correct_password:
-        return jsonify({'msg': 'Usuario o password invalidos'}), 400
+#     correct_password = bcrypt.check_password_hash(paciente.password, body['password'])
+#     if not correct_password:
+#         return jsonify({'msg': 'Usuario o password invalidos'}), 400
     
-    access_token = create_access_token(identity=paciente.id)
-    return jsonify({'msg':'Incicio de sesión exitoso', 'access_token': access_token}), 200
+#     access_token = create_access_token(identity=paciente.id)
+#     return jsonify({'msg':'Incicio de sesión exitoso', 'access_token': access_token}), 200
 
-@app.route('/signup_doctor', methods=['POST'])
-def signup_doctor():
+@app.route('/signup', methods=['POST'])
+def signup():
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': "El cuerpo de la solicitud esta vacio"}), 400
@@ -147,7 +148,8 @@ def signup_doctor():
     if body ['password'] != body['confirm_password']:
          return jsonify({'msg': "Las contraseñas no coinciden"}), 400
     
-    new_doctor = Doctor(
+    if type == "paciente":
+        new_doctor = Doctor(
          email=body['email'],
          nombre=body['nombre'],
          apellido=body['apellido'],
@@ -160,8 +162,8 @@ def signup_doctor():
 
     return jsonify({'msg': 'Doctor creado exitosamente'}), 201
     
-@app.route('/login_doctor', methods=['POST'])
-def login_doctor():
+@app.route('/login', methods=['POST'])
+def login():
      body = request.get_json(silent=True)
      if body is None:
           return jsonify({'msg':"El cuerpo de la solicitud esta vacio"}), 400
@@ -177,9 +179,19 @@ def login_doctor():
      
 
 
+@app.route('/perfil_paciente', methods=['GET'])
+@jwt_required()
+def perfil_paciente():
+     identity= get_jwt_identity()
+     print(identity)
+     return jsonify({'msg':'Este es un mensaje privado perfi_paciente'})
 
-
-
+@app.route('/perfil_doctor', methods=['GET'])
+@jwt_required()
+def perfil_doctor():
+     identity= get_jwt_identity
+     print(identity)
+     return jsonify({'msg':'Este es un mensaje provado perfil_doctor'})
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
