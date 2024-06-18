@@ -9,6 +9,7 @@ import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
+import { HeroSection } from "./component/hero"
 import { Footer } from "./component/footer";
 import DoctorsDirectory  from "./component/DoctorsDirectory.jsx";
 import DoctorsDirectoryDetail from "./component/DoctorsDirectoryDetail.jsx";
@@ -21,7 +22,7 @@ const Layout = () => {
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
     const basename = process.env.BASENAME || "";
 
-    if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
+    if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
     return (
         <div>
