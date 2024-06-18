@@ -135,32 +135,38 @@ def signup():
     if "email" not in body:
         return jsonify({'msg': "El email es requerido"}), 400
     if "password" not in body:
-            return jsonify({'msg': "El email es requerido"}), 400
+        return jsonify({'msg': "El email es requerido"}), 400
     if "nombre" not in body:
-            return jsonify({'msg': "El nombre es requerido"}), 400
+        return jsonify({'msg': "El nombre es requerido"}), 400
     if "apellido" not in body:
-            return jsonify({'msg': "El apellido es requerido"}), 400
+        return jsonify({'msg': "El apellido es requerido"}), 400
     if "password" not in body:
-            return jsonify({'msg': "El password es requerido"}), 400
+        return jsonify({'msg': "El password es requerido"}), 400
     if "confirm_password" not in body:
-            return jsonify({'msg': "La confirmación del password es requerida"}), 400
+        return jsonify({'msg': "La confirmación del password es requerida"}), 400
+    if "type" not in body:
+        return jsonify({"msg":"El campo type es requerido"}), 400
     
     if body ['password'] != body['confirm_password']:
-         return jsonify({'msg': "Las contraseñas no coinciden"}), 400
+        return jsonify({'msg': "Las contraseñas no coinciden"}), 400
+     
     
-    if type == "paciente":
-        new_doctor = Doctor(
-         email=body['email'],
-         nombre=body['nombre'],
-         apellido=body['apellido'],
-         password=bcrypt.generate_password_hash(body['password']).decode('utf-8'),
-         is_active=True
-    )
+    new_user = None
+    if body['type'] == "paciente":
+        new_user = Paciente()
+    else:
+        new_user = Doctor()
 
-    db.session.add(new_doctor)
+    new_user.email = body['email']     
+    new_user.nombre=body['nombre'],
+    new_user.apellido=body['apellido'],
+    new_user.password=bcrypt.generate_password_hash(body['password']).decode('utf-8'),
+    new_user.is_active=True
+
+    db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'msg': 'Doctor creado exitosamente'}), 201
+    return jsonify({'msg': 'Usuario creado exitosamente'}), 201
     
 @app.route('/login', methods=['POST'])
 def login():
@@ -177,21 +183,55 @@ def login():
      access_token = create_access_token(identity=doctor.id)
      return jsonify({'msg':'ok','access_token': access_token}), 200
      
+@app.route('/profile/<int:id>', methods=['GET', 'POST'])
+# @jwt_required()
+def profile(id):
+    if request.method == 'GET':
+        #aca porceso todo lo que tenga que ver con el get
+        # identity= get_jwt_identity()
+        # print(identity)
+        return jsonify({'msg':'Estoy haciendo un metodo GET'})
+    elif request.method == 'POST':
+        body = request.get_json(silent=True)
+    
+        if "type" not in body:
+            return jsonify({'msg':"El campo type es requerido"}), 400
+            
+        if body["type"] == "paciente":
+            numero_de_telefono = body['numero_de_telefono']
+            fecha_de_nacimiento = body['fecha_de_nacimiento']
+            sexo = body['sexo']
+            update_data = Paciente()
+            update_data.numero_de_telefono = numero_de_telefono
+            update_data.fecha_de_nacimiento = fecha_de_nacimiento
+            update_data.sexo = sexo
+            #todo lo que se recibe en el body de paciente 
+            #aca se llenan los campos faltantes
+            return jsonify({'msg':'Estoy actualizando los campos del paciente'}), 201
+        elif body["type"] == "doctor":
+            especialidad = body['especialidad']
+            numero_de_telefono = body['numero_de_telefono']
+            direccion = body['direccion']
+            ciudad = body['ciudad']
+            estado = body['estado']
+            costo = body['costo']
+            numero_de_licencia = body['numero_de_licencia']
+            
+            update_data = Doctor()
+            update_data.especialidad = especialidad
+            update_data.numero_de_telefono = numero_de_telefono
+            update_data.direccion = direccion
+            update_data.ciudad = ciudad
+            update_data.estado = estado
+            update_data.costo = costo
+            numero_de_licencia = numero_de_licencia
+            #todo lo que se recibe en el body de doctor
+            #aca se llenan los campos faltantes
+            return jsonify({'msg':'Estoy actualizando los campos deldoctor'}), 201
 
 
-@app.route('/perfil_paciente', methods=['GET'])
-@jwt_required()
-def perfil_paciente():
-     identity= get_jwt_identity()
-     print(identity)
-     return jsonify({'msg':'Este es un mensaje privado perfi_paciente'})
-
-@app.route('/perfil_doctor', methods=['GET'])
-@jwt_required()
-def perfil_doctor():
-     identity= get_jwt_identity
-     print(identity)
-     return jsonify({'msg':'Este es un mensaje provado perfil_doctor'})
+    
+   
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
