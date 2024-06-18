@@ -11,7 +11,10 @@ const ProfileDoctor = () => {
         specialty: '',
         schedule: '',
         licenseNumber: '',
-        address: ''
+        address: '',
+        password: '',
+        consultationFee: '',
+        state: ''
     });
 
     const handleChange = (e) => {
@@ -36,7 +39,10 @@ const ProfileDoctor = () => {
             specialty: '',
             schedule: '',
             licenseNumber: '',
-            address: ''
+            address: '',
+            password: '',
+            consultationFee: '',
+            state: ''
         });
     };
 
@@ -149,6 +155,44 @@ const ProfileDoctor = () => {
                                     required
                                 />
                             </div>
+                        </div>
+                        <div className="row mb-3">
+                            <div className="col-md-6">
+                                <label className="form-label">Contraseña</label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="form-control"
+                                    placeholder="Ingrese su contraseña"
+                                    required
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label className="form-label">Costo de la Consulta</label>
+                                <input
+                                    type="text"
+                                    name="consultationFee"
+                                    value={formData.consultationFee}
+                                    onChange={handleChange}
+                                    className="form-control"
+                                    placeholder="Ingrese el costo de la consulta"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Estado</label>
+                            <input
+                                type="text"
+                                name="state"
+                                value={formData.state}
+                                onChange={handleChange}
+                                className="form-control"
+                                placeholder="Ingrese el estado"
+                                required
+                            />
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Dirección de Consultorio</label>
