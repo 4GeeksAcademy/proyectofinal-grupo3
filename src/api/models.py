@@ -37,13 +37,13 @@ class Paciente(db.Model):
     fecha_de_nacimiento = db.Column(db.Date, nullable=True) 
     sexo = db.Column(db.String(10), nullable=True)
 
-    pressures = db.relationship('BloodPressure', backref='paciente_pressure', lazy=True, cascade='all, delete-orphan')
-    appointments = db.relationship('Appointment', backref='paciente_appointment', lazy=True, cascade='all, delete-orphan')
-    blood_tests = db.relationship('BloodTest', backref='paciente_blodd_test', lazy=True, cascade='all, delete-orphan')
+    pressures = db.relationship('BloodPressure', backref='paciente', lazy=True, cascade='all, delete-orphan')
+    appointments = db.relationship('Appointment', backref='paciente', lazy=True, cascade='all, delete-orphan')
+    blood_tests = db.relationship('BloodTest', backref='paciente', lazy=True, cascade='all, delete-orphan')
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
     def __repr__(self):
-        return f'<Paciente {self.email} {self.nombre} {self.apellido}>'
+        return f'<Paciente {self.email} {self.nombre} {self.apellido} {self.id}>'
 
     def serialize(self):
         return {
@@ -63,11 +63,11 @@ class Availability(db.Model):
     __tablename__ = "availability"
     id = db.Column(db.Integer, primary_key=True)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.DateTime, nullable=False, unique=False)
     is_booked = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
-        return f'<Availability {self.date} - Booked: {self.is_booked}>'
+        return f'<Availability {self.date} - Booked: {self.is_booked} {self.id}>'
 
     def serialize(self):
         return {
@@ -84,7 +84,7 @@ class Appointment(db.Model):
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
     availability_id = db.Column(db.Integer, db.ForeignKey('availability.id'), nullable=False)
     message = db.Column(db.String(200), nullable=True)
-    availability = db.relationship('Availability', backref='appointments')
+    availability = db.relationship('Availability', backref='appointment')
 
     def __repr__(self):
         return f'<Appointment {self.id}>'
@@ -118,12 +118,12 @@ class Doctor(db.Model):
     costo = db.Column(db.Float, nullable=True)
     numero_de_licencia = db.Column(db.String, nullable=True)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    appointments = db.relationship('Appointment', backref='doctor_relationship', lazy=True)
+    appointments = db.relationship('Appointment', backref='doctor', lazy=True)
     availabilities = db.relationship('Availability', backref='doctor', lazy=True, uselist=True)
     # horario = db.Column(db.Date, nullable=True) # que tipo de dato va? date o dateTime diferencia? tabla -> disponibilidad_doctor
 
     def __repr__(self):
-        return f'<Doctor {self.email}>'
+        return f'<Doctor {self.email} {self.id}>'
     
     def serialize(self):
         return{
@@ -136,7 +136,6 @@ class Doctor(db.Model):
             "direccion": self.direccion,
             "ciudad": self.ciudad,
             "estado": self.estado,
-            "horario": self.horario,
             "costo": self.costo,
             "numero_de_licencia": self.numero_de_licencia,
             "is_active": self.is_active,
@@ -171,7 +170,7 @@ class BloodPressure(db.Model):
     heart_rate = db.Column(db.Integer, nullable=False)
     recommendation_id = db.Column(db.Integer, db.ForeignKey('recommendation.id'), nullable=True)
 
-    paciente = db.relationship('Paciente', back_populates='pressures', overlaps="paciente_pressure")
+    # paciente = db.relationship('Paciente', back_populates='pressures', overlaps="paciente_pressure")
     
     
     def __repr__(self):
