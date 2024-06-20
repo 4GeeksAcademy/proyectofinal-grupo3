@@ -15,7 +15,7 @@ const ReviewComments = ({ reviews_comments }) => {
                                     className="size_img_reviews me-2"
                                 />
                                 <div>
-                                    <span className="card-text">{comment}</span>
+                                    <span className="card-text">{comment.comentario}</span>
                                     <h6 className="card-title">Nombre del paciente</h6>
                                 </div>
                             </div>

@@ -2,6 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from enum import Enum
 from sqlalchemy import Enum as SqlAlchemyEnum
+from sqlalchemy import event
+from sqlalchemy.orm import sessionmaker
 
 db = SQLAlchemy()
 
@@ -118,15 +120,21 @@ class Doctor(db.Model):
     costo = db.Column(db.Float, nullable=True)
     numero_de_licencia = db.Column(db.String, nullable=True)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    destacado = db.Column(db.Boolean(), default=False, nullable=False)  # Nuevo campo
+    foto_perfil = db.Column(db.String(255), nullable=True)  # Nuevo campo para la foto de perfil
+    numero_de_resenas = db.Column(db.Integer, default=0, nullable=False)  # Nuevo campo para el número de reseñas
+
     appointments = db.relationship('Appointment', backref='doctor_relationship', lazy=True)
     availabilities = db.relationship('Availability', backref='doctor', lazy=True, uselist=True)
+    resenas = db.relationship('Review', backref='doctor', lazy=True)  # Relación con la tabla de reseñas
+    especialidades_adicionales = db.relationship('Specialties', backref='doctor', lazy=True)  # Relación con la tabla Specialty
     # horario = db.Column(db.Date, nullable=True) # que tipo de dato va? date o dateTime diferencia? tabla -> disponibilidad_doctor
 
     def __repr__(self):
         return f'<Doctor {self.email}>'
     
     def serialize(self):
-        return{
+        return {
             "id": self.id,
             "nombre": self.nombre,
             "apellido": self.apellido,
@@ -136,14 +144,79 @@ class Doctor(db.Model):
             "direccion": self.direccion,
             "ciudad": self.ciudad,
             "estado": self.estado,
-            "horario": self.horario,
             "costo": self.costo,
             "numero_de_licencia": self.numero_de_licencia,
             "is_active": self.is_active,
-            "availabilities": [availability.serialize() for availability in self.availabilities] 
+            "destacado": self.destacado,
+            "foto_perfil": self.foto_perfil,
+            "numero_de_resenas": self.numero_de_resenas,  # Serialización del número de reseñas
+            "availabilities": [availability.serialize() for availability in self.availabilities], 
+            "resenas": [resena.serialize() for resena in self.resenas],  # Serialización de las reseñas
+            "especialidades_adicionales": [especialidad.serialize() for especialidad in self.especialidades_adicionales]
             # do not serialize the password, its a security breach
-        
         }
+    
+class Review(db.Model):
+    __tablename__ = "review"
+    id = db.Column(db.Integer, primary_key=True)
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
+    comentario = db.Column(db.String(500), nullable=False)
+    puntuacion = db.Column(db.Integer, nullable=False)  # Asumiendo que las reseñas también tienen una puntuación
+
+    def __repr__(self):
+        return f'<Review {self.id} for Doctor {self.doctor_id}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "doctor_id": self.doctor_id,
+            "comentario": self.comentario,
+            "puntuacion": self.puntuacion
+        }
+
+
+# Eventos para actualizar el número de reseñas
+@event.listens_for(Review, 'after_insert')
+def after_insert_review(mapper, connection, target):
+    doctor_id = target.doctor_id
+    Session = sessionmaker(bind=db.engine)
+    session = Session()
+    doctor = session.query(Doctor).filter_by(id=doctor_id).first()
+    if doctor:
+        doctor.numero_de_resenas += 1
+        session.commit()
+    session.close()
+
+@event.listens_for(Review, 'after_delete')
+def after_delete_review(mapper, connection, target):
+    doctor_id = target.doctor_id
+    Session = sessionmaker(bind=db.engine)
+    session = Session()
+    doctor = session.query(Doctor).filter_by(id=doctor_id).first()
+    if doctor and doctor.numero_de_resenas > 0:
+        doctor.numero_de_resenas -= 1
+        session.commit()
+    session.close()
+
+class Specialties(db.Model):
+    __tablename__ = "specialties"
+    id = db.Column(db.Integer, primary_key=True)
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
+    especialidades = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f'<Specialties {self.especialidades} for Doctor {self.doctor_id}>'
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "doctor_id": self.doctor_id,
+            "especialidades": self.especialidades
+        }
+
+
+
+    
 class Recommendation(db.Model):
     __tablename__="recommendation"
     id = db.Column(db.Integer, primary_key=True)

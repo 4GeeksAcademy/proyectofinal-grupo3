@@ -3,18 +3,19 @@ import ContactSection from './ContactSection.jsx';
 
 const ProfileDoctor = () => {
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
+        nombre: '',
+        apellido: '',
+        numero_de_telefono: '',
         email: '',
-        city: '',
-        specialty: '',
-        schedule: '',
-        licenseNumber: '',
-        address: '',
+        ciudad: '',
+        especialidad: '',
+        especialidades_adicionales: '',
+        numero_de_licencia: '',
+        direccion: '',
         password: '',
-        consultationFee: '',
-        state: ''
+        costo: '',
+        estado: '',
+        foto_perfil: '',
     });
 
     const handleChange = (e) => {
@@ -31,25 +32,26 @@ const ProfileDoctor = () => {
         console.log('Doctor profile details:', formData);
         // Resetea el formulario después de enviar
         setFormData({
-            firstName: '',
-            lastName: '',
-            phoneNumber: '',
+            nombre: '',
+            apellido: '',
+            numero_de_telefono: '',
             email: '',
-            city: '',
-            specialty: '',
-            schedule: '',
-            licenseNumber: '',
-            address: '',
+            ciudad: '',
+            especialidad: '',
+            especialidades_adicionales: '',
+            numero_de_licencia: '',
+            direccion: '',
             password: '',
-            consultationFee: '',
-            state: ''
+            costo: '',
+            estado: '',
+            foto_perfil: '',
         });
     };
 
     return (
         <div>
             <div className="d-flex justify-content-center p-4">
-                <div className="card box-shadow-blue rounded-element p-4 w-50">
+                <div className="box-shadow-blue rounded-element p-4 w-50">
                     <h2 className="text-center gradient-text fw-bold">Completa tu perfil médico</h2>
                     <form onSubmit={handleSubmit}>
                         <div className="row mb-3">

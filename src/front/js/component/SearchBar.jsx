@@ -1,21 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Context } from '../store/appContext';
 
 
 const SearchBar = () => {
-    const doctors = require("../../../../public/doctors.json");
+    //const doctors = require("../../../../public/doctors.json");
+    const { store, actions } = useContext(Context);
     const [specialty, setSpecialty] = useState('');
     const [city, setCity] = useState('');
     const [specialties, setSpecialties] = useState([]);
     const [cities, setCities] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
+    /*useEffect(() => {
         const uniqueSpecialties = [...new Set(doctors.map(doctor => doctor.specialty))];
         const uniqueCities = [...new Set(doctors.map(doctor => doctor.city))];
         setSpecialties(uniqueSpecialties);
         setCities(uniqueCities);
+    }, []);*/
+
+    /*useEffect(() => {
+        const getDoctors = async () => {
+            try {
+                const response = await fetch(`${process.env.BACKEND_URL}/api/doctors`);
+                const data = await response.json();
+                const uniqueSpecialties = [...new Set(data.map(doctor => doctor.especialidad))];
+                const uniqueCities = [...new Set(data.map(doctor => doctor.ciudad))];
+                setSpecialties(uniqueSpecialties);
+                setCities(uniqueCities);
+            } catch (error) {
+                console.log("Error fetching doctors:", error);
+            }
+        };
+
+        getDoctors();
+    }, []);*/
+
+    useEffect(() => {
+        if (store.doctors.length === 0) {
+            actions.fetchDoctors();
+        }
     }, []);
+
+    useEffect(() => {
+        if (store.doctors.length > 0) {
+            //crea un arreglo con todas las especialidades de los doctores.
+            //elimina duplicados, dejando solo especialidades únicas.
+            //convierte el Set de nuevo a un arreglo.
+            const uniqueSpecialties = [...new Set(store.doctors.map(doctor => doctor.especialidad))];
+            const uniqueCities = [...new Set(store.doctors.map(doctor => doctor.ciudad))];
+            //Estas funciones actualizan el estado local del componente con las especialidades y ciudades únicas.
+            setSpecialties(uniqueSpecialties);
+            setCities(uniqueCities);
+        }
+    }, [store.doctors]);
+
 
     const handleSearch = (e) => {
         e.preventDefault();

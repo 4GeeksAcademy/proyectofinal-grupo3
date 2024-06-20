@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import SpecialtyModal from './SpecialtyModal.jsx';
 import AppointmentForm from './AppointmentForm.jsx';
 import ReviewComments from './ReviewComments.jsx';
+import { Context } from '../store/appContext.js';
 
 const DoctorsDirectoryDetail = () => {
     const { id } = useParams();
-    const [doctor, setDoctor] = useState(null);
+    const { actions, store } = useContext(Context);
     const [modalOpen, setModalOpen] = useState(false);
     const [appointmentOpen, setAppointmentOpen] = useState(false);
 
-    const doctorsList = require("../../../../public/doctors.json");
-
     useEffect(() => {
-        const foundDoctor = doctorsList.find(doc => doc.id === parseInt(id));
-        if (!foundDoctor) {
-            alert(`No doctor found with ID ${id}`);
-        }
-        setDoctor(foundDoctor);
+        actions.fetchDoctorDetail(id); // Llamamos a la acción para obtener los detalles del doctor
     }, [id]);
+
+    const doctor = store.doctorDetail;
 
     const handleOpenModal = () => {
         setModalOpen(true);
@@ -47,11 +44,11 @@ const DoctorsDirectoryDetail = () => {
             <div className="p-4 d-flex justify-content-center">
                 <div className="card-custom card-body p-4 text-center">
                     <div className="d-flex justify-content-center mb-3">
-                        <img src={doctor.image} alt={doctor.name} className="w-25 h-25 object-cover rounded-circle shadow-sm" />
+                        <img src={doctor.foto_perfil} alt={doctor.nombre} className="w-25 h-25 object-cover rounded-circle shadow-sm" />
                     </div>
-                    <h1 className="h2 fw-bold">{doctor.name}</h1>
+                    <h1 className="h2 fw-bold">{doctor.nombre} {doctor.apellido} </h1>
                     <p className="d-flex align-items-center justify-content-center text-muted" style={{ lineHeight: '1.5' }}>
-                        {doctor.specialty}
+                        {doctor.especialidad}
                         <button
                             className="text-primary ms-2 btn btn-link p-0"
                             onClick={handleOpenModal}
@@ -59,10 +56,10 @@ const DoctorsDirectoryDetail = () => {
                             Ver más
                         </button>
                     </p>
-                    <p className="text-muted" style={{ lineHeight: '1.5' }}>{doctor.address}</p>
-                    <p className="text-muted" style={{ lineHeight: '1.5' }}>Cédula: {doctor.licenseNumber}</p>
+                    <p className="text-muted" style={{ lineHeight: '1.5' }}>{doctor.direccion}</p>
+                    <p className="text-muted" style={{ lineHeight: '1.5' }}>Cédula: {doctor.numero_de_licencia}</p>
                     <div className="text-muted mt-2" style={{ lineHeight: '1.5' }}>
-                        <span className="text-warning">★★★★★</span> ({doctor.reviews} opiniones)
+                        <span className="text-warning">★★★★★</span> ({doctor.numero_de_resenas} opiniones)
                     </div>
                     <div className="mt-4">
                         <button
@@ -84,7 +81,7 @@ const DoctorsDirectoryDetail = () => {
                 </div>
             </div>
             <div className='container position-relative' style={{ zIndex: overlayActive ? 0 : 2 }}>
-                <ReviewComments reviews_comments={doctor.reviews_comments} />
+                <ReviewComments reviews_comments={doctor.resenas} />
             </div>
             {(modalOpen || appointmentOpen) && (
                 <div className="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-50" style={{ zIndex: 1 }}></div>
