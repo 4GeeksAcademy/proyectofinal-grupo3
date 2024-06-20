@@ -250,7 +250,7 @@ def profile():
                     db.session.commit()
                     return jsonify({'msg': 'Campos del paciente actualizados correctamente'}), 201
                 else:
-                    
+
                     return jsonify({'msg': 'Paciente no encontrado'}), 404
 
             elif body["type"] == "doctor":
@@ -292,7 +292,7 @@ def profile():
 @jwt_required()
 def get_doctor_availability(doctor_id):
     # Obtener todas las disponibilidades del doctor que no estén reservadas
-    availabilities = Availability.query.filter_by(doctor_id=doctor_id, is_booked=False).all()
+    availabilities = Availability.query.filter_by(doctor_id=doctor_id).all()
     # Convertir cada disponibilidad a un diccionario usando el método 
     availabilities_list = [availability.serialize() for availability in availabilities]
     # availabilities_list = list(map(lambda availability: availability.serialize(), availabilities))
@@ -310,30 +310,33 @@ def get_doctor_availability(doctor_id):
 @jwt_required()
 def create_appointment():
     body = request.get_json()
-    if not body:
-        return jsonify({'msg':'El cuerpo de la solicitud esta vacío'}), 400
+    required_fields = ['doctor_id', 'availability_id', 'message']
+
+    if not body or not all(field in body for field in required_fields):
+        return jsonify({'msg':'Faltan campos obligatorios'}), 400
     
     paciente_id = get_jwt_identity()
     doctor_id = body.get('doctor_id')
     availability_id = body.get('availability_id')
     message = body.get('message')
+
     if 'doctor_id' not in body:
         return jsonify({'msg':'EL campo es obligatorios'}), 400
     if 'availability_id' not in body:
         return jsonify({'msg':'El campo availability_id es obligatorios'}), 400
     
     availability = Availability.query.get(availability_id)
-    if not availability or availability.is_booked or availability.doctor_id != doctor_id:
+    if not availability or availability.doctor_id != doctor_id:
         return jsonify({'msg': 'Disponibilidad no válida'}), 400
 
     new_appointment = Appointment(
         paciente_id=paciente_id,
         doctor_id=doctor_id,
         availability_id =availability_id,
-        message=message
+        message=body.get('message')
     )
 
-    availability.is_booked = True
+    
     db.session.add(new_appointment)
     db.session.commit()
 

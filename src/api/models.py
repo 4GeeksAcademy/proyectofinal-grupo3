@@ -67,10 +67,10 @@ class Availability(db.Model):
     day_of_week = db.Column(db.Integer, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
-    is_booked = db.Column(db.Boolean, default=False)
+    
 
     def __repr__(self):
-        return f'<Availability {self.date} - Booked: {self.is_booked} {self.id}{self.doctor_id}>'
+        return f'<Availability para el doctor {self.doctor_id}>'
 
     def serialize(self):
         return {
