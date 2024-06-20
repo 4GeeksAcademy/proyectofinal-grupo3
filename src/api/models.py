@@ -67,18 +67,19 @@ class Availability(db.Model):
     day_of_week = db.Column(db.Integer, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
+    is_booked = db.Column(db.Boolean, default=False, nullable=False)
     
 
     def __repr__(self):
-        return f'<Availability para el doctor {self.doctor_id}>'
+        return f'<Availability para el doctor {self.doctor_id} para el dia: {self.day_of_week} comienza: {self.start_time} termina: {self.end_time}>'
 
     def serialize(self):
         return {
             'id': self.id,
             'doctor_id': self.doctor_id,
             'day_of_week': self.day_of_week,
-            'start_time': self.start_time,
-            'end_time': self.end_time,
+            'start_time': self.start_time.isoformat(),
+            'end_time': self.end_time.isoformat(),
             # 'date': self.date,
             'is_booked': self.is_booked
         }
@@ -103,11 +104,11 @@ class Appointment(db.Model):
             'id': self.id,
             'paciente_id': self.paciente_id,
             'doctor_id': self.doctor_id,
-            'doctor_address': doctor.address if doctor else None,
-            'doctor_city': doctor.city if doctor else None,
-            'doctor_state': doctor.state if doctor else None,
+            'doctor_address': doctor.direccion if doctor else None,
+            'doctor_city': doctor.ciudad if doctor else None,
+            'doctor_state': doctor.estado if doctor else None,
             'message': self.message,
-            'availability': self.availability,
+            'availability': self.availability.serialize() if self.availability else None,
             'appointment_date': self.appointment_date.isoformat(),
         }
 
@@ -151,6 +152,7 @@ class Doctor(db.Model):
             # do not serialize the password, its a security breach
         
         }
+    
 class Recommendation(db.Model):
     __tablename__="recommendation"
     id = db.Column(db.Integer, primary_key=True)
@@ -181,7 +183,6 @@ class BloodPressure(db.Model):
 
     # paciente = db.relationship('Paciente', back_populates='pressures', overlaps="paciente_pressure")
     
-    
     def __repr__(self):
         return f'<BloodPressure {self.id}>'
 
@@ -195,13 +196,6 @@ class BloodPressure(db.Model):
             'date': self.date,
             'recommendation_id': self.recommendation_id
         }
-    
-# class BloodTest(db.Model):
-#     __tablename__='blood_test'
-#     id = db.Column(db.Integer, primary_key=True)
-#     paciente_id = db.Column(db.Integer, db.ForeignKey('paciente.id', ondelete='CASCADE'), nullable=False)    
-#     date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    
     
 class BloodTest(db.Model):
     __tablename__ = "blood_test"
@@ -244,19 +238,8 @@ class BloodPressureRange(db.Model):
     diastolic_max = db.Column(db.Integer, nullable=True)
     heart_rate_min = db.Column(db.Integer, nullable=True)
     heart_rate_max = db.Column(db.Integer, nullable=True)
-    # glucose_min = db.Column(db.Float, nullable=True)
-    # glucose_max = db.Column(db.Float, nullable=True)
-    # cholesterol_min = db.Column(db.Float, nullable=True)
-    # cholesterol_max = db.Column(db.Float, nullable=True)
-    # triglycerides_min = db.Column(db.Float, nullable=True)
-    # triglycerides_max = db.Column(db.Float, nullable=True)
-    # hematocrit_min = db.Column(db.Float, nullable=True)
-    # hematocrit_max = db.Column(db.Float, nullable=True)
-    # hemoglobin_min = db.Column(db.Float, nullable=True)
-    # hemoglobin_max = db.Column(db.Float, nullable=True)
-
+    
     recommendations = db.relationship('Recommendation', backref='blood_pressure_range', lazy=True, primaryjoin="and_(BloodPressureRange.id == Recommendation.range_id)")
-    # recommendations = db.relationship('Recommendation', backref='blood_pressure_range', lazy=True)
 
 
 
@@ -271,16 +254,6 @@ class BloodPressureRange(db.Model):
             'systolic_max': self.systolic_max,
             'diastolic_min': self.diastolic_min,
             'diastolic_max': self.diastolic_max,
-            # 'glucose_min': self.glucose_min,
-            # 'glucose_max': self.glucose_max,
-            # 'cholesterol_min': self.cholesterol_min,
-            # 'cholesterol_max': self.cholesterol_max,
-            # 'triglycerides_min': self.triglycerides_min,
-            # 'triglycerides_max': self.triglycerides_max,
-            # 'hematocrit_min': self.hematocrit_min,
-            # 'hematocrit_max': self.hematocrit_max,
-            # 'hemoglobin_min': self.hemoglobin_min,
-            # 'hemoglobin_max': self.hemoglobin_max
         }
 
    

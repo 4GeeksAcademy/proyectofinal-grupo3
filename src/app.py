@@ -10,6 +10,7 @@ from api.models import db, Paciente, Doctor, BloodPressure, BloodPressureRange, 
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from datetime import datetime 
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
@@ -321,7 +322,7 @@ def create_appointment():
     message = body.get('message')
 
     if 'doctor_id' not in body:
-        return jsonify({'msg':'EL campo es obligatorios'}), 400
+        return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
     if 'availability_id' not in body:
         return jsonify({'msg':'El campo availability_id es obligatorios'}), 400
     
@@ -333,7 +334,8 @@ def create_appointment():
         paciente_id=paciente_id,
         doctor_id=doctor_id,
         availability_id =availability_id,
-        message=body.get('message')
+        message=body.get('message'),
+        appointment_date=datetime.utcnow()
     )
 
     
@@ -341,7 +343,14 @@ def create_appointment():
     db.session.commit()
 
     return jsonify({'msg':'Cita creada exitosamente'}), 201
-    
+   
+@app.route('/paciente/<int:paciente_id>/appointments', methods=['GET'])
+@jwt_required()
+def get_pacient_appointments(paciente_id):
+    appointments = Appointment.query.filter_by(paciente_id=paciente_id).all()
+    appointment_list = [appointment.serialize() for appointment in appointments]
+    return jsonify(appointment_list)
+
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
