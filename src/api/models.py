@@ -216,7 +216,6 @@ class Specialties(db.Model):
 
 
 
-    
 class Recommendation(db.Model):
     __tablename__="recommendation"
     id = db.Column(db.Integer, primary_key=True)

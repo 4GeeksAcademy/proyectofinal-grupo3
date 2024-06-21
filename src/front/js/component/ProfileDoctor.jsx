@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import ContactSection from './ContactSection.jsx';
 
 const ProfileDoctor = () => {
+    const { id } = useParams(); // Obtener el doctorId desde la URL
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -9,7 +11,7 @@ const ProfileDoctor = () => {
         email: '',
         ciudad: '',
         especialidad: '',
-        especialidades_adicionales: '',
+        especialidades_adicionales: [],
         numero_de_licencia: '',
         direccion: '',
         password: '',
@@ -17,6 +19,30 @@ const ProfileDoctor = () => {
         estado: '',
         foto_perfil: '',
     });
+    const [respuestaServidor, setRespuestaServidor] = useState(null);
+
+    useEffect(() => {
+        // Fetch initial doctor data
+        const fetchDoctorData = async () => {
+            try {
+                const response = await fetch(`${process.env.BACKEND_URL}/profile?type=doctor&id=${id}`);
+                const data = await response.json();
+                if (response.ok) {
+                    setFormData(prevFormData => ({
+                        ...prevFormData,
+                        ...data.msg,
+                        especialidades_adicionales: data.msg.especialidades_adicionales.map(e => e.especialidades)
+                    }));
+                } else {
+                    console.error('Error fetching doctor data:', data.msg);
+                }
+            } catch (error) {
+                console.error('Error fetching doctor data:', error);
+            }
+        };
+
+        fetchDoctorData();
+    }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,26 +52,68 @@ const ProfileDoctor = () => {
         });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Aquí puedes manejar la lógica de envío del formulario, como hacer una solicitud POST a un servidor
-        console.log('Doctor profile details:', formData);
-        // Resetea el formulario después de enviar
+    const handleAddEspecialidad = () => {
         setFormData({
-            nombre: '',
-            apellido: '',
-            numero_de_telefono: '',
-            email: '',
-            ciudad: '',
-            especialidad: '',
-            especialidades_adicionales: '',
-            numero_de_licencia: '',
-            direccion: '',
-            password: '',
-            costo: '',
-            estado: '',
-            foto_perfil: '',
+            ...formData,
+            especialidades_adicionales: [...formData.especialidades_adicionales, '']
         });
+    };
+
+    const handleEspecialidadChange = (index, value) => {
+        const newEspecialidades = [...formData.especialidades_adicionales];
+        newEspecialidades[index] = value;
+        setFormData({
+            ...formData,
+            especialidades_adicionales: newEspecialidades
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch(`${process.env.BACKEND_URL}/profile`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'doctor',
+                    id: id, // Use the id from the URL
+                    especialidad: formData.especialidad,
+                    numero_de_telefono: formData.numero_de_telefono,
+                    direccion: formData.direccion,
+                    ciudad: formData.ciudad,
+                    estado: formData.estado,
+                    costo: formData.costo,
+                    numero_de_licencia: formData.numero_de_licencia,
+                    especialidades_adicionales: formData.especialidades_adicionales,
+                    foto_perfil: formData.foto_perfil, // Añade la foto de perfil aquí
+                }),
+            });
+
+            const data = await response.json();
+            setRespuestaServidor(data);
+
+            // Resetea el formulario después de enviar
+            setFormData({
+                nombre: '',
+                apellido: '',
+                numero_de_telefono: '',
+                email: '',
+                ciudad: '',
+                especialidad: '',
+                especialidades_adicionales: [],
+                numero_de_licencia: '',
+                direccion: '',
+                password: '',
+                costo: '',
+                estado: '',
+                foto_perfil: '',
+            });
+        } catch (error) {
+            console.error('Error al enviar los datos:', error);
+        }
     };
 
     return (
@@ -54,29 +122,43 @@ const ProfileDoctor = () => {
                 <div className="box-shadow-blue rounded-element p-4 w-50">
                     <h2 className="text-center gradient-text fw-bold">Completa tu perfil médico</h2>
                     <form onSubmit={handleSubmit}>
+                        <div className="text-center mb-3">
+                            <label className="form-label">Foto de Perfil (URL)</label>
+                            <input
+                                type="text"
+                                name="foto_perfil"
+                                value={formData.foto_perfil}
+                                onChange={handleChange}
+                                className="form-control"
+                                placeholder="Ingrese la URL de su foto de perfil"
+                            />
+                        </div>
+                        {formData.foto_perfil && (
+                            <div className="text-center mb-3">
+                                <img src={formData.foto_perfil} alt="Foto de Perfil" className="img-fluid rounded-circle" style={{ maxWidth: '150px' }} />
+                            </div>
+                        )}
                         <div className="row mb-3">
                             <div className="col-md-6">
                                 <label className="form-label">Nombre</label>
                                 <input
                                     type="text"
-                                    name="firstName"
-                                    value={formData.firstName}
+                                    name="nombre"
+                                    value={formData.nombre}
                                     onChange={handleChange}
                                     className="form-control"
                                     placeholder="Ingrese su nombre"
-                                    required
                                 />
                             </div>
                             <div className="col-md-6">
                                 <label className="form-label">Apellido</label>
                                 <input
                                     type="text"
-                                    name="lastName"
-                                    value={formData.lastName}
+                                    name="apellido"
+                                    value={formData.apellido}
                                     onChange={handleChange}
                                     className="form-control"
                                     placeholder="Ingrese su apellido"
-                                    required
                                 />
                             </div>
                         </div>
@@ -85,8 +167,8 @@ const ProfileDoctor = () => {
                                 <label className="form-label">Número de Teléfono</label>
                                 <input
                                     type="text"
-                                    name="phoneNumber"
-                                    value={formData.phoneNumber}
+                                    name="numero_de_telefono"
+                                    value={formData.numero_de_telefono}
                                     onChange={handleChange}
                                     className="form-control"
                                     placeholder="Ingrese su número de teléfono"
@@ -102,7 +184,6 @@ const ProfileDoctor = () => {
                                     onChange={handleChange}
                                     className="form-control"
                                     placeholder="Ingrese su correo electrónico"
-                                    required
                                 />
                             </div>
                         </div>
@@ -111,120 +192,98 @@ const ProfileDoctor = () => {
                                 <label className="form-label">Ciudad</label>
                                 <input
                                     type="text"
-                                    name="city"
-                                    value={formData.city}
+                                    name="ciudad"
+                                    value={formData.ciudad}
                                     onChange={handleChange}
                                     className="form-control"
                                     placeholder="Ingrese su ciudad"
-                                    required
                                 />
                             </div>
                             <div className="col-md-6">
-                                <label className="form-label">Especialidad</label>
+                                <label className="form-label">Estado</label>
                                 <input
                                     type="text"
-                                    name="specialty"
-                                    value={formData.specialty}
+                                    name="estado"
+                                    value={formData.estado}
                                     onChange={handleChange}
                                     className="form-control"
-                                    placeholder="Ingrese su especialidad"
-                                    required
+                                    placeholder="Ingrese su estado"
                                 />
                             </div>
                         </div>
                         <div className="row mb-3">
                             <div className="col-md-6">
-                                <label className="form-label">Horarios de Atención</label>
+                                <label className="form-label">Especialidad</label>
                                 <input
                                     type="text"
-                                    name="schedule"
-                                    value={formData.schedule}
+                                    name="especialidad"
+                                    value={formData.especialidad}
                                     onChange={handleChange}
                                     className="form-control"
-                                    placeholder="Ingrese sus horarios de atención"
-                                    required
+                                    placeholder="Ingrese su especialidad principal"
                                 />
                             </div>
                             <div className="col-md-6">
                                 <label className="form-label">Número de Licencia</label>
                                 <input
                                     type="text"
-                                    name="licenseNumber"
-                                    value={formData.licenseNumber}
+                                    name="numero_de_licencia"
+                                    value={formData.numero_de_licencia}
                                     onChange={handleChange}
                                     className="form-control"
                                     placeholder="Ingrese su número de licencia"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div className="row mb-3">
-                            <div className="col-md-6">
-                                <label className="form-label">Contraseña</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    className="form-control"
-                                    placeholder="Ingrese su contraseña"
-                                    required
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Costo de la Consulta</label>
-                                <input
-                                    type="text"
-                                    name="consultationFee"
-                                    value={formData.consultationFee}
-                                    onChange={handleChange}
-                                    className="form-control"
-                                    placeholder="Ingrese el costo de la consulta"
-                                    required
                                 />
                             </div>
                         </div>
                         <div className="mb-3">
-                            <label className="form-label">Estado</label>
+                            <label className="form-label">Dirección</label>
                             <input
                                 type="text"
-                                name="state"
-                                value={formData.state}
+                                name="direccion"
+                                value={formData.direccion}
                                 onChange={handleChange}
                                 className="form-control"
-                                placeholder="Ingrese el estado"
-                                required
+                                placeholder="Ingrese su dirección"
                             />
                         </div>
                         <div className="mb-3">
-                            <label className="form-label">Dirección de Consultorio</label>
+                            <label className="form-label">Costo por Consulta</label>
                             <input
                                 type="text"
-                                name="address"
-                                value={formData.address}
+                                name="costo"
+                                value={formData.costo}
                                 onChange={handleChange}
                                 className="form-control"
-                                placeholder="Ingrese la dirección de su consultorio"
-                                required
+                                placeholder="Ingrese el costo por consulta"
                             />
                         </div>
-                        <div className="d-flex justify-content-center">
-                            <button type="submit" className="btn btn-search">
-                                <div className='d-flex flex-row align-items-center'>
-                                    <span>Regístrate</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" className="bi bi-arrow-right-circle ms-2" viewBox="0 0 16 16">
-                                        <circle cx="8" cy="8" r="8" fill="white" />
-                                        <path fillRule="evenodd" d="M4.5 8a.5.5 0 0 1 .5-.5h4.793L8.146 5.854a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L9.793 8.5H5a.5.5 0 0 1-.5-.5z" fill="#00a4f4" />
-                                    </svg>
+                        <div className="mb-3">
+                            <label className="form-label">Especialidades Adicionales</label>
+                            {formData.especialidades_adicionales.map((especialidad, index) => (
+                                <div key={index} className="input-group mb-2">
+                                    <input
+                                        type="text"
+                                        value={especialidad}
+                                        onChange={(e) => handleEspecialidadChange(index, e.target.value)}
+                                        className="form-control"
+                                        placeholder="Ingrese una especialidad adicional"
+                                    />
                                 </div>
-                            </button>
+                            ))}
+                            <button type="button" className="btn btn-primary mt-2" onClick={handleAddEspecialidad}>Añadir Especialidad</button>
+                        </div>
+                        <div className="d-grid">
+                            <button type="submit" className="btn btn-primary">Guardar Perfil</button>
                         </div>
                     </form>
+                    {respuestaServidor && (
+                        <div className={`alert ${respuestaServidor.status === 'success' ? 'alert-success' : 'alert-danger'} mt-3`} role="alert">
+                            {respuestaServidor.msg}
+                        </div>
+                    )}
                 </div>
             </div>
-            <div className="mt-5">
-                <ContactSection />
-            </div>
+            <ContactSection />
         </div>
     );
 };

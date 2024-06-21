@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Paciente, Doctor, BloodPressure, Range, Recommendation, Availability, Appointment, BloodTest, UserRole
+from api.models import db, Paciente, Doctor, Specialties, BloodPressure, Range, Recommendation, Availability, Appointment, BloodTest, UserRole
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -184,8 +184,8 @@ def login_doctor():
 #@jwt_required()
 def profile():
     #identity = get_jwt_identity()
-     # Simulación de una identidad para pruebas
-    identity = 1  # Cambia este valor al ID del usuario doctor que deseas probar
+    # Simulación de una identidad para pruebas
+    identity = 6  # Cambia este valor al ID del usuario doctor que deseas probar
 
     if request.method == 'GET':
         type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
@@ -237,6 +237,9 @@ def profile():
                 estado = body.get('estado')
                 costo = body.get('costo')
                 numero_de_licencia = body.get('numero_de_licencia')
+                especialidades_adicionales = body.get('especialidades_adicionales')
+                foto_perfil = body.get('foto_perfil')
+                                
 
                 # Validar que todos los campos necesarios estén presentes
                 if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
@@ -252,8 +255,19 @@ def profile():
                     doctor.estado = estado
                     doctor.costo = costo
                     doctor.numero_de_licencia = numero_de_licencia
+                    doctor.foto_perfil = foto_perfil
                     # Guardar los cambios en la base de datos (dependiendo de tu configuración)
                     db.session.commit()
+
+                      # Manejo de especialidades adicionales
+                    existing_specialties = {s.especialidades: s for s in doctor.especialidades_adicionales}
+                    for specialty in especialidades_adicionales:
+                        if specialty not in existing_specialties:
+                            new_specialty = Specialties(doctor_id=doctor.id, especialidades=specialty)
+                            db.session.add(new_specialty)
+                    db.session.commit()
+
+
                     return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
                 else:
                     return jsonify({'msg': 'Doctor no encontrado'}), 404

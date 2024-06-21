@@ -36,7 +36,7 @@ const Layout = () => {
                         <Route path="/doctors" element={<DoctorsDirectory />} />
                         <Route path="/doctor/:id" element={<DoctorsDirectoryDetail />} />
                         <Route path="/contact" element={<ContactSection />} /> {/* Agrega esta ruta para el contacto */}
-                        <Route path="/profile_doctor" element={<ProfileDoctor />} />
+                        <Route path="/profile_doctor/:id" element={<ProfileDoctor />} />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
