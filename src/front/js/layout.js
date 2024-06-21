@@ -11,7 +11,7 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { HeroSection } from "./component/hero"
 import { Footer } from "./component/footer";
-gerardogama-navbarFooter
+
 import Signup from "./component/SignUp.jsx";
 import RolSelector from "./component/RolSelector.jsx";
 
@@ -22,7 +22,7 @@ import DoctorsDirectory  from "./component/DoctorsDirectory.jsx";
 import DoctorsDirectoryDetail from "./component/DoctorsDirectoryDetail.jsx";
 import ContactSection from "./component/ContactSection.jsx";
 import ProfileDoctor from "./component/ProfileDoctor.jsx";
-Development
+
 
 //create your first component
 const Layout = () => {
@@ -41,7 +41,7 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
- gerardogama-navbarFooter
+ 
                         <Route element= {<Signup />} path="/SignUp" />
                         <Route element= {<RolSelector/>} path="/RolSelector" />
 
@@ -49,7 +49,7 @@ const Layout = () => {
                         <Route path="/doctor/:id" element={<DoctorsDirectoryDetail />} />
                         <Route path="/contact" element={<ContactSection />} /> {/* Agrega esta ruta para el contacto */}
                         <Route path="/profile_doctor" element={<ProfileDoctor />} />
- Development
+ 
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

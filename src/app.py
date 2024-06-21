@@ -10,6 +10,7 @@ from api.models import db, Paciente, Doctor, BloodPressure, Range, Recommendatio
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_cors import CORS
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
@@ -29,6 +30,17 @@ app.url_map.strict_slashes = False
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!-> os.getenv("JWT-KEY")
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
+
+
+
+
+
+
+
+CORS(app, resources={r"/signup_paciente": {"origins": "https://studious-space-potato-9775p7qp7vvq27469-3000.app.github.dev"}})
+CORS(app, resources={r"/api/*": {"origins": "*", "methods": ["GET", "POST"]}})
+CORS(app, resources={r"/login": {"origins": "https://studious-space-potato-9775p7qp7vvq27469-3000.app.github.dev"}})
+
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")

@@ -36,6 +36,7 @@
 
 .input-group {
     margin-bottom: 20px;
+    
 }
 
 label {
@@ -44,7 +45,7 @@ label {
     font-weight: bold;
 }
 
-input[type="email"],
+input[type="text"],
 input[type="password"] {
     width: 100%;
     padding: 10px;
@@ -53,7 +54,7 @@ input[type="password"] {
 }
 
 button {
-    background-color: #007bff; /* Blue color */
+    background-color: #007bff; 
     color: white;
     padding: 12px 20px;
     border: none;
@@ -92,3 +93,17 @@ button {
     width: fit-content;
 }
 
+input[type="nombre"],
+input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="apellido"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
