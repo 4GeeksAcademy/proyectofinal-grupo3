@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Paciente, Doctor, BloodPressure, BloodPressureRange, Recommendation, Availability, Appointment, BloodTest, UserRole, BloodRange
+from api.models import db, Paciente, Doctor, BloodPressure, BloodPressureRange, Availability, Appointment, BloodTest, UserRole, BloodRange, RecommendationBloodPresure, RecommendationBloodTest
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -350,6 +350,154 @@ def get_pacient_appointments(paciente_id):
     appointments = Appointment.query.filter_by(paciente_id=paciente_id).all()
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
+
+@app.route('/doctor/<int:doctor_id>/appointments', methods=['GET'])
+@jwt_required()
+def get_doctor_appointments(doctor_id):
+    appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
+    appointment_list = [appointment.serialize() for appointment in appointments]
+    return jsonify(appointment_list)
+
+# ranges_data = [
+#     {
+#         "name": "Normal",
+#         "systolic_min": 90,
+#         "systolic_max": 120,
+#         "diastolic_min": 60,
+#         "diastolic_max": 80,
+#         "heart_rate_min": 60,
+#         "heart_rate_max": 100
+#     },
+#     {
+#         "name": "Elevated",
+#         "systolic_min": 120,
+#         "systolic_max": 129,
+#         "diastolic_min": 60,
+#         "diastolic_max": 80,
+#         "heart_rate_min": 60,
+#         "heart_rate_max": 100
+
+#     },
+#     {
+#         "name": "Hypertension Stage 1",
+#         "systolic_min": 130,
+#         "systolic_max": 139,
+#         "diastolic_min": 80,
+#         "diastolic_max": 89,
+#         "heart_rate_min": 60,
+#         "heart_rate_max": 100
+#     },
+#     {
+#         "name": "Hypertension Stage 2",
+#         "systolic_min": 140,
+#         "systolic_max": 180,
+#         "diastolic_min": 90,
+#         "diastolic_max": 120,
+#         "heart_rate_min": 60,
+#         "heart_rate_max": 100
+#     }
+# ]
+
+# try: 
+#     for range_data in ranges_data:
+#         new_range = BloodPressureRange(
+#             name=range_data['name'],
+#             systolic_min=range_data['systolic_min'],
+#             systolic_max=range_data['systolic_max'],
+#             diastolic_min=range_data['diastolic_min'],
+#             diastolic_max=range_data['diastolic_max'],
+#             heart_rate_min=range_data['heart_rate_min'],
+#             heart_rate_max=range_data['heart_rate_max']
+
+#         )
+#         db.session.add(new_range)
+
+#     db.session.commit()
+#     print('rangos de presion arterial agregados correctamente')
+
+# except Exception as e:
+#     db.session.rollback()
+#     print(f"Error al agregar los rangos de presión arterial: {str(e)}")
+@app.route('/add_blood_pressure_range', methods=['POST'])
+def add_blood_pressure_range():
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "Datos no proporcionados"}), 400
+
+    try:
+        new_range = BloodPressureRange(
+            name=data['name'],
+            systolic_min=data['systolic_min'],
+            systolic_max=data['systolic_max'],
+            diastolic_min=data['diastolic_min'],
+            diastolic_max=data['diastolic_max'],
+            heart_rate_min=data['heart_rate_min'],
+            heart_rate_max=data['heart_rate_max']
+        )
+
+        db.session.add(new_range)
+        db.session.commit()
+
+        return jsonify({"message": "Rango de presión arterial agregado correctamente"}), 201
+
+    except KeyError as e:
+        return jsonify({"message": f"Campo requerido faltante: {str(e)}"}), 400
+    except Exception as e:
+        return jsonify({"message": f"Error al agregar el rango de presión arterial: {str(e)}"}), 500
+    
+@app.route('/add_recommendation', methods= ['POST'])
+def add_recommendation():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({'msg':'Datos no porporcionados'}), 400
+    
+    try:
+        new_recommendation = RecommendationBloodPresure(
+            text=data['text'],
+            blood_pressure_range_id=data.get('blood_pressure_range_id'),
+            range_id=data.get('blood_range_id')
+        )
+
+        db.session.add(new_recommendation)
+        db.session.commit()
+
+        return jsonify({"message": "Recomendación agregada correctamente"}), 201
+
+    except KeyError as e:
+        return jsonify({"message": f"Campo requerido faltante: {str(e)}"}), 400
+    except Exception as e:
+        return jsonify({"message": f"Error al agregar la recomendación: {str(e)}"}), 500
+
+
+@app.route('/blood_pressure_test', methods=['POST'])
+def check_health():
+    data = request.get_json()
+    systolic = data.get('systolic')
+    diastolic = data.get('diastolic')
+    heart_rate = data.get('heart_rate')
+
+    blood_pressure_range = BloodPressureRange.query.filter(
+        BloodPressureRange.systolic_min <= systolic,
+        BloodPressureRange.systolic_max >= systolic,
+        BloodPressureRange.diastolic_min <= diastolic,
+        BloodPressureRange.diastolic_max >= diastolic,
+        BloodPressureRange.heart_rate_min <= heart_rate,
+        BloodPressureRange.heart_rate_max >= heart_rate
+    ).first()
+
+    if blood_pressure_range.recommendations:
+        for recommendation in blood_pressure_range.recommendations:
+            return jsonify({"recommendation": recommendation.serialize()}) 
+    else:
+        return jsonify({"recommendation": "No specific recommendation found for the given values."}), 404
+
+    
+
+
+    
+
+    
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
