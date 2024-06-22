@@ -39,13 +39,13 @@ class Paciente(db.Model):
     fecha_de_nacimiento = db.Column(db.Date, nullable=True) 
     sexo = db.Column(db.String(10), nullable=True)
 
-    pressures = db.relationship('BloodPressure', backref='paciente_pressure', lazy=True, cascade='all, delete-orphan')
-    appointments = db.relationship('Appointment', backref='paciente_appointment', lazy=True, cascade='all, delete-orphan')
-    blood_tests = db.relationship('BloodTest', backref='paciente_blodd_test', lazy=True, cascade='all, delete-orphan')
+    pressures = db.relationship('BloodPressure', backref='paciente', lazy=True, cascade='all, delete-orphan')
+    appointments = db.relationship('Appointment', backref='paciente', lazy=True, cascade='all, delete-orphan')
+    blood_tests = db.relationship('BloodTest', backref='paciente', lazy=True, cascade='all, delete-orphan')
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
     def __repr__(self):
-        return f'<Paciente {self.email} {self.nombre} {self.apellido}>'
+        return f'<Paciente {self.email} {self.nombre} {self.apellido} {self.id}>'
 
     def serialize(self):
         return {
@@ -65,17 +65,24 @@ class Availability(db.Model):
     __tablename__ = "availability"
     id = db.Column(db.Integer, primary_key=True)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
-    is_booked = db.Column(db.Boolean, default=False)
+    # date = db.Column(db.DateTime, nullable=False, unique=False)
+    day_of_week = db.Column(db.Integer, nullable=False)
+    start_time = db.Column(db.Time, nullable=False)
+    end_time = db.Column(db.Time, nullable=False)
+    is_booked = db.Column(db.Boolean, default=False, nullable=False)
+    
 
     def __repr__(self):
-        return f'<Availability {self.date} - Booked: {self.is_booked}>'
+        return f'<Availability para el doctor {self.doctor_id} para el dia: {self.day_of_week} comienza: {self.start_time} termina: {self.end_time}>'
 
     def serialize(self):
         return {
             'id': self.id,
             'doctor_id': self.doctor_id,
-            'date': self.date,
+            'day_of_week': self.day_of_week,
+            'start_time': self.start_time.isoformat(),
+            'end_time': self.end_time.isoformat(),
+            # 'date': self.date,
             'is_booked': self.is_booked
         }
 
@@ -86,7 +93,8 @@ class Appointment(db.Model):
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
     availability_id = db.Column(db.Integer, db.ForeignKey('availability.id'), nullable=False)
     message = db.Column(db.String(200), nullable=True)
-    availability = db.relationship('Availability', backref='appointments')
+    appointment_date = db.Column(db.DateTime, nullable=False)
+    availability = db.relationship('Availability', backref='appointment')
 
     def __repr__(self):
         return f'<Appointment {self.id}>'
@@ -98,11 +106,12 @@ class Appointment(db.Model):
             'id': self.id,
             'paciente_id': self.paciente_id,
             'doctor_id': self.doctor_id,
-            'doctor_address': doctor.address if doctor else None,
-            'doctor_city': doctor.city if doctor else None,
-            'doctor_state': doctor.state if doctor else None,
+            'doctor_address': doctor.direccion if doctor else None,
+            'doctor_city': doctor.ciudad if doctor else None,
+            'doctor_state': doctor.estado if doctor else None,
             'message': self.message,
-            'availability': self.availability
+            'availability': self.availability.serialize() if self.availability else None,
+            'appointment_date': self.appointment_date.isoformat(),
         }
 
 class Doctor(db.Model):
@@ -120,18 +129,14 @@ class Doctor(db.Model):
     costo = db.Column(db.Float, nullable=True)
     numero_de_licencia = db.Column(db.String, nullable=True)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    destacado = db.Column(db.Boolean(), default=False, nullable=False)  # Nuevo campo
-    foto_perfil = db.Column(db.String(255), nullable=True)  # Nuevo campo para la foto de perfil
-    numero_de_resenas = db.Column(db.Integer, default=0, nullable=False)  # Nuevo campo para el número de reseñas
-
-    appointments = db.relationship('Appointment', backref='doctor_relationship', lazy=True)
+    appointments = db.relationship('Appointment', backref='doctor', lazy=True)
     availabilities = db.relationship('Availability', backref='doctor', lazy=True, uselist=True)
     resenas = db.relationship('Review', backref='doctor', lazy=True)  # Relación con la tabla de reseñas
     especialidades_adicionales = db.relationship('Specialties', backref='doctor', lazy=True)  # Relación con la tabla Specialty
     # horario = db.Column(db.Date, nullable=True) # que tipo de dato va? date o dateTime diferencia? tabla -> disponibilidad_doctor
 
     def __repr__(self):
-        return f'<Doctor {self.email}>'
+        return f'<Doctor {self.email} {self.id}>'
     
     def serialize(self):
         return {
@@ -154,72 +159,14 @@ class Doctor(db.Model):
             "resenas": [resena.serialize() for resena in self.resenas],  # Serialización de las reseñas
             "especialidades_adicionales": [especialidad.serialize() for especialidad in self.especialidades_adicionales]
             # do not serialize the password, its a security breach
+        
         }
     
-class Review(db.Model):
-    __tablename__ = "review"
-    id = db.Column(db.Integer, primary_key=True)
-    doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
-    comentario = db.Column(db.String(500), nullable=False)
-    puntuacion = db.Column(db.Integer, nullable=False)  # Asumiendo que las reseñas también tienen una puntuación
-
-    def __repr__(self):
-        return f'<Review {self.id} for Doctor {self.doctor_id}>'
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "doctor_id": self.doctor_id,
-            "comentario": self.comentario,
-            "puntuacion": self.puntuacion
-        }
-
-
-# Eventos para actualizar el número de reseñas
-@event.listens_for(Review, 'after_insert')
-def after_insert_review(mapper, connection, target):
-    doctor_id = target.doctor_id
-    Session = sessionmaker(bind=db.engine)
-    session = Session()
-    doctor = session.query(Doctor).filter_by(id=doctor_id).first()
-    if doctor:
-        doctor.numero_de_resenas += 1
-        session.commit()
-    session.close()
-
-@event.listens_for(Review, 'after_delete')
-def after_delete_review(mapper, connection, target):
-    doctor_id = target.doctor_id
-    Session = sessionmaker(bind=db.engine)
-    session = Session()
-    doctor = session.query(Doctor).filter_by(id=doctor_id).first()
-    if doctor and doctor.numero_de_resenas > 0:
-        doctor.numero_de_resenas -= 1
-        session.commit()
-    session.close()
-
-class Specialties(db.Model):
-    __tablename__ = "specialties"
-    id = db.Column(db.Integer, primary_key=True)
-    doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
-    especialidades = db.Column(db.String(255), nullable=False)
-
-    def __repr__(self):
-        return f'<Specialties {self.especialidades} for Doctor {self.doctor_id}>'
-    
-    def serialize(self):
-        return {
-            "id": self.id,
-            "doctor_id": self.doctor_id,
-            "especialidades": self.especialidades
-        }
-
-
-
 class Recommendation(db.Model):
     __tablename__="recommendation"
     id = db.Column(db.Integer, primary_key=True)
-    range_id = db.Column(db.Integer, db.ForeignKey('range.id'), nullable=True)
+    range_id = db.Column(db.Integer, db.ForeignKey('blood_pressure_range.id'), nullable=True)
+    blood_rage_id = db.Column(db.Integer, db.ForeignKey('blood_range.id'), nullable=True)
     text = db.Column(db.Text, nullable=False)
     blood_pressures = db.relationship('BloodPressure', backref='recommendation', lazy=True, viewonly=True)
 
@@ -243,8 +190,7 @@ class BloodPressure(db.Model):
     heart_rate = db.Column(db.Integer, nullable=False)
     recommendation_id = db.Column(db.Integer, db.ForeignKey('recommendation.id'), nullable=True)
 
-    paciente = db.relationship('Paciente', back_populates='pressures', overlaps="paciente_pressure")
-    
+    # paciente = db.relationship('Paciente', back_populates='pressures', overlaps="paciente_pressure")
     
     def __repr__(self):
         return f'<BloodPressure {self.id}>'
@@ -272,6 +218,7 @@ class BloodTest(db.Model):
     hematocritos = db.Column(db.Float, nullable=True)
     hemoglobina = db.Column(db.Float, nullable=True)
 
+   
     # paciente = db.relationship('Paciente', backref='blood_tests', lazy=True)
 
     def __repr__(self):
@@ -290,32 +237,23 @@ class BloodTest(db.Model):
         }
 
 
-class Range(db.Model):
-    __tablename__= "range"
+class BloodPressureRange(db.Model):
+    __tablename__= "blood_pressure_range"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    systolic_min = db.Column(db.Integer, nullable=False)
-    systolic_max = db.Column(db.Integer, nullable=False)
-    diastolic_min = db.Column(db.Integer, nullable=False)
-    diastolic_max = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(50), nullable=True)
+    systolic_min = db.Column(db.Integer, nullable=True)
+    systolic_max = db.Column(db.Integer, nullable=True)
+    diastolic_min = db.Column(db.Integer, nullable=True)
+    diastolic_max = db.Column(db.Integer, nullable=True)
     heart_rate_min = db.Column(db.Integer, nullable=True)
     heart_rate_max = db.Column(db.Integer, nullable=True)
-    glucose_min = db.Column(db.Float, nullable=True)
-    glucose_max = db.Column(db.Float, nullable=True)
-    cholesterol_min = db.Column(db.Float, nullable=True)
-    cholesterol_max = db.Column(db.Float, nullable=True)
-    triglycerides_min = db.Column(db.Float, nullable=True)
-    triglycerides_max = db.Column(db.Float, nullable=True)
-    hematocrit_min = db.Column(db.Float, nullable=True)
-    hematocrit_max = db.Column(db.Float, nullable=True)
-    hemoglobin_min = db.Column(db.Float, nullable=True)
-    hemoglobin_max = db.Column(db.Float, nullable=True)
+    
+    recommendations = db.relationship('Recommendation', backref='blood_pressure_range', lazy=True, primaryjoin="and_(BloodPressureRange.id == Recommendation.range_id)")
 
-    recommendations = db.relationship('Recommendation', backref='range', lazy=True, primaryjoin="and_(Range.id == Recommendation.range_id)")
 
 
     def __repr__(self):
-        return f'<Range {self.name}>'
+        return f'<Range {self.name} {self.id}>' 
 
     def serialize(self):
         return {
@@ -325,19 +263,29 @@ class Range(db.Model):
             'systolic_max': self.systolic_max,
             'diastolic_min': self.diastolic_min,
             'diastolic_max': self.diastolic_max,
-            'glucose_min': self.glucose_min,
-            'glucose_max': self.glucose_max,
-            'cholesterol_min': self.cholesterol_min,
-            'cholesterol_max': self.cholesterol_max,
-            'triglycerides_min': self.triglycerides_min,
-            'triglycerides_max': self.triglycerides_max,
-            'hematocrit_min': self.hematocrit_min,
-            'hematocrit_max': self.hematocrit_max,
-            'hemoglobin_min': self.hemoglobin_min,
-            'hemoglobin_max': self.hemoglobin_max
         }
 
    
+class BloodRange(db.Model):
+    __tablename__ = "blood_range"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=True)
+    min_range = db.Column(db.Float, nullable=True)
+    max_range = db.Column(db.Float, nullable=True)
+    
+    recommendation = db.relationship('Recommendation', backref="blood_range", lazy=True)
+
+    def __repr__(self):
+        return f'<Range {self.name} {self.id}>' 
+    
+    def serialize(self):
+        return{
+            'id': self.id,
+            'name': self.name,
+            'min_range': self.min_rage,
+            'max_range': self.max_range
+
+        }
 
     # Añade los demás campos necesarios aquí
 

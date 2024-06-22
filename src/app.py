@@ -6,10 +6,11 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Paciente, Doctor, Specialties, BloodPressure, Range, Recommendation, Availability, Appointment, BloodTest, UserRole
+from api.models import db, Paciente, Doctor, BloodPressure, BloodPressureRange, Recommendation, Availability, Appointment, BloodTest, UserRole, BloodRange, Specialties
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from datetime import datetime 
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
@@ -57,13 +58,11 @@ app.register_blueprint(api, url_prefix='/api')
 
 # Handle/serialize errors like a JSON object
 
-
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
 # generate sitemap with all your endpoints
-
 
 @app.route('/')
 def sitemap():
@@ -73,7 +72,6 @@ def sitemap():
 
 # any other endpoint will try to serve it like a static file
 
-
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
     if not os.path.isfile(os.path.join(static_file_dir, path)):
@@ -82,55 +80,8 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
-@app.route('/signup_paciente', methods=['POST'])
-def signup_paciente():
-    body= request.get_json(silent=True)
-    if body is None:
-        return jsonify({'msg': "Body is empty"}), 400
-    if "email" not in body or "password" not in body or "nombre" not in body or "apellido" not in body or "confirm_password" not in body:
-        return jsonify({'msg':"Los campos, Email, Nombre, Apellido, Password y confirm_password son obligatorios"}), 400
-    
-    if body['password'] != body['confirm_password']:
-        return jsonify({'msg': "Los passwords no coinciden"}), 400
-    
-    if Paciente.query.filter_by(email=body['email']).first():
-        return jsonify({'msg': "El correo electronico ya está en uso"}), 400
-    
-    new_paciente = Paciente(
-        email=body['email'],
-        nombre = body['nombre'],
-        apellido = body ['apellido'],
-        password =bcrypt.generate_password_hash(body['password']).decode('utf-8'),
-        is_active=True
-
-    )
-
-    db.session.add(new_paciente)
-    db.session.commit()
-
-    return jsonify({'msg': 'Paciente creado exitosamente '}), 201
-
-@app.route('/login_paciente', methods=['POST'])
-def login_paciente(): 
-    body = request.get_json(silent=True)
-    if body is None:
-        return jsonify({'msg':'El cuerpo de la solicitud esta vacio'}), 400
-    if "email" not in body or "password" not in body:
-        return jsonify({'msg':'Email y password son obligatorios'}), 400
-    
-    paciente = Paciente.query.filter_by(email=body['email']).first()
-    if paciente is None:
-        return jsonify({'msg': 'Usuario o password invalidos'}), 400
-    
-    correct_password = bcrypt.check_password_hash(paciente.password, body['password'])
-    if not correct_password:
-        return jsonify({'msg': 'Usuario o password invalidos'}), 400
-    
-    access_token = create_access_token(identity=paciente.id)
-    return jsonify({'msg':'Incicio de sesión exitoso', 'access_token': access_token}), 200
-
-@app.route('/signup_doctor', methods=['POST'])
-def signup_doctor():
+@app.route('/signup', methods=['POST'])
+def signup():
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': "El cuerpo de la solicitud esta vacio"}), 400
@@ -138,54 +89,132 @@ def signup_doctor():
     if "email" not in body:
         return jsonify({'msg': "El email es requerido"}), 400
     if "password" not in body:
-            return jsonify({'msg': "El email es requerido"}), 400
+        return jsonify({'msg': "El email es requerido"}), 400
     if "nombre" not in body:
-            return jsonify({'msg': "El nombre es requerido"}), 400
+        return jsonify({'msg': "El nombre es requerido"}), 400
     if "apellido" not in body:
-            return jsonify({'msg': "El apellido es requerido"}), 400
+        return jsonify({'msg': "El apellido es requerido"}), 400
     if "password" not in body:
-            return jsonify({'msg': "El password es requerido"}), 400
+        return jsonify({'msg': "El password es requerido"}), 400
     if "confirm_password" not in body:
-            return jsonify({'msg': "La confirmación del password es requerida"}), 400
+        return jsonify({'msg': "La confirmación del password es requerida"}), 400
+    if "type" not in body:
+        return jsonify({"msg":"El campo type es requerido"}), 400
     
     if body ['password'] != body['confirm_password']:
-         return jsonify({'msg': "Las contraseñas no coinciden"}), 400
+        return jsonify({'msg': "Las contraseñas no coinciden"}), 400
+     
     
-    new_doctor = Doctor(
-         email=body['email'],
-         nombre=body['nombre'],
-         apellido=body['apellido'],
-         password=bcrypt.generate_password_hash(body['password']).decode('utf-8'),
-         is_active=True
-    )
+    new_user = None
+    if body['type'] == "paciente":
+        new_user = Paciente()
+    else:
+        new_user = Doctor()
 
-    db.session.add(new_doctor)
+    new_user.email = body['email']     
+    new_user.nombre=body['nombre'],
+    new_user.apellido=body['apellido'],
+    new_user.password=bcrypt.generate_password_hash(body['password']).decode('utf-8'),
+    new_user.is_active=True
+
+    db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'msg': 'Doctor creado exitosamente'}), 201
+    return jsonify({'msg': 'Usuario creado exitosamente'}), 201
     
-@app.route('/login_doctor', methods=['POST'])
-def login_doctor():
-     body = request.get_json(silent=True)
-     if body is None:
-          return jsonify({'msg':"El cuerpo de la solicitud esta vacio"}), 400
-     if "email" not in body or "password" not in body: 
-          return jsonify({'msg':"El email y el password son obligatorios"}), 400
-     
-     doctor= Doctor.query.filter_by(email=body['email']).first()
-     if doctor is None or not bcrypt.check_password_hash(doctor.password, body['password']):
-          return jsonify({'msg': 'Correo electronico o password incorrectos'}), 400
-     
-     access_token = create_access_token(identity=doctor.id)
-     return jsonify({'msg':'ok','access_token': access_token}), 200
+@app.route('/login', methods=['POST'])
+def login():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg':"El cuerpo de la solicitud esta vacio"}), 400
+    if "email" not in body or "password" not in body: 
+        return jsonify({'msg':"El email y el password son obligatorios"}), 400
+    if "type" not in body: 
+        return jsonify({'msg':"El campo type es requerido"}), 400
 
-#PROFILE DOCTOR Y PACIENTE
+    user = None
+    if body['type'] == 'paciente':
+        user= Paciente.query.filter_by(email=body['email']).first()
+    elif body['type'] == 'doctor':
+        user= Doctor.query.filter_by(email=body['email']).first()
+
+    if user is None or not bcrypt.check_password_hash(user.password, body['password']):
+        return jsonify({'msg': 'Correo electronico o password incorrectos'}), 400
+     
+    access_token = create_access_token(identity=user.id)
+    return jsonify({'msg':'ok','access_token': access_token}), 200
+     
+# @app.route('/profile', methods=['GET', 'POST'])
+# @jwt_required()
+# def profile():
+           
+#     if request.method == 'GET':
+#         body = request.get_json(silent=True)
+#         identity= get_jwt_identity()
+#         type = request.args.get('type')
+#         user = None
+             
+#         if type == "paciente":
+#             user = Paciente.query.filter_by(id=identity).first()
+#             if user:
+#                 return jsonify({'msg':user.serialize()}), 200
+#             return jsonify({'msg': "El usuario no existe"}), 404
+        
+#         elif type == 'doctor':
+#             user= Doctor.query.filter_by(id = identity).first()
+#             if user:
+#                 return jsonify({'msg':user.serialize()}), 200
+#             return jsonify({'msg': "El usuario no existe"}), 404
+            
+#         return jsonify({'msg':'Parametros incorrectos'}), 400
+    
+#     elif request.method == 'POST':
+#         #agregue nueva linea abajo
+#         body = request.get_json(silent=True)  # Obtener datos JSON del cuerpo
+
+#         if not body:
+#             return jsonify({'msg': 'Cuerpo de solicitud JSON vacío'}), 400
+        
+#         if body["type"] == "paciente":
+#             numero_de_telefono = body['numero_de_telefono']
+#             fecha_de_nacimiento = body['fecha_de_nacimiento']
+#             sexo = body['sexo']
+
+#             update_data = Paciente()
+#             update_data.numero_de_telefono = numero_de_telefono
+#             update_data.fecha_de_nacimiento = fecha_de_nacimiento
+#             update_data.sexo = sexo
+#             #todo lo que se recibe en el body de paciente 
+#             #aca se llenan los campos faltantes
+#             return jsonify({'msg':'Estoy actualizando los campos del paciente'}), 201
+        
+#         elif body["type"] == "doctor":
+#             especialidad = body['especialidad']
+#             numero_de_telefono = body['numero_de_telefono']
+#             direccion = body['direccion']
+#             ciudad = body['ciudad']
+#             estado = body['estado']
+#             costo = body['costo']
+#             numero_de_licencia = body['numero_de_licencia']
+            
+#             update_data = Doctor()
+#             update_data.especialidad = especialidad
+#             update_data.numero_de_telefono = numero_de_telefono
+#             update_data.direccion = direccion
+#             update_data.ciudad = ciudad
+#             update_data.estado = estado
+#             update_data.costo = costo
+#             numero_de_licencia = numero_de_licencia
+#             #todo lo que se recibe en el body de doctor
+#             #aca se llenan los campos faltantes
+#             return jsonify({'msg':'Estoy actualizando los campos del doctor'}), 
+#             #nueva linea abaja
+#         return jsonify({'msg': 'Tipo de usuario no válido'}), 400
+
 @app.route('/profile', methods=['GET', 'POST'])
-#@jwt_required()
+@jwt_required()
 def profile():
-    #identity = get_jwt_identity()
-    # Simulación de una identidad para pruebas
-    identity = 6  # Cambia este valor al ID del usuario doctor que deseas probar
+    identity = get_jwt_identity()
 
     if request.method == 'GET':
         type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
@@ -292,7 +321,49 @@ def doctor(id):
         return jsonify({"error": "Doctor not found"}), 404
     return jsonify(doctor.serialize()), 200
 
+@app.route('/appointments', methods=['POST'])
+@jwt_required()
+def create_appointment():
+    body = request.get_json()
+    required_fields = ['doctor_id', 'availability_id', 'message']
 
+    if not body or not all(field in body for field in required_fields):
+        return jsonify({'msg':'Faltan campos obligatorios'}), 400
+    
+    paciente_id = get_jwt_identity()
+    doctor_id = body.get('doctor_id')
+    availability_id = body.get('availability_id')
+    message = body.get('message')
+
+    if 'doctor_id' not in body:
+        return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
+    if 'availability_id' not in body:
+        return jsonify({'msg':'El campo availability_id es obligatorios'}), 400
+    
+    availability = Availability.query.get(availability_id)
+    if not availability or availability.doctor_id != doctor_id:
+        return jsonify({'msg': 'Disponibilidad no válida'}), 400
+
+    new_appointment = Appointment(
+        paciente_id=paciente_id,
+        doctor_id=doctor_id,
+        availability_id =availability_id,
+        message=body.get('message'),
+        appointment_date=datetime.utcnow()
+    )
+
+    
+    db.session.add(new_appointment)
+    db.session.commit()
+
+    return jsonify({'msg':'Cita creada exitosamente'}), 201
+   
+@app.route('/paciente/<int:paciente_id>/appointments', methods=['GET'])
+@jwt_required()
+def get_pacient_appointments(paciente_id):
+    appointments = Appointment.query.filter_by(paciente_id=paciente_id).all()
+    appointment_list = [appointment.serialize() for appointment in appointments]
+    return jsonify(appointment_list)
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
