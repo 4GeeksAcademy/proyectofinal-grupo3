@@ -12,12 +12,13 @@
     justify-content: center;
     display: flex;
     flex-direction: column;
-    
+    margin-top: 30px;
+    margin-bottom: 50px;
     
     
 }
 .login2 {
-    width: 350px;
+    width: 400px;
     padding: 30px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -28,8 +29,8 @@
     ;
     color: #0069ab;
     justify-content: center;
-    
-    
+    margin-top: 30px;
+    margin-bottom: 50px;
     
     
 }
@@ -46,6 +47,13 @@ label {
 
 input[type="email"],
 input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+input[type="text"]
+ {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -92,3 +100,7 @@ button {
     width: fit-content;
 }
 
+.contenedor { /* Contenedor padre del div */
+    display: grid;
+    place-items: center; /* Centra tanto horizontal como verticalmente */
+  }
