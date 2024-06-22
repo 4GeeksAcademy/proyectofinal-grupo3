@@ -9,13 +9,13 @@ export const FormSignUp = (props) => {
     apellido: "",
     email: "",
     password: "",
-  });
+    confirm_password: "",  });
 
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { role } = useParams();
 
-  console.log("Quiero iniciar como", role); // Puedes usar props.role si es necesario
+  
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -25,7 +25,7 @@ export const FormSignUp = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Validación de contraseñas (puedes agregar más validaciones aquí)
+    
     if (formData.password !== formData.confirm_password) {
       setError("Las contraseñas no coinciden");
       console.log(formData)
@@ -34,7 +34,7 @@ export const FormSignUp = (props) => {
 
     try {
       const response = await fetch(process.env.BACKEND_URL + "signup", {
-        mode: 'no-cors',
+        
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, type: role }), // Agrega el rol
@@ -42,7 +42,7 @@ export const FormSignUp = (props) => {
 
       if (response.ok) {
         console.log("Registro exitoso");
-        navigate("/"); // Redirige a la página principal (ajusta la ruta)
+        navigate("/profile"); // Redirige a la página principal (ajusta la ruta)
       } else {
         const errorData = await response.json();
         setError(errorData.msg);
@@ -110,7 +110,7 @@ export const FormSignUp = (props) => {
               id="password1"
               name="password"
               placeholder="Contraseña"
-              value={formData.password}
+              value= {formData.password}
               onChange={handleChange}
               required
             />

@@ -6,6 +6,7 @@ export const FormLogIn = (props) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    type: "",
   });
   const [error, setError] = useState(null);
   const [showRecoveryModal, setShowRecoveryModal] = useState(false);
@@ -23,7 +24,7 @@ export const FormLogIn = (props) => {
       const response = await fetch(process.env.BACKEND_URL + "login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(({ ...formData, type: role }),),
       });
 
       if (response.ok) {

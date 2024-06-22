@@ -28,14 +28,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 
 CORS(app)  # Permite todas las solicitudes de todos los orígenes
-
-CORS(app, resources={
-    r"/api/*": {
-        "origins": ["https://expert-garbanzo-r446j4rj495qfpj76-3000.app.github.dev", "http://localhost:3000"],
-        "methods": ["GET", "POST", "PUT", "DELETE"],
-        "allow_headers": ["Content-Type", "Authorization"],
-    }
-})
+CORS(app, resources={r"/api/*": {"origins": "https://expert-garbanzo-r446j4rj495qfpj76-3000.app.github.dev/"}})
 
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!-> os.getenv("JWT-KEY")
 jwt = JWTManager(app)

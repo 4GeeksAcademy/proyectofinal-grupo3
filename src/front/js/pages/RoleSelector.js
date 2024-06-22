@@ -30,7 +30,7 @@ export const RoleSelector = ()=> {
 
                 <div className="doctor">
                 <div className='button'>
-                <Link to={`/docto/${params.actionType}`}>
+                <Link to={`/doctors/${params.actionType}`}>
                 <button type="button" className="doc btn btn-lg btn-light" >Doctor</button>
                 </Link>
                 </div>
