@@ -11,11 +11,9 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { HeroSection } from "./component/hero"
 import { Footer } from "./component/footer";
-gerardogama-navbarFooter
-import Signup from "./component/SignUp.jsx";
-import RolSelector from "./component/RolSelector.jsx";
 
-
+import { RoleSelector } from './pages/RoleSelector.js'; 
+import { HandlerTypeSelector } from "./component/HandlerTypeSelector.jsx";
 
 
 import DoctorsDirectory  from "./component/DoctorsDirectory.jsx";
@@ -42,13 +40,13 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
- gerardogama-navbarFooter
-                        <Route element= {<Signup />} path="/SignUp" />
-                        <Route element= {<RolSelector/>} path="/RolSelector" />
+                        
+                        <Route element= {<RoleSelector/>} path="/RolSelector/:actionType" />
+                        <Route element= {<HandlerTypeSelector/>} path="/:role/:type" />
 
                         <Route path="/doctors" element={<DoctorsDirectory />} />
                         <Route path="/doctor/:id" element={<DoctorsDirectoryDetail />} />
-                        <Route path="/contact" element={<ContactSection />} /> {/* Agrega esta ruta para el contacto */}
+                        <Route path="/contact" element={<ContactSection />} /> 
                         <Route path="/profile_doctor" element={<ProfileDoctor />} />
                         <Route element={<Analysis />} path="/analysis" />
                         <Route element={<h1>Not found!</h1>} />

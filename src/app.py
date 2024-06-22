@@ -28,8 +28,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 
 CORS(app)  # Permite todas las solicitudes de todos los orígenes
-
-app.url_map.strict_slashes = False
+CORS(app, resources={r"/api/*": {"origins": "https://expert-garbanzo-r446j4rj495qfpj76-3000.app.github.dev/"}})
 
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!-> os.getenv("JWT-KEY")
 jwt = JWTManager(app)
@@ -83,6 +82,7 @@ def serve_any_other_file(path):
 @app.route('/signup', methods=['POST'])
 def signup():
     body = request.get_json(silent=True)
+    
     if body is None:
         return jsonify({'msg': "El cuerpo de la solicitud esta vacio"}), 400
     
