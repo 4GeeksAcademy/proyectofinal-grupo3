@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
 from datetime import datetime
 from enum import Enum
 from sqlalchemy import Enum as SqlAlchemyEnum
@@ -101,14 +102,21 @@ class Appointment(db.Model):
     
     def serialize(self):
         doctor = Doctor.query.get(self.doctor_id)
+        paciente = Paciente.query.get(self.paciente_id)
 
         return {
             'id': self.id,
             'paciente_id': self.paciente_id,
             'doctor_id': self.doctor_id,
+            'doctor_name':doctor.nombre if doctor else None,
+            'doctor_last_name': doctor.apellido if doctor else None,
+            'doctor_especialidad': doctor.especialidad if doctor else None,
+            'doctor_phone_number': doctor.numero_de_telefono if doctor else None,
             'doctor_address': doctor.direccion if doctor else None,
             'doctor_city': doctor.ciudad if doctor else None,
             'doctor_state': doctor.estado if doctor else None,
+            'pacient_name': paciente.nombre if paciente else None,
+            'pacient_last_name': paciente.apellido if paciente else None,
             'message': self.message,
             'availability': self.availability.serialize() if self.availability else None,
             'appointment_date': self.appointment_date.isoformat(),
@@ -165,13 +173,12 @@ class Doctor(db.Model):
             # do not serialize the password, its a security breach
         }
     
-class Recommendation(db.Model):
-    __tablename__="recommendation"
+class RecommendationBloodTest(db.Model):
+    __tablename__="recommendation_blood_test"
     id = db.Column(db.Integer, primary_key=True)
-    range_id = db.Column(db.Integer, db.ForeignKey('blood_pressure_range.id'), nullable=True)
-    blood_rage_id = db.Column(db.Integer, db.ForeignKey('blood_range.id'), nullable=True)
+    blood_range_id = db.Column(db.Integer, db.ForeignKey('blood_range.id'), nullable=True)
     text = db.Column(db.Text, nullable=False)
-    blood_pressures = db.relationship('BloodPressure', backref='recommendation', lazy=True, viewonly=True)
+    # blood_pressures = db.relationship('BloodRange', backref='recommendation_blood_range', lazy=True, viewonly=True)
 
     def __repr__(self):
         return f'<Recommendation {self.id}>'
@@ -179,9 +186,45 @@ class Recommendation(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'range_id': self.range_id,
+            'blood_range_id': self.blood_range_id,
             'text': self.text
         }
+    
+class RecommendationBloodPresure(db.Model):
+    __tablename__="recommendation_blood_pressure"
+    id = db.Column(db.Integer, primary_key=True)
+    blood_pressure_range_id = db.Column(db.Integer, db.ForeignKey('blood_pressure_range.id'), nullable=True)
+    text = db.Column(db.Text, nullable=False)
+    # blood_pressures = db.relationship('BloodPressureRange', backref='recommendation_blood_pressure', lazy=True, viewonly=True)
+
+    def __repr__(self):
+        return f'<Recommendation {self.id}>'
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'blood_pressure_range_id': self.blood_pressure_range_id,
+            'text': self.text
+        }
+#     
+# class Recommendation(db.Model):
+#     __tablename__="recommendation"
+#     id = db.Column(db.Integer, primary_key=True)
+#     blood_pressure_range_id = db.Column(db.Integer, db.ForeignKey('blood_pressure_range.id'), nullable=True)
+#     blood_range_id = db.Column(db.Integer, db.ForeignKey('blood_range.id'), nullable=True)
+#     text = db.Column(db.Text, nullable=False)
+#     blood_pressures = db.relationship('BloodPressure', backref='recommendation', lazy=True, viewonly=True)
+
+#     def __repr__(self):
+#         return f'<Recommendation {self.id}>'
+    
+#     def serialize(self):
+#         return {
+#             'id': self.id,
+#             'blood_pressure_range_id': self.blood_pressure_range_id,
+#             'blood_range_id': self.blood_range_id,
+#             'text': self.text
+#         }
     
 class BloodPressure(db.Model):
     __tablename__ = "blood_pressure"
@@ -191,8 +234,13 @@ class BloodPressure(db.Model):
     systolic = db.Column(db.Integer, nullable=False)
     diastolic = db.Column(db.Integer, nullable=False)
     heart_rate = db.Column(db.Integer, nullable=False)
-    recommendation_id = db.Column(db.Integer, db.ForeignKey('recommendation.id'), nullable=True)
 
+    recommendation_id = db.Column(db.Integer, db.ForeignKey('recommendation_blood_pressure.id'), nullable=True)
+
+    recommendation = db.relationship('RecommendationBloodPresure', backref='blood_pressure', lazy=True)
+
+    
+    
     # paciente = db.relationship('Paciente', back_populates='pressures', overlaps="paciente_pressure")
     
     def __repr__(self):
@@ -251,8 +299,8 @@ class BloodPressureRange(db.Model):
     heart_rate_min = db.Column(db.Integer, nullable=True)
     heart_rate_max = db.Column(db.Integer, nullable=True)
     
-    recommendations = db.relationship('Recommendation', backref='blood_pressure_range', lazy=True, primaryjoin="and_(BloodPressureRange.id == Recommendation.range_id)")
-
+    recommendations = db.relationship('RecommendationBloodPresure', backref='blood_pressure_range', lazy=True) #primaryjoin="and_(BloodPressureRange.id == Recommendation.range_id)"
+ 
 
 
     def __repr__(self):
@@ -276,7 +324,7 @@ class BloodRange(db.Model):
     min_range = db.Column(db.Float, nullable=True)
     max_range = db.Column(db.Float, nullable=True)
     
-    recommendation = db.relationship('Recommendation', backref="blood_range", lazy=True)
+    recommendation = db.relationship('RecommendationBloodTest', backref="blood_range", lazy=True)
 
     def __repr__(self):
         return f'<Range {self.name} {self.id}>' 
@@ -285,7 +333,7 @@ class BloodRange(db.Model):
         return{
             'id': self.id,
             'name': self.name,
-            'min_range': self.min_rage,
+            'min_range': self.min_range,
             'max_range': self.max_range
 
         }
