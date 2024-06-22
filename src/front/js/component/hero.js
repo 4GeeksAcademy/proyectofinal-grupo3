@@ -1,5 +1,6 @@
 import React from "react";
 import "../../styles/hero.css";
+import { Link } from "react-router-dom";
 
 
 
@@ -9,15 +10,17 @@ export const HeroSection = () => {
             <div className="container overflow-hidden">
                 <div className="container-text row gy-3 gy-lg-0 align-items-lg-center justify-content-lg-between">
                     <div className="col-12 col-lg-6 order-1 order-lg-0">
-                        <h4 className="display-3 fw-bold mb-3">Interpreta tu examen médico, detecta a tiempo y vive sin preocupaciones.
+                        <h4 className="display-3 fw-bold mb-3">Interpreta tu <span>examen</span> médico, detecta a tiempo y vive sin preocupaciones.
                         </h4>
-                        <p className="fs-4 mb-5">
+                        <p className="fs-4 mb-5 container-text-paragraph">
                             Mantenga su salud bajo control, revisando la dinamica de la misma interpretando sus examanes de laboratorios. Prevenga posibles enfermedades al monitorizar su salud.
                         </p>
                         <div className="d-grid gap-2 d-sm-flex">
-                            <button type="button" className="btn btn-primary bsb-btn-xl rounded-pill">
-                                Analiza tus valores
-                            </button>
+                            <Link to="/analysis">
+                                <button type="button" className="btn btn-primary btn-hero1-container bsb-btn-xl ">
+                                    Analiza tus valores
+                                </button>
+                            </Link>
                         </div>
                     </div>
                     <div className="container-img col-12 col-lg-5 text-center">

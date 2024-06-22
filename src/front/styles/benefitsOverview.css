@@ -12,20 +12,24 @@
     border-radius: 8px; /* Round card corners */
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow effect */
   }
-  
-  .card-header {
-    background: rgba(7, 137, 212, 0.521);
-    padding: 10px 15px;
-    border-top-left-radius: 8px; /* Round the top-left corner to match the card */
-    border-top-right-radius: 8px; /* Round the top-right corner to match the card */
+
+  .card-body {
+    flex-direction: row; /* Organizar elementos en fila */
+    align-items: flex-start; /* Alinear verticalmente desde la parte superior */
+    justify-content: flex-end; /* Mover contenido al final */
   }
   
+  
+  .card-body-icono, .card-body-title{
+    color:  #00a4f4
+  }
+ 
+
   .card-title {
     font-weight: bold; /* Make the title stand out */
     margin-bottom: 10px; /* Add some spacing below the title */
   }
   
   .card-text {
-    color: #777; /* Use a slightly lighter text color for readability */
     line-height: 1.6; /* Increase line spacing for better readability */
   }

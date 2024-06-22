@@ -1,30 +1,44 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import "../../styles/scientificArticleCard.css"
 
 export const ScientificArticleCard = () => {
 
     return (
-        <div className="card px-4">
-            <div className="card-header">
-            <div className="col-12 col-lg-5">
-                        <img
-                            className="img-fluid"
-                            loading="lazy"
-                            src="https://cdn.pixabay.com/photo/2022/01/15/13/21/digitization-6939537_1280.jpg"
-                            alt="Art of Design"
-                        />
-                    </div>
-
+        <div className="card-blog">
+            <h1> <span> Recomendaciones para vivir en bienestar</span> </h1>
+            <div className="card-blog-body">
+                <div className="card-blog-img">
+                    <img
+                        src="https://images.pexels.com/photos/7195380/pexels-photo-7195380.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                        alt="Dr." />
+                </div>
+                <div className="card-blog-text">
+                    <p>
+                        ¿Te interesa alcanzar un estado de bienestar integral? En nuestro blog de
+                        "Vivir en bienestar" encontrarás información valiosa y actualizada.
+                    </p>
+                    <p>
+                        Explora artículos escritos por expertos médicos para descubrir:
+                    </p>
+                    <ul>
+                        <li>Hábitos saludables para una vida plena.</li>
+                        <li>Prevención de enfermedades.</li>
+                        <li>Gestión de condiciones crónicas.</li>
+                        <li>Salud mental y emocional.</li>
+                        <li>Consejos para una familia saludable.</li>
+                    </ul>
+                    <p>
+                        Únete a nuestra comunidad de lectores y descubre cómo vivir una vida más saludable y feliz.
+                    </p>
+                    
+                    <Link to="/doctors">
+                        <button type="button" className="btn btn-article-card-2 bsb-btn-xl ">
+¡Se miembro nuestro blog hoy mismo!                          
+                        </button>
+                    </Link>
+                </div>
             </div>
-            <div className="card-body">
-                <h5 className="card-title">Conoce un poco más sobre nosotros</h5>
-                <p className="card-text">
-                Explora nuestra biblioteca de temas médicos Descubre consejos prácticos para cuidar tu salud y la de tu familia. Mantente a la vanguardia de las últimas tendencias en el cuidado de la salud. Nuestro blog es una herramienta valiosa para pacientes, profesionales de la salud y cualquier persona interesada en ampliar sus conocimientos sobre la salud.
-                </p>
-                <a href="#" className="btn btn-primary">
-                    Go somewhere
-                </a>
-            </div>
-        </div>
-
-    );
+        </div >
+    )
 };

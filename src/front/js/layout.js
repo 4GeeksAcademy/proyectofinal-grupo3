@@ -22,7 +22,8 @@ import DoctorsDirectory  from "./component/DoctorsDirectory.jsx";
 import DoctorsDirectoryDetail from "./component/DoctorsDirectoryDetail.jsx";
 import ContactSection from "./component/ContactSection.jsx";
 import ProfileDoctor from "./component/ProfileDoctor.jsx";
-Development
+import Analysis from "./pages/analysis.js";
+
 
 //create your first component
 const Layout = () => {
@@ -48,7 +49,8 @@ const Layout = () => {
                         <Route path="/doctors" element={<DoctorsDirectory />} />
                         <Route path="/doctor/:id" element={<DoctorsDirectoryDetail />} />
                         <Route path="/contact" element={<ContactSection />} /> {/* Agrega esta ruta para el contacto */}
-                        <Route path="/profile_doctor/:id" element={<ProfileDoctor />} />
+                        <Route path="/profile_doctor" element={<ProfileDoctor />} />
+                        <Route element={<Analysis />} path="/analysis" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
