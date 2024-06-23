@@ -211,10 +211,13 @@ def login():
 #             #nueva linea abaja
 #         return jsonify({'msg': 'Tipo de usuario no válido'}), 400
 
-@app.route('/profile', methods=['GET', 'POST'])
-@jwt_required()
+#PROFILE DOCTOR Y PACIENTE
+@app.route('/profile', methods=['GET', 'POST', 'PUT'])
+#@jwt_required()
 def profile():
-    identity = get_jwt_identity()
+    #identity = get_jwt_identity()
+    # Simulación de una identidad para pruebas
+    identity = 3  # Cambia este valor al ID del usuario doctor que deseas probar
 
     if request.method == 'GET':
         type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
@@ -229,6 +232,8 @@ def profile():
             return jsonify({'msg': user.serialize()}), 200
         else:
             return jsonify({'msg': "El usuario no existe"}), 404
+
+
 
     elif request.method == 'POST': # otros metodos put delete elif request.method == 'PUT'
         try:
@@ -306,7 +311,65 @@ def profile():
 
         except Exception as e:
             return jsonify({'msg': str(e)}), 500
+        
+
  
+    elif request.method == 'PUT':
+        try:
+            body = request.get_json()
+            if not body:
+                return jsonify({'msg': 'Cuerpo de solicitud JSON no válido'}), 400
+
+            if body["type"] == "paciente":
+                # Lógica de actualización para pacientes
+                pass
+
+            elif body["type"] == "doctor":
+                especialidad = body.get('especialidad')
+                numero_de_telefono = body.get('numero_de_telefono')
+                direccion = body.get('direccion')
+                ciudad = body.get('ciudad')
+                estado = body.get('estado')
+                costo = body.get('costo')
+                numero_de_licencia = body.get('numero_de_licencia')
+                especialidades_adicionales = body.get('especialidades_adicionales')
+                foto_perfil = body.get('foto_perfil')
+
+                # Validar que todos los campos necesarios estén presentes
+                if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
+                    return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
+
+                # Actualizar los datos del doctor con el ID actual
+                doctor = Doctor.query.filter_by(id=identity).first()
+                if doctor:
+                    doctor.especialidad = especialidad
+                    doctor.numero_de_telefono = numero_de_telefono
+                    doctor.direccion = direccion
+                    doctor.ciudad = ciudad
+                    doctor.estado = estado
+                    doctor.costo = costo
+                    doctor.numero_de_licencia = numero_de_licencia
+                    doctor.foto_perfil = foto_perfil
+                    db.session.commit()
+
+                    # Manejo de especialidades adicionales
+                    existing_specialties = {s.especialidades: s for s in doctor.especialidades_adicionales}
+                    for specialty in especialidades_adicionales:
+                        if specialty not in existing_specialties:
+                            new_specialty = Specialties(doctor_id=doctor.id, especialidades=specialty)
+                            db.session.add(new_specialty)
+                    db.session.commit()
+
+                    return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
+                else:
+                    return jsonify({'msg': 'Doctor no encontrado'}), 404
+
+            else:
+                return jsonify({'msg': 'Tipo de usuario no válido'}), 400
+
+        except Exception as e:
+            return jsonify({'msg': str(e)}), 500
+        
 
 #DOCTOR
 @app.route('/api/doctors', methods=['GET'])

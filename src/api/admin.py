@@ -1,7 +1,7 @@
   
 import os
 from flask_admin import Admin
-from .models import db, Paciente, Doctor, BloodPressure, BloodPressureRange, Recommendation, Availability, Appointment, BloodTest, BloodRange, Review, Specialties, Range
+from .models import db, Paciente, Doctor, BloodPressure, BloodPressureRange, Recommendation, Availability, Appointment, BloodTest, BloodRange, Review, Specialties
 from flask_admin.contrib.sqla import ModelView
 
 def setup_admin(app):
