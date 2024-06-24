@@ -217,7 +217,7 @@ def login():
 def profile():
     #identity = get_jwt_identity()
     # Simulación de una identidad para pruebas
-    identity = 3  # Cambia este valor al ID del usuario doctor que deseas probar
+    identity = 4  # Cambia este valor al ID del usuario doctor que deseas probar
 
     if request.method == 'GET':
         type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
