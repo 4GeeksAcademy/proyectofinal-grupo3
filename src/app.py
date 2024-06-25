@@ -462,7 +462,7 @@ def add_blood_pressure_range():
 
 
 @app.route('/add_blood_presure_recommendation', methods= ['POST'])
-def git ():
+def add_blood_pressure_recommendation ():
     body = request.get_json()
 
     if  body is None:
