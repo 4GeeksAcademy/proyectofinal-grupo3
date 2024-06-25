@@ -1,0 +1,59 @@
+.HeroSection {
+        height: 100vh;
+}
+
+.container-text {
+        height: 100vh;
+        display: flex;
+        align-items: left;
+        justify-content: center;
+        text-align: left; /* Alinear todo el texto a la izquierda */
+}
+
+h4 span {
+      
+        background: linear-gradient(to right, #208bfd, #00a4f4, #f1ebeb); /* De azul claro a azul oscuro, a blanco suave */
+        -webkit-background-clip: text; /* Para navegadores antiguos */
+        background-clip: text; /* Recortar el degradado al texto */
+        color: transparent; /* Ocultar el color original del texto */
+      }   
+
+.container-img {
+        height: 70vh;
+        display: flex;
+        align-items: center;
+
+}
+
+.container-text-paragraph {
+color: #00a4f4
+}
+
+.HeroSection img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover
+}
+
+.btn-hero1-container {
+        background: #00a4f4;
+        border: none;
+        /* Remove the default border */
+        font-size: 1.2rem;
+        padding: 1rem 2rem;
+        /* Adjust padding as needed */
+        /* Adjust padding as needed */
+        border-radius: 0.5rem;
+        /* Adjust border radius as needed */
+        bottom: 20px;
+        /* Set a bottom margin from the edge of the container */
+        margin: 0 auto;
+        /* Center button horizontally */
+        cursor: pointer;
+        /* Indicate an interactive element */
+}
+
+.btn-hero1-container:hover {
+        background-color: #007bb5;
+        color: white;
+    }

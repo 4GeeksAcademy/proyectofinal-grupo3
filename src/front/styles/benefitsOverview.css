@@ -1,0 +1,35 @@
+.section-cards {
+    display: flex; /* Enable flexbox layout */
+    flex-wrap: wrap; /* Allow cards to wrap to multiple lines if necessary */
+    justify-content: space-between; /* Distribute cards evenly with spacing */
+    padding: 20px; /* Add padding around the cards */
+  }
+  
+  .card {
+    width: 300px; /* Adjust card width as needed */
+    margin-bottom: 20px; /* Add spacing between cards */
+    border: 1px solid #ddd; /* Add a subtle border */
+    border-radius: 8px; /* Round card corners */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow effect */
+  }
+
+  .card-body {
+    flex-direction: row; /* Organizar elementos en fila */
+    align-items: flex-start; /* Alinear verticalmente desde la parte superior */
+    justify-content: flex-end; /* Mover contenido al final */
+  }
+  
+  
+  .card-body-icono, .card-body-title{
+    color:  #00a4f4
+  }
+ 
+
+  .card-title {
+    font-weight: bold; /* Make the title stand out */
+    margin-bottom: 10px; /* Add some spacing below the title */
+  }
+  
+  .card-text {
+    line-height: 1.6; /* Increase line spacing for better readability */
+  }
