@@ -25,7 +25,11 @@ const ProfileDoctor = () => {
         // Fetch initial doctor data
         const fetchDoctorData = async () => {
             try {
-                const response = await fetch(`${process.env.BACKEND_URL}/profile?type=doctor&id=${id}`);
+                const response = await fetch(`${process.env.BACKEND_URL}/profile?type=doctor`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
                 const data = await response.json();
                 if (response.ok) {
                     setFormData(prevFormData => ({

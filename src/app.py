@@ -28,7 +28,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 
 CORS(app)  # Permite todas las solicitudes de todos los orígenes
-CORS(app, resources={r"/api/*": {"origins": "https://expert-garbanzo-r446j4rj495qfpj76-3000.app.github.dev/"}})
+# CORS(app, resources={r"/api/*": {"origins": "https://expert-garbanzo-r446j4rj495qfpj76-3000.app.github.dev/"}})
 
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!-> os.getenv("JWT-KEY")
 jwt = JWTManager(app)
@@ -135,7 +135,7 @@ def login():
     user = None
     if body['type'] == 'paciente':
         user= Paciente.query.filter_by(email=body['email']).first()
-    elif body['type'] == 'doctor':
+    elif body['type'] == 'doctors':
         user= Doctor.query.filter_by(email=body['email']).first()
 
     if user is None or not bcrypt.check_password_hash(user.password, body['password']):
