@@ -8,8 +8,9 @@ export const FormLogIn = (props) => {
     password: "",
     type: "",
   });
+
   const [error, setError] = useState(null);
-  const [showRecoveryModal, setShowRecoveryModal] = useState(false);
+  
 
   const navigate = useNavigate();
 
@@ -23,15 +24,21 @@ export const FormLogIn = (props) => {
     try {
       const response = await fetch(process.env.BACKEND_URL + "login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(({ ...formData, type: role }),),
+        headers: { "Content-Type": "application/json",  },
+        body: JSON.stringify(({ ...formData, type: props.role }),),
       });
 
       if (response.ok) {
         const data = await response.json();
         console.log("Inicio de sesión exitoso:", data);
         localStorage.setItem("token", data.access_token);
-        navigate("/profile"); 
+        if (props.role === "paciente") {
+          navigate("/admin-dashboard"); 
+        } else if (props.role === "doctors") {
+          navigate("/profile_doctor");
+        } else {
+          navigate("/default-page"); 
+        } 
       } else {
         const errorData = await response.json();
         setError(errorData.msg); 
