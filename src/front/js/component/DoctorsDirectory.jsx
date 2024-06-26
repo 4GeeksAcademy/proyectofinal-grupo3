@@ -49,8 +49,8 @@ const DoctorsDirectory = () => {
 
     const filteredDoctors = doctors.filter(doctor => {
         return (
-            (specialtyFilter === '' || doctor.especialidad.toLowerCase().includes(specialtyFilter.toLowerCase())) &&
-            (cityFilter === '' || doctor.ciudad.toLowerCase().includes(cityFilter.toLowerCase()))
+            (specialtyFilter === '' || doctor.especialidad?.toLowerCase().includes(specialtyFilter.toLowerCase())) &&
+            (cityFilter === '' || doctor.ciudad?.toLowerCase().includes(cityFilter.toLowerCase()))
         );
     });
 

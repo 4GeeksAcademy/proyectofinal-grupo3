@@ -33,7 +33,7 @@ export const FormLogIn = (props) => {
         console.log("Inicio de sesión exitoso:", data);
         localStorage.setItem("token", data.access_token);
         if (props.role === "paciente") {
-          navigate("/admin-dashboard"); 
+          navigate("/doctors"); 
         } else if (props.role === "doctors") {
           navigate("/profile_doctor");
         } else {

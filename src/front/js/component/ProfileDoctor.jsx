@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ContactSection from './ContactSection.jsx';
+import { useNavigate } from "react-router-dom";
 
 const ProfileDoctor = () => {
+    const navigate = useNavigate();
     const { id } = useParams(); // Obtener el doctorId desde la URL
     const [formData, setFormData] = useState({
         nombre: '',
@@ -74,12 +76,14 @@ const ProfileDoctor = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem('token')
 
         try {
             const response = await fetch(`${process.env.BACKEND_URL}/profile`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     type: 'doctor',
@@ -115,6 +119,7 @@ const ProfileDoctor = () => {
                 estado: '',
                 foto_perfil: '',
             });
+            navigate("/doctors");
         } catch (error) {
             console.error('Error al enviar los datos:', error);
         }
