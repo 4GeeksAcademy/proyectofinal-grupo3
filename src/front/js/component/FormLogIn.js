@@ -33,7 +33,7 @@ export const FormLogIn = (props) => {
         console.log("Inicio de sesión exitoso:", data);
         localStorage.setItem("token", data.access_token);
         if (props.role === "paciente") {
-          navigate("/doctors"); 
+          navigate("/profile_patient"); 
         } else if (props.role === "doctors") {
           navigate("/profile_doctor");
         } else {
@@ -89,10 +89,10 @@ export const FormLogIn = (props) => {
           </button>
         </form>
 
-        {/* Mensaje de error */}
+       
         {error && <div className="alert alert-danger">{error}</div>}
 
-        {/* Enlace para abrir el modal de recuperación de contraseña */}
+       
         <a type="forgot" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" className="forgot-password">¿Olvidaste tu contraseña?</a>
 
         {/* Modal de recuperación de contraseña */}

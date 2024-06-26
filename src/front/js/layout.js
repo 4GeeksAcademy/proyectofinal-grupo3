@@ -16,10 +16,15 @@ import { RoleSelector } from './pages/RoleSelector.js';
 import { HandlerTypeSelector } from "./component/HandlerTypeSelector.jsx";
 
 
+
 import DoctorsDirectory  from "./component/DoctorsDirectory.jsx";
 import DoctorsDirectoryDetail from "./component/DoctorsDirectoryDetail.jsx";
 import ContactSection from "./component/ContactSection.jsx";
 import ProfileDoctor from "./component/ProfileDoctor.jsx";
+import ProfilePatient from "./component/ProfilePatient.jsx";
+import ForgotPassword from "./component/FormForgotPassword.jsx";
+import NewPassword from "./component/FormNewPassword.jsx";
+
 import Analysis from "./pages/analysis.js";
 
 
@@ -48,6 +53,9 @@ const Layout = () => {
                         <Route path="/doctor/:id" element={<DoctorsDirectoryDetail />} />
                         <Route path="/contact" element={<ContactSection />} /> 
                         <Route path="/profile_doctor" element={<ProfileDoctor />} />
+                        <Route path="/profile_patient" element={<ProfilePatient />} />
+                        <Route path="/forgot_password" element={<ForgotPassword />} />
+                        <Route path="/new_password" element={<NewPassword />} />
                         <Route element={<Analysis />} path="/analysis" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
