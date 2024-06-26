@@ -384,49 +384,145 @@ def doctor(id):
         return jsonify({"error": "Doctor not found"}), 404
     return jsonify(doctor.serialize()), 200
 
+
+#Para que el paciente cree una cita nueva
 @app.route('/appointments', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def create_appointment():
     body = request.get_json()
-    required_fields = ['doctor_id', 'availability_id', 'message']
+    required_fields = ['doctor_id', 'availability_id', 'message', 'appointment_date']
 
     if not body or not all(field in body for field in required_fields):
         return jsonify({'msg':'Faltan campos obligatorios'}), 400
     
-    paciente_id = get_jwt_identity()
+    #paciente_id = get_jwt_identity()
+     # Hardcodear el paciente_id
+    paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos (paciente_id)
     doctor_id = body.get('doctor_id')
     availability_id = body.get('availability_id')
     message = body.get('message')
+    appointment_date_str = body.get('appointment_date')
 
     if 'doctor_id' not in body:
         return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
     if 'availability_id' not in body:
         return jsonify({'msg':'El campo availability_id es obligatorios'}), 400
+    if not appointment_date_str:
+        return jsonify({'msg': 'El campo appointment_date es obligatorio'}), 400
     
     availability = Availability.query.get(availability_id)
     if not availability or availability.doctor_id != doctor_id:
         return jsonify({'msg': 'Disponibilidad no válida'}), 400
+    
 
+    # Procesar el campo appointment_date
+    appointment_date_str = body.get('appointment_date')
+    if appointment_date_str:
+        try:
+            appointment_date = datetime.fromisoformat(appointment_date_str)
+        except ValueError:
+            return jsonify({'msg': 'Formato de fecha inválido'}), 400
+    else:
+        appointment_date = datetime.utcnow()
+
+    
+   
+
+    """
+    # Buscar la cita prellenada en la base de datos
+    existing_appointment = Appointment.query.filter_by(
+        paciente_id=paciente_id,
+        doctor_id=doctor_id,
+        availability_id=availability_id,
+        appointment_date=datetime.utcnow()  # Inicializa con la fecha y hora actuales
+    ).first()
+
+    if existing_appointment:
+        # Actualizar la cita existente
+        existing_appointment.message = message
+        existing_appointment.appointment_date = appointment_date
+        db.session.commit()
+        return jsonify({'msg': 'Cita actualizada exitosamente'}), 200
+    else:
+        return jsonify({'msg': 'No se encontró una cita prellenada para actualizar'}), 400
+    """
+
+
+    
     new_appointment = Appointment(
         paciente_id=paciente_id,
         doctor_id=doctor_id,
-        availability_id =availability_id,
-        message=body.get('message'),
-        appointment_date=datetime.utcnow()
+        availability_id=availability_id,
+        message=message,
+        appointment_date=appointment_date
     )
-
-    
+   
     db.session.add(new_appointment)
     db.session.commit()
+    if new_appointment:
+        availability.is_booked = body.get("is_booked")
+        db.session.commit()
+        return jsonify({'msg':'Cita creada exitosamente'}), 201
+    return jsonify({'msg': "Error al agendar la cita"}), 500
+    
 
-    return jsonify({'msg':'Cita creada exitosamente'}), 201
-   
+
+
+#Para que el paciente obtenga la cita con los datos prellenados en el Agenda
+@app.route('/appointments', methods=['GET'])
+def get_appointment_data():
+    paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos
+    doctor_id = 1  # Cambia este valor al id de un doctor existente en tu base de datos
+    availability_id = 1  # Cambia este valor al id de disponibilidad adecuada
+
+    paciente = Paciente.query.get(paciente_id)
+    doctor = Doctor.query.get(doctor_id)
+    availability = Availability.query.get(availability_id)
+
+    if not paciente or not doctor or not availability:
+        return jsonify({'msg': 'Datos no válidos'}), 400
+
+    data = {
+        'paciente': paciente.serialize(),
+        'doctor': doctor.serialize(),
+        'availability': availability.serialize(),
+    }
+
+    return jsonify(data), 200
+
+
+#Para que el paciente obtenga sus citas   
 @app.route('/paciente/<int:paciente_id>/appointments', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_pacient_appointments(paciente_id):
     appointments = Appointment.query.filter_by(paciente_id=paciente_id).all()
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
+
+
+
+#Para que el doctor desde su perfil pueda ver sus citas agendadas (MODAL)
+@app.route('/doctor/<int:doctor_id>/appointments', methods=['GET'])
+@jwt_required()
+def get_doctor_appointments(doctor_id):
+    appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
+    appointment_list = [appointment.serialize() for appointment in appointments]
+    return jsonify(appointment_list)
+
+#Obtener la disponibilidad del doctor por su id
+@app.route('/doctor/<int:doctor_id>/availability', methods=['GET'])
+@jwt_required()
+def get_doctor_availability(doctor_id):
+    # Obtener todas las disponibilidades del doctor que no estén reservadas
+    availabilities = Availability.query.filter_by(doctor_id=doctor_id).all()
+    # Convertir cada disponibilidad a un diccionario usando el método
+    availabilities_list = [availability.serialize() for availability in availabilities]
+    # availabilities_list = list(map(lambda availability: availability.serialize(), availabilities))
+    # Devolver la lista de diccionarios como una respuesta JSON
+    return jsonify(availabilities_list)
+
+
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
