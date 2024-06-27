@@ -321,6 +321,7 @@ def doctor(id):
         return jsonify({"error": "Doctor not found"}), 404
     return jsonify(doctor.serialize()), 200
 
+# para que el paciente cree una cita nueva 
 @app.route('/appointments', methods=['POST'])
 @jwt_required()
 def create_appointment():
@@ -352,12 +353,12 @@ def create_appointment():
         appointment_date=datetime.utcnow()
     )
 
-    
     db.session.add(new_appointment)
     db.session.commit()
 
     return jsonify({'msg':'Cita creada exitosamente'}), 201
    
+#para que el paciente obtenga sus citas    
 @app.route('/paciente/<int:paciente_id>/appointments', methods=['GET'])
 @jwt_required()
 def get_pacient_appointments(paciente_id):
@@ -365,6 +366,7 @@ def get_pacient_appointments(paciente_id):
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
 
+#para que el doctor desde su perfil pueda ver sus citas agendadas 
 @app.route('/doctor/<int:doctor_id>/appointments', methods=['GET'])
 @jwt_required()
 def get_doctor_appointments(doctor_id):
@@ -372,124 +374,144 @@ def get_doctor_appointments(doctor_id):
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
 
-# ranges_data = [
-#     {
-#         "name": "Normal",
-#         "systolic_min": 90,
-#         "systolic_max": 120,
-#         "diastolic_min": 60,
-#         "diastolic_max": 80,
-#         "heart_rate_min": 60,
-#         "heart_rate_max": 100
-#     },
-#     {
-#         "name": "Elevated",
-#         "systolic_min": 120,
-#         "systolic_max": 129,
-#         "diastolic_min": 60,
-#         "diastolic_max": 80,
-#         "heart_rate_min": 60,
-#         "heart_rate_max": 100
+@app.route('/add_blood_range', methods=['POST'])
+def add_blood_range():
+    body = request.get_json()
 
-#     },
-#     {
-#         "name": "Hypertension Stage 1",
-#         "systolic_min": 130,
-#         "systolic_max": 139,
-#         "diastolic_min": 80,
-#         "diastolic_max": 89,
-#         "heart_rate_min": 60,
-#         "heart_rate_max": 100
-#     },
-#     {
-#         "name": "Hypertension Stage 2",
-#         "systolic_min": 140,
-#         "systolic_max": 180,
-#         "diastolic_min": 90,
-#         "diastolic_max": 120,
-#         "heart_rate_min": 60,
-#         "heart_rate_max": 100
-#     }
-# ]
+    if body is None:
+        return jsonify({"message": "El cuerpo de la solicitud no debe estar vacio"}), 400
+    
+    if "name" not in body:
+        return jsonify({"message": "El campo name no debe estar vacio"}), 400
+    
+    if "min_range" not in body:
+        return jsonify({"message": "El campo min_range no debe estar vacio"}), 400
+    
+    if "max_range" not in body:
+        return jsonify({"message": "El campo max_range no debe estar vacio"}), 400
+    
+    new_blood_test_range = BloodRange()
+    new_blood_test_range.name = body['name'],
+    new_blood_test_range.min_range = body['min_range'],
+    new_blood_test_range.max_range = body['max_range']
 
-# try: 
-#     for range_data in ranges_data:
-#         new_range = BloodPressureRange(
-#             name=range_data['name'],
-#             systolic_min=range_data['systolic_min'],
-#             systolic_max=range_data['systolic_max'],
-#             diastolic_min=range_data['diastolic_min'],
-#             diastolic_max=range_data['diastolic_max'],
-#             heart_rate_min=range_data['heart_rate_min'],
-#             heart_rate_max=range_data['heart_rate_max']
+    db.session.add(new_blood_test_range)
+    db.session.commit()
 
-#         )
-#         db.session.add(new_range)
+    return jsonify({'msg':"blood_range agregado con exito"}), 201
 
-#     db.session.commit()
-#     print('rangos de presion arterial agregados correctamente')
 
-# except Exception as e:
-#     db.session.rollback()
-#     print(f"Error al agregar los rangos de presión arterial: {str(e)}")
 @app.route('/add_blood_pressure_range', methods=['POST'])
 def add_blood_pressure_range():
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "Datos no proporcionados"}), 400
-
-    try:
-        new_range = BloodPressureRange(
-            name=data['name'],
-            systolic_min=data['systolic_min'],
-            systolic_max=data['systolic_max'],
-            diastolic_min=data['diastolic_min'],
-            diastolic_max=data['diastolic_max'],
-            heart_rate_min=data['heart_rate_min'],
-            heart_rate_max=data['heart_rate_max']
-        )
-
-        db.session.add(new_range)
-        db.session.commit()
-
-        return jsonify({"message": "Rango de presión arterial agregado correctamente"}), 201
-
-    except KeyError as e:
-        return jsonify({"message": f"Campo requerido faltante: {str(e)}"}), 400
-    except Exception as e:
-        return jsonify({"message": f"Error al agregar el rango de presión arterial: {str(e)}"}), 500
+    body = request.get_json()
+    if body is None:
+        return jsonify({"message": "El cuerpo de la solicitud no debe estar vacio"}), 400
+    if "systolic_min" is None:
+        return jsonify({"message": "El campo systolic_min no debe estar vacio"}), 400
+    if "systolic_max" is None:
+        return jsonify({"message": "El campo systolic_max no debe estar vacio"}), 400
+    if "diastolic_min" is None:
+        return jsonify({"message": "El campo diastolic_min no debe estar vacio"}), 400
+    if "diastolic_max" is None:
+        return jsonify({"message": "El campo diastolic_max no debe estar vacio"}), 400
+    if "heart_rate_min" is None:
+        return jsonify({"message": "El campo heart_rate_min no debe estar vacio"}), 400
+    if "heart_rate_max" is None: 
+        return jsonify({"message": "El campo heart_rate_max no debe estar vacio"}), 400
     
-@app.route('/add_recommendation', methods= ['POST'])
-def add_recommendation():
-    data = request.get_json()
+    new_range = BloodPressureRange()
+    new_range.systolic_min = body['systolic_min'],
+    new_range.systolic_max = body['systolic_max'],
+    new_range.diastolic_min = body['diastolic_min'],
+    new_range.diastolic_max = body['diastolic_max'],
+    new_range.heart_rate_min = body['heart_rate_min'],
+    new_range.heart_rate_max = body['heart_rate_max']
 
-    if not data:
-        return jsonify({'msg':'Datos no porporcionados'}), 400
+    db.session.add(new_range)
+    db.session.commit()
+
+    return jsonify({'msg':'blood_range agregado con exito'}), 201
+
+
+
+
+
+
+
+
+    # try:
+    #     new_range = BloodPressureRange(
+    #         name=body['name'],
+    #         systolic_min=body['systolic_min'],
+    #         systolic_max=body['systolic_max'],
+    #         diastolic_min=body['diastolic_min'],
+    #         diastolic_max=body['diastolic_max'],
+    #         heart_rate_min=body['heart_rate_min'],
+    #         heart_rate_max=body['heart_rate_max']
+    #     )
+
+    #     db.session.add(new_range)
+    #     db.session.commit()
+
+    #     return jsonify({"message": "Rango de presión arterial agregado correctamente"}), 201
+
+    # except KeyError as e:
+    #     return jsonify({"message": f"Campo requerido faltante: {str(e)}"}), 400
+    # except Exception as e:
+    #     return jsonify({"message": f"Error al agregar el rango de presión arterial: {str(e)}"}), 500
+
+
+@app.route('/add_blood_presure_recommendation', methods= ['POST'])
+def add_blood_pressure_recommendation ():
+    body = request.get_json()
+
+    if  body is None:
+        return jsonify({'msg':'El cuerpo de la solicitod no puede estar vacio'}), 400
     
-    try:
-        new_recommendation = RecommendationBloodPresure(
-            text=data['text'],
-            blood_pressure_range_id=data.get('blood_pressure_range_id'),
-            range_id=data.get('blood_range_id')
-        )
+    if "blood_pressure_range_id" not in body:
+        return jsonify({'msg':'El campo blood_pressure_range_id es obligatorio'}), 400
+    
+    if "text" not in body:
+        return jsonify({'msg': "El campo text es obligatorio"}), 400
+    
+    new_recommendation = RecommendationBloodPresure()
+    new_recommendation.blood_pressure_range_id = body['blood_pressure_range_id'],
+    new_recommendation.text = body['text']
 
-        db.session.add(new_recommendation)
-        db.session.commit()
+    db.session.add(new_recommendation)
+    db.session.commit()
 
-        return jsonify({"message": "Recomendación agregada correctamente"}), 201
+    return jsonify({'msg':"blood_pressure_recommendation creada con exito"}), 201
 
-    except KeyError as e:
-        return jsonify({"message": f"Campo requerido faltante: {str(e)}"}), 400
-    except Exception as e:
-        return jsonify({"message": f"Error al agregar la recomendación: {str(e)}"}), 500
+@app.route('/add_blood_test_recommendation', methods= ['POST'])
+def add_blood_test_recommendation():
+    body = request.get_json()
+
+    if body is None:
+        return({'msg': 'El cuerpo de la solicitud no debe estar vacio'}), 400
+
+    if "blood_range_id" not in body:
+        return({'msg': 'El campo blood_range_id no debe estar vacio'}), 400
+    
+    if "text" not in body:
+        return({'msg': 'El campo text no debe estar vacio'}), 400
+    
+    new_recommendation = RecommendationBloodTest()
+    new_recommendation.blood_range_id = body['blood_range_id']
+    new_recommendation.text = body['text']
+
+    db.session.add(new_recommendation)
+    db.session.commit()
+
+    return jsonify({'msg': "blood_test_recommendation creada con exito"}), 201
 
 
-@app.route('/blood_pressure_test', methods=['POST'])
-def check_health():
-    data = request.get_json()
-    systolic = data.get('systolic')
-    diastolic = data.get('diastolic')
-    heart_rate = data.get('heart_rate')
+@app.route('/blood_pressure_form', methods=['POST'])
+def blood_pressure_form():
+    body = request.get_json()
+    systolic = body.get('systolic')
+    diastolic = body.get('diastolic')
+    heart_rate = body.get('heart_rate')
 
     blood_pressure_range = BloodPressureRange.query.filter(
         BloodPressureRange.systolic_min <= systolic,
@@ -508,6 +530,16 @@ def check_health():
 
     
 
+@app.route('/doctor/<int:doctor_id>/availability', methods=['GET'])
+@jwt_required()
+def get_doctor_availability(doctor_id):
+    # Obtener todas las disponibilidades del doctor que no estén reservadas
+    availabilities = Availability.query.filter_by(doctor_id=doctor_id).all()
+    # Convertir cada disponibilidad a un diccionario usando el método 
+    availabilities_list = [availability.serialize() for availability in availabilities]
+    # availabilities_list = list(map(lambda availability: availability.serialize(), availabilities))
+    # Devolver la lista de diccionarios como una respuesta JSON
+    return jsonify(availabilities_list)
 
     
 
