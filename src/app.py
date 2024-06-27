@@ -12,6 +12,7 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from datetime import datetime 
 
+
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
@@ -402,7 +403,7 @@ def create_appointment():
     availability_id = body.get('availability_id')
     message = body.get('message')
     appointment_date_str = body.get('appointment_date')
-
+    
     if 'doctor_id' not in body:
         return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
     if 'availability_id' not in body:
@@ -426,29 +427,6 @@ def create_appointment():
         appointment_date = datetime.utcnow()
 
     
-   
-
-    """
-    # Buscar la cita prellenada en la base de datos
-    existing_appointment = Appointment.query.filter_by(
-        paciente_id=paciente_id,
-        doctor_id=doctor_id,
-        availability_id=availability_id,
-        appointment_date=datetime.utcnow()  # Inicializa con la fecha y hora actuales
-    ).first()
-
-    if existing_appointment:
-        # Actualizar la cita existente
-        existing_appointment.message = message
-        existing_appointment.appointment_date = appointment_date
-        db.session.commit()
-        return jsonify({'msg': 'Cita actualizada exitosamente'}), 200
-    else:
-        return jsonify({'msg': 'No se encontró una cita prellenada para actualizar'}), 400
-    """
-
-
-    
     new_appointment = Appointment(
         paciente_id=paciente_id,
         doctor_id=doctor_id,
@@ -462,10 +440,12 @@ def create_appointment():
     if new_appointment:
         availability.is_booked = body.get("is_booked")
         db.session.commit()
-        return jsonify({'msg':'Cita creada exitosamente'}), 201
+
+
+        return jsonify({'msg':'Cita creada'}), 201
+    
     return jsonify({'msg': "Error al agendar la cita"}), 500
     
-
 
 
 #Para que el paciente obtenga la cita con los datos prellenados en el Agenda
