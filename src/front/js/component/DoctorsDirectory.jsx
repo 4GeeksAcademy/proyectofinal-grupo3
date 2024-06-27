@@ -49,8 +49,8 @@ const DoctorsDirectory = () => {
 
     const filteredDoctors = doctors.filter(doctor => {
         return (
-            (specialtyFilter === '' || doctor.especialidad.toLowerCase().includes(specialtyFilter.toLowerCase())) &&
-            (cityFilter === '' || doctor.ciudad.toLowerCase().includes(cityFilter.toLowerCase()))
+            (specialtyFilter === '' || doctor.especialidad?.toLowerCase().includes(specialtyFilter.toLowerCase())) &&
+            (cityFilter === '' || doctor.ciudad?.toLowerCase().includes(cityFilter.toLowerCase()))
         );
     });
 
@@ -64,7 +64,7 @@ const DoctorsDirectory = () => {
     }, [specialtyFilter, cityFilter]);
 
     return (
-        <div className="container mt-4">
+        <div className="d-flex flex-column container mt-4">
             <h1 className="mb-4">Encuentra los mejores <span className="text-blue">médicos</span> de tu ciudad</h1>
             <SearchBar />
             {specialtyFilter !== '' && cityFilter !== '' && (
@@ -120,7 +120,7 @@ const DoctorsDirectory = () => {
                     )
                 )}
             </div>
-            <div className="mt-5">
+            <div className="my-5">
                 <ContactSection />
             </div>
         </div>

@@ -12,6 +12,7 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from datetime import datetime 
 
+
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
@@ -211,10 +212,13 @@ def login():
 #             #nueva linea abaja
 #         return jsonify({'msg': 'Tipo de usuario no válido'}), 400
 
-@app.route('/profile', methods=['GET', 'POST'])
-@jwt_required()
+#PROFILE DOCTOR Y PACIENTE
+@app.route('/profile', methods=['GET', 'POST', 'PUT'])
+#@jwt_required()
 def profile():
-    identity = get_jwt_identity()
+    #identity = get_jwt_identity()
+    # Simulación de una identidad para pruebas
+    identity = 4  # Cambia este valor al ID del usuario doctor que deseas probar
 
     if request.method == 'GET':
         type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
@@ -229,6 +233,8 @@ def profile():
             return jsonify({'msg': user.serialize()}), 200
         else:
             return jsonify({'msg': "El usuario no existe"}), 404
+
+
 
     elif request.method == 'POST': # otros metodos put delete elif request.method == 'PUT'
         try:
@@ -306,7 +312,65 @@ def profile():
 
         except Exception as e:
             return jsonify({'msg': str(e)}), 500
+        
+
  
+    elif request.method == 'PUT':
+        try:
+            body = request.get_json()
+            if not body:
+                return jsonify({'msg': 'Cuerpo de solicitud JSON no válido'}), 400
+
+            if body["type"] == "paciente":
+                # Lógica de actualización para pacientes
+                pass
+
+            elif body["type"] == "doctor":
+                especialidad = body.get('especialidad')
+                numero_de_telefono = body.get('numero_de_telefono')
+                direccion = body.get('direccion')
+                ciudad = body.get('ciudad')
+                estado = body.get('estado')
+                costo = body.get('costo')
+                numero_de_licencia = body.get('numero_de_licencia')
+                especialidades_adicionales = body.get('especialidades_adicionales')
+                foto_perfil = body.get('foto_perfil')
+
+                # Validar que todos los campos necesarios estén presentes
+                if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
+                    return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
+
+                # Actualizar los datos del doctor con el ID actual
+                doctor = Doctor.query.filter_by(id=identity).first()
+                if doctor:
+                    doctor.especialidad = especialidad
+                    doctor.numero_de_telefono = numero_de_telefono
+                    doctor.direccion = direccion
+                    doctor.ciudad = ciudad
+                    doctor.estado = estado
+                    doctor.costo = costo
+                    doctor.numero_de_licencia = numero_de_licencia
+                    doctor.foto_perfil = foto_perfil
+                    db.session.commit()
+
+                    # Manejo de especialidades adicionales
+                    existing_specialties = {s.especialidades: s for s in doctor.especialidades_adicionales}
+                    for specialty in especialidades_adicionales:
+                        if specialty not in existing_specialties:
+                            new_specialty = Specialties(doctor_id=doctor.id, especialidades=specialty)
+                            db.session.add(new_specialty)
+                    db.session.commit()
+
+                    return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
+                else:
+                    return jsonify({'msg': 'Doctor no encontrado'}), 404
+
+            else:
+                return jsonify({'msg': 'Tipo de usuario no válido'}), 400
+
+        except Exception as e:
+            return jsonify({'msg': str(e)}), 500
+        
 
 #DOCTOR
 @app.route('/api/doctors', methods=['GET'])
@@ -321,52 +385,103 @@ def doctor(id):
         return jsonify({"error": "Doctor not found"}), 404
     return jsonify(doctor.serialize()), 200
 
-# para que el paciente cree una cita nueva 
+
+#Para que el paciente cree una cita nueva
 @app.route('/appointments', methods=['POST'])
 @jwt_required()
 def create_appointment():
     body = request.get_json()
-    required_fields = ['doctor_id', 'availability_id', 'message']
+    required_fields = ['doctor_id', 'availability_id', 'message', 'appointment_date']
 
     if not body or not all(field in body for field in required_fields):
         return jsonify({'msg':'Faltan campos obligatorios'}), 400
     
     paciente_id = get_jwt_identity()
+     # Hardcodear el paciente_id
+    #paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos (paciente_id)
     doctor_id = body.get('doctor_id')
     availability_id = body.get('availability_id')
     message = body.get('message')
-
+    appointment_date_str = body.get('appointment_date')
+    
     if 'doctor_id' not in body:
         return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
     if 'availability_id' not in body:
         return jsonify({'msg':'El campo availability_id es obligatorios'}), 400
+    if not appointment_date_str:
+        return jsonify({'msg': 'El campo appointment_date es obligatorio'}), 400
     
     availability = Availability.query.get(availability_id)
     if not availability or availability.doctor_id != doctor_id:
         return jsonify({'msg': 'Disponibilidad no válida'}), 400
+    
 
+    # Procesar el campo appointment_date
+    appointment_date_str = body.get('appointment_date')
+    if appointment_date_str:
+        try:
+            appointment_date = datetime.fromisoformat(appointment_date_str)
+        except ValueError:
+            return jsonify({'msg': 'Formato de fecha inválido'}), 400
+    else:
+        appointment_date = datetime.utcnow()
+
+    
     new_appointment = Appointment(
         paciente_id=paciente_id,
         doctor_id=doctor_id,
-        availability_id =availability_id,
-        message=body.get('message'),
-        appointment_date=datetime.utcnow()
+        availability_id=availability_id,
+        message=message,
+        appointment_date=appointment_date
     )
-
+   
     db.session.add(new_appointment)
     db.session.commit()
+    if new_appointment:
+        availability.is_booked = body.get("is_booked")
+        db.session.commit()
 
-    return jsonify({'msg':'Cita creada exitosamente'}), 201
-   
-#para que el paciente obtenga sus citas    
+
+        return jsonify({'msg':'Cita creada'}), 201
+    
+    return jsonify({'msg': "Error al agendar la cita"}), 500
+    
+
+
+#Para que el paciente obtenga la cita con los datos prellenados en el Agenda
+@app.route('/appointments', methods=['GET'])
+def get_appointment_data():
+    paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos
+    doctor_id = 1  # Cambia este valor al id de un doctor existente en tu base de datos
+    availability_id = 1  # Cambia este valor al id de disponibilidad adecuada
+
+    paciente = Paciente.query.get(paciente_id)
+    doctor = Doctor.query.get(doctor_id)
+    availability = Availability.query.get(availability_id)
+
+    if not paciente or not doctor or not availability:
+        return jsonify({'msg': 'Datos no válidos'}), 400
+
+    data = {
+        'paciente': paciente.serialize(),
+        'doctor': doctor.serialize(),
+        'availability': availability.serialize(),
+    }
+
+    return jsonify(data), 200
+
+
+#Para que el paciente obtenga sus citas   
 @app.route('/paciente/<int:paciente_id>/appointments', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_pacient_appointments(paciente_id):
     appointments = Appointment.query.filter_by(paciente_id=paciente_id).all()
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
 
-#para que el doctor desde su perfil pueda ver sus citas agendadas 
+
+
+#Para que el doctor desde su perfil pueda ver sus citas agendadas (MODAL)
 @app.route('/doctor/<int:doctor_id>/appointments', methods=['GET'])
 @jwt_required()
 def get_doctor_appointments(doctor_id):
@@ -535,15 +650,14 @@ def blood_pressure_form():
 def get_doctor_availability(doctor_id):
     # Obtener todas las disponibilidades del doctor que no estén reservadas
     availabilities = Availability.query.filter_by(doctor_id=doctor_id).all()
-    # Convertir cada disponibilidad a un diccionario usando el método 
+    # Convertir cada disponibilidad a un diccionario usando el método
     availabilities_list = [availability.serialize() for availability in availabilities]
     # availabilities_list = list(map(lambda availability: availability.serialize(), availabilities))
     # Devolver la lista de diccionarios como una respuesta JSON
     return jsonify(availabilities_list)
 
-    
 
-    
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

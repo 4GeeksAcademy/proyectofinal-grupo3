@@ -20,6 +20,8 @@ const ProfileDoctor = () => {
         foto_perfil: '',
     });
     const [respuestaServidor, setRespuestaServidor] = useState(null);
+    const [isEdit, setIsEdit] = useState(false);
+
 
     useEffect(() => {
         // Fetch initial doctor data
@@ -43,16 +45,16 @@ const ProfileDoctor = () => {
             } catch (error) {
                 console.error('Error fetching doctor data:', error);
             }
-        };
+            fetchDoctorData();
 
-        fetchDoctorData();
+        }
     }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value
+            [name]: value //computer propery  obtener en tiempo de ejecucion el name
         });
     };
 
@@ -75,15 +77,18 @@ const ProfileDoctor = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const method = isEdit ? 'PUT' : 'POST';
+        const url = `${process.env.BACKEND_URL}/profile`;
+
         try {
-            const response = await fetch(`${process.env.BACKEND_URL}/profile`, {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     type: 'doctor',
-                    id: id, // Use the id from the URL
+                    id: id, // Use the id from the URL if present
                     especialidad: formData.especialidad,
                     numero_de_telefono: formData.numero_de_telefono,
                     direccion: formData.direccion,
@@ -92,31 +97,35 @@ const ProfileDoctor = () => {
                     costo: formData.costo,
                     numero_de_licencia: formData.numero_de_licencia,
                     especialidades_adicionales: formData.especialidades_adicionales,
-                    foto_perfil: formData.foto_perfil, // Añade la foto de perfil aquí
+                    foto_perfil: formData.foto_perfil,
                 }),
             });
 
             const data = await response.json();
             setRespuestaServidor(data);
 
-            // Resetea el formulario después de enviar
-            setFormData({
-                nombre: '',
-                apellido: '',
-                numero_de_telefono: '',
-                email: '',
-                ciudad: '',
-                especialidad: '',
-                especialidades_adicionales: [],
-                numero_de_licencia: '',
-                direccion: '',
-                password: '',
-                costo: '',
-                estado: '',
-                foto_perfil: '',
-            });
+            if (response.ok) {
+                // Resetea el formulario después de enviar solo si no está editando
+                if (!isEdit) {
+                    setFormData({
+                        nombre: '',
+                        apellido: '',
+                        numero_de_telefono: '',
+                        email: '',
+                        ciudad: '',
+                        especialidad: '',
+                        especialidades_adicionales: [],
+                        numero_de_licencia: '',
+                        direccion: '',
+                        password: '',
+                        costo: '',
+                        estado: '',
+                        foto_perfil: '',
+                    });
+                }
+            }
         } catch (error) {
-            console.error('Error al enviar los datos:', error);
+            console.error('Error:', error);
         }
     };
 
@@ -277,7 +286,7 @@ const ProfileDoctor = () => {
                             <button type="button" className="btn btn-primary mt-2" onClick={handleAddEspecialidad}>Añadir Especialidad</button>
                         </div>
                         <div className="d-grid">
-                            <button type="submit" className="btn btn-primary">Guardar Perfil</button>
+                            <button type="submit" className="btn btn-primary">{isEdit ? 'Actualizar' : 'Guardar'}</button>
                         </div>
                     </form>
                     {respuestaServidor && (
@@ -290,6 +299,7 @@ const ProfileDoctor = () => {
             <ContactSection />
         </div>
     );
+
 };
 
 export default ProfileDoctor;
