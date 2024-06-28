@@ -34,6 +34,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     const data = await response.json();
+                    console.log("Se ejecuto fetch doctors")
                     setStore({ doctors: data });
                     
                 } catch (error) {

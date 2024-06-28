@@ -12,11 +12,16 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from datetime import datetime 
 
+
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
+
+from flask_mail import Mail, Message
+
+from twilio.rest import Client 
 
 from flask_cors import CORS
 
@@ -27,10 +32,23 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
 
+app.config.update(dict(
+    DEBUG = False,
+    MAIL_SERVER = 'smtp.gmail.com',
+    MAIL_PORT = 587,
+    MAIL_USE_TLS = True,
+    MAIL_USE_SSL = False,
+    MAIL_USERNAME = os.getenv('FLASK_MAIL_EMAIL'), 
+    MAIL_PASSWORD = os.getenv('FLASK_MAIL_PASSWORD')
+
+))
+
+mail = Mail(app)
+
 CORS(app)  # Permite todas las solicitudes de todos los orígenes
 # CORS(app, resources={r"/api/*": {"origins": "https://expert-garbanzo-r446j4rj495qfpj76-3000.app.github.dev/"}})
 
-app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!-> os.getenv("JWT-KEY")
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv("JWT-KEY")
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 
@@ -120,8 +138,19 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'msg': 'Usuario creado exitosamente'}), 201
+    try:
+        msg = Message(
+            subject="Hola correo de prueba desde la app Dr.Now",
+            sender = "dr.now4geeks@gmail.com",
+            recipients=[body['email']]  # Correo del nuevo usuario
+        )
+        msg.html = '<h3>Bienvenido a la app Dr. Now</h3><p> Gracias por registrarte, {}</p>'.format(new_user.nombre)
+        mail.send(msg)
+    except Exception as e:
+        return jsonify({'msg': 'Usuario creado pero ocurrio un error al enviar correo', 'error': str(e)}), 201
     
+    return jsonify({'msg': 'Usuario creado exitosamente y correo enviado'}), 201
+
 @app.route('/login', methods=['POST'])
 def login():
     body = request.get_json(silent=True)
@@ -135,14 +164,36 @@ def login():
     user = None
     if body['type'] == 'paciente':
         user= Paciente.query.filter_by(email=body['email']).first()
-    elif body['type'] == 'doctors':
+    elif body['type'] == 'doctor':
         user= Doctor.query.filter_by(email=body['email']).first()
 
     if user is None or not bcrypt.check_password_hash(user.password, body['password']):
         return jsonify({'msg': 'Correo electronico o password incorrectos'}), 400
      
     access_token = create_access_token(identity=user.id)
-    return jsonify({'msg':'ok','access_token': access_token}), 200
+    return jsonify({'msg':'ok','access_token': access_token}), 200 
+# @app.route('/login', methods=['POST'])
+# #@jwt_required()
+# def login():
+#     body = request.get_json(silent=True)
+#     if body is None:
+#         return jsonify({'msg':"El cuerpo de la solicitud esta vacio"}), 400
+#     if "email" not in body or "password" not in body: 
+#         return jsonify({'msg':"El email y el password son obligatorios"}), 400
+#     if "type" not in body: 
+#         return jsonify({'msg':"El campo type es requerido"}), 400
+
+#     user = None
+#     if body['type'] == 'paciente':
+#         user= Paciente.query.filter_by(email=body['email']).first()
+#     elif body['type'] == 'doctors':
+#         user= Doctor.query.filter_by(email=body['email']).first()
+
+#     if user is None or not bcrypt.check_password_hash(user.password, body['password']):
+#         return jsonify({'msg': 'Correo electronico o password incorrectos'}), 400
+     
+#     access_token = create_access_token(identity=user.id)
+#     return jsonify({'msg':'ok','access_token': access_token}), 200
      
 # @app.route('/profile', methods=['GET', 'POST'])
 # @jwt_required()
@@ -211,10 +262,13 @@ def login():
 #             #nueva linea abaja
 #         return jsonify({'msg': 'Tipo de usuario no válido'}), 400
 
-@app.route('/profile', methods=['GET', 'POST'])
+#PROFILE DOCTOR Y PACIENTE
+@app.route('/profile', methods=['GET', 'POST', 'PUT'])
 @jwt_required()
 def profile():
     identity = get_jwt_identity()
+    # Simulación de una identidad para pruebas
+    # identity = 4  # Cambia este valor al ID del usuario doctor que deseas probar
 
     if request.method == 'GET':
         type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
@@ -229,6 +283,8 @@ def profile():
             return jsonify({'msg': user.serialize()}), 200
         else:
             return jsonify({'msg': "El usuario no existe"}), 404
+
+
 
     elif request.method == 'POST': # otros metodos put delete elif request.method == 'PUT'
         try:
@@ -306,7 +362,65 @@ def profile():
 
         except Exception as e:
             return jsonify({'msg': str(e)}), 500
+        
+
  
+    elif request.method == 'PUT':
+        try:
+            body = request.get_json()
+            if not body:
+                return jsonify({'msg': 'Cuerpo de solicitud JSON no válido'}), 400
+
+            if body["type"] == "paciente":
+                # Lógica de actualización para pacientes
+                pass
+
+            elif body["type"] == "doctor":
+                especialidad = body.get('especialidad')
+                numero_de_telefono = body.get('numero_de_telefono')
+                direccion = body.get('direccion')
+                ciudad = body.get('ciudad')
+                estado = body.get('estado')
+                costo = body.get('costo')
+                numero_de_licencia = body.get('numero_de_licencia')
+                especialidades_adicionales = body.get('especialidades_adicionales')
+                foto_perfil = body.get('foto_perfil')
+
+                # Validar que todos los campos necesarios estén presentes
+                if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
+                    return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
+
+                # Actualizar los datos del doctor con el ID actual
+                doctor = Doctor.query.filter_by(id=identity).first()
+                if doctor:
+                    doctor.especialidad = especialidad
+                    doctor.numero_de_telefono = numero_de_telefono
+                    doctor.direccion = direccion
+                    doctor.ciudad = ciudad
+                    doctor.estado = estado
+                    doctor.costo = costo
+                    doctor.numero_de_licencia = numero_de_licencia
+                    doctor.foto_perfil = foto_perfil
+                    db.session.commit()
+
+                    # Manejo de especialidades adicionales
+                    existing_specialties = {s.especialidades: s for s in doctor.especialidades_adicionales}
+                    for specialty in especialidades_adicionales:
+                        if specialty not in existing_specialties:
+                            new_specialty = Specialties(doctor_id=doctor.id, especialidades=specialty)
+                            db.session.add(new_specialty)
+                    db.session.commit()
+
+                    return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
+                else:
+                    return jsonify({'msg': 'Doctor no encontrado'}), 404
+
+            else:
+                return jsonify({'msg': 'Tipo de usuario no válido'}), 400
+
+        except Exception as e:
+            return jsonify({'msg': str(e)}), 500
+        
 
 #DOCTOR
 @app.route('/api/doctors', methods=['GET'])
@@ -325,7 +439,7 @@ def doctor(id):
 @jwt_required()
 def create_appointment():
     body = request.get_json()
-    required_fields = ['doctor_id', 'availability_id', 'message']
+    required_fields = ['doctor_id', 'availability_id', 'message','appointment_date']
 
     if not body or not all(field in body for field in required_fields):
         return jsonify({'msg':'Faltan campos obligatorios'}), 400
@@ -333,12 +447,18 @@ def create_appointment():
     paciente_id = get_jwt_identity()
     doctor_id = body.get('doctor_id')
     availability_id = body.get('availability_id')
-    message = body.get('message')
+    message = body.get('message'),
+    appointment_date = body.get('appointment_date')
 
     if 'doctor_id' not in body:
         return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
     if 'availability_id' not in body:
         return jsonify({'msg':'El campo availability_id es obligatorios'}), 400
+    if 'message' not in body:
+        return jsonify({'msg':'El campo message es obligatorios'}), 400
+    if 'appointment_date' not in body:
+        return jsonify({'msg':'El campo appointment_name es obligatorios'}), 400
+
     
     availability = Availability.query.get(availability_id)
     if not availability or availability.doctor_id != doctor_id:
@@ -357,14 +477,104 @@ def create_appointment():
     db.session.commit()
 
     return jsonify({'msg':'Cita creada exitosamente'}), 201
+#Para que el paciente cree una cita nueva
+# @app.route('/appointment', methods=['POST'])
+# @jwt_required()
+# def create_appointment():
+#     body = request.get_json()
+#     required_fields = ['doctor_id', 'availability_id', 'message', 'appointment_date']
+
+#     if not body or not all(field in body for field in required_fields):
+#         return jsonify({'msg':'Faltan campos obligatorios'}), 400
+    
+#     paciente_id = get_jwt_identity()
+#      # Hardcodear el paciente_id
+#     #paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos (paciente_id)
+#     doctor_id = body.get('doctor_id')
+#     availability_id = body.get('availability_id')
+#     message = body.get('message')
+#     appointment_date_str = body.get('appointment_date')
+    
+#     if 'doctor_id' not in body:
+#         return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
+#     if 'availability_id' not in body:
+#         return jsonify({'msg':'El campo availability_id es obligatorios'}), 400
+#     if not appointment_date_str:
+#         return jsonify({'msg': 'El campo appointment_date es obligatorio'}), 400
+    
+#     availability = Availability.query.get(availability_id)
+#     if not availability or availability.doctor_id != doctor_id:
+#         return jsonify({'msg': 'Disponibilidad no válida'}), 400
+    
+
+#     # Procesar el campo appointment_date
+#     appointment_date_str = body.get('appointment_date')
+#     if appointment_date_str:
+#         try:
+#             appointment_date = datetime.fromisoformat(appointment_date_str)
+#         except ValueError:
+#             return jsonify({'msg': 'Formato de fecha inválido'}), 400
+#     else:
+#         appointment_date = datetime.utcnow()
+
+    
+#     new_appointment = Appointment(
+#         paciente_id=paciente_id,
+#         doctor_id=doctor_id,
+#         availability_id=availability_id,
+#         message=message,
+#         appointment_date=appointment_date
+#     )
    
+#     db.session.add(new_appointment)
+#     db.session.commit()
+#     if new_appointment:
+#         availability.is_booked = body.get("is_booked")
+#         
+
+
+#         return jsonify({'msg':'Cita creada'}), 201
+    
+#     return jsonify({'msg': "Error al agendar la cita"}), 500
+    
+    #  appoiment = Appointment.query.filter_by(paciente_id = paciente_id, doctor_id= doctor_id).first()
+    # print(appoiment.serialize())
+
+
+#Para que el paciente obtenga la cita con los datos prellenados en el Agenda
+@app.route('/appointments', methods=['GET'])
+def get_appointment_data():
+    paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos
+    doctor_id = 1  # Cambia este valor al id de un doctor existente en tu base de datos
+    availability_id = 1  # Cambia este valor al id de disponibilidad adecuada
+
+    paciente = Paciente.query.get(paciente_id)
+    doctor = Doctor.query.get(doctor_id)
+    availability = Availability.query.get(availability_id)
+
+    if not paciente or not doctor or not availability:
+        return jsonify({'msg': 'Datos no válidos'}), 400
+
+    data = {
+        'paciente': paciente.serialize(),
+        'doctor': doctor.serialize(),
+        'availability': availability.serialize(),
+    }
+
+    return jsonify(data), 200
+
+
+#Para que el paciente obtenga sus citas   
 @app.route('/paciente/<int:paciente_id>/appointments', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_pacient_appointments(paciente_id):
     appointments = Appointment.query.filter_by(paciente_id=paciente_id).all()
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
 
+
+
+#Para que el doctor desde su perfil pueda ver sus citas agendadas (MODAL)
 @app.route('/doctor/<int:doctor_id>/appointments', methods=['GET'])
 @jwt_required()
 def get_doctor_appointments(doctor_id):
@@ -372,124 +582,144 @@ def get_doctor_appointments(doctor_id):
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
 
-# ranges_data = [
-#     {
-#         "name": "Normal",
-#         "systolic_min": 90,
-#         "systolic_max": 120,
-#         "diastolic_min": 60,
-#         "diastolic_max": 80,
-#         "heart_rate_min": 60,
-#         "heart_rate_max": 100
-#     },
-#     {
-#         "name": "Elevated",
-#         "systolic_min": 120,
-#         "systolic_max": 129,
-#         "diastolic_min": 60,
-#         "diastolic_max": 80,
-#         "heart_rate_min": 60,
-#         "heart_rate_max": 100
+@app.route('/add_blood_range', methods=['POST'])
+def add_blood_range():
+    body = request.get_json()
 
-#     },
-#     {
-#         "name": "Hypertension Stage 1",
-#         "systolic_min": 130,
-#         "systolic_max": 139,
-#         "diastolic_min": 80,
-#         "diastolic_max": 89,
-#         "heart_rate_min": 60,
-#         "heart_rate_max": 100
-#     },
-#     {
-#         "name": "Hypertension Stage 2",
-#         "systolic_min": 140,
-#         "systolic_max": 180,
-#         "diastolic_min": 90,
-#         "diastolic_max": 120,
-#         "heart_rate_min": 60,
-#         "heart_rate_max": 100
-#     }
-# ]
+    if body is None:
+        return jsonify({"message": "El cuerpo de la solicitud no debe estar vacio"}), 400
+    
+    if "name" not in body:
+        return jsonify({"message": "El campo name no debe estar vacio"}), 400
+    
+    if "min_range" not in body:
+        return jsonify({"message": "El campo min_range no debe estar vacio"}), 400
+    
+    if "max_range" not in body:
+        return jsonify({"message": "El campo max_range no debe estar vacio"}), 400
+    
+    new_blood_test_range = BloodRange()
+    new_blood_test_range.name = body['name'],
+    new_blood_test_range.min_range = body['min_range'],
+    new_blood_test_range.max_range = body['max_range']
 
-# try: 
-#     for range_data in ranges_data:
-#         new_range = BloodPressureRange(
-#             name=range_data['name'],
-#             systolic_min=range_data['systolic_min'],
-#             systolic_max=range_data['systolic_max'],
-#             diastolic_min=range_data['diastolic_min'],
-#             diastolic_max=range_data['diastolic_max'],
-#             heart_rate_min=range_data['heart_rate_min'],
-#             heart_rate_max=range_data['heart_rate_max']
+    db.session.add(new_blood_test_range)
+    db.session.commit()
 
-#         )
-#         db.session.add(new_range)
+    return jsonify({'msg':"blood_range agregado con exito"}), 201
 
-#     db.session.commit()
-#     print('rangos de presion arterial agregados correctamente')
 
-# except Exception as e:
-#     db.session.rollback()
-#     print(f"Error al agregar los rangos de presión arterial: {str(e)}")
 @app.route('/add_blood_pressure_range', methods=['POST'])
 def add_blood_pressure_range():
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "Datos no proporcionados"}), 400
-
-    try:
-        new_range = BloodPressureRange(
-            name=data['name'],
-            systolic_min=data['systolic_min'],
-            systolic_max=data['systolic_max'],
-            diastolic_min=data['diastolic_min'],
-            diastolic_max=data['diastolic_max'],
-            heart_rate_min=data['heart_rate_min'],
-            heart_rate_max=data['heart_rate_max']
-        )
-
-        db.session.add(new_range)
-        db.session.commit()
-
-        return jsonify({"message": "Rango de presión arterial agregado correctamente"}), 201
-
-    except KeyError as e:
-        return jsonify({"message": f"Campo requerido faltante: {str(e)}"}), 400
-    except Exception as e:
-        return jsonify({"message": f"Error al agregar el rango de presión arterial: {str(e)}"}), 500
+    body = request.get_json()
+    if body is None:
+        return jsonify({"message": "El cuerpo de la solicitud no debe estar vacio"}), 400
+    if "systolic_min" is None:
+        return jsonify({"message": "El campo systolic_min no debe estar vacio"}), 400
+    if "systolic_max" is None:
+        return jsonify({"message": "El campo systolic_max no debe estar vacio"}), 400
+    if "diastolic_min" is None:
+        return jsonify({"message": "El campo diastolic_min no debe estar vacio"}), 400
+    if "diastolic_max" is None:
+        return jsonify({"message": "El campo diastolic_max no debe estar vacio"}), 400
+    if "heart_rate_min" is None:
+        return jsonify({"message": "El campo heart_rate_min no debe estar vacio"}), 400
+    if "heart_rate_max" is None: 
+        return jsonify({"message": "El campo heart_rate_max no debe estar vacio"}), 400
     
-@app.route('/add_recommendation', methods= ['POST'])
-def add_recommendation():
-    data = request.get_json()
+    new_range = BloodPressureRange()
+    new_range.systolic_min = body['systolic_min'],
+    new_range.systolic_max = body['systolic_max'],
+    new_range.diastolic_min = body['diastolic_min'],
+    new_range.diastolic_max = body['diastolic_max'],
+    new_range.heart_rate_min = body['heart_rate_min'],
+    new_range.heart_rate_max = body['heart_rate_max']
 
-    if not data:
-        return jsonify({'msg':'Datos no porporcionados'}), 400
+    db.session.add(new_range)
+    db.session.commit()
+
+    return jsonify({'msg':'blood_range agregado con exito'}), 201
+
+
+
+
+
+
+
+
+    # try:
+    #     new_range = BloodPressureRange(
+    #         name=body['name'],
+    #         systolic_min=body['systolic_min'],
+    #         systolic_max=body['systolic_max'],
+    #         diastolic_min=body['diastolic_min'],
+    #         diastolic_max=body['diastolic_max'],
+    #         heart_rate_min=body['heart_rate_min'],
+    #         heart_rate_max=body['heart_rate_max']
+    #     )
+
+    #     db.session.add(new_range)
+    #     db.session.commit()
+
+    #     return jsonify({"message": "Rango de presión arterial agregado correctamente"}), 201
+
+    # except KeyError as e:
+    #     return jsonify({"message": f"Campo requerido faltante: {str(e)}"}), 400
+    # except Exception as e:
+    #     return jsonify({"message": f"Error al agregar el rango de presión arterial: {str(e)}"}), 500
+
+
+@app.route('/add_blood_presure_recommendation', methods= ['POST'])
+def add_blood_pressure_recommendation ():
+    body = request.get_json()
+
+    if  body is None:
+        return jsonify({'msg':'El cuerpo de la solicitod no puede estar vacio'}), 400
     
-    try:
-        new_recommendation = RecommendationBloodPresure(
-            text=data['text'],
-            blood_pressure_range_id=data.get('blood_pressure_range_id'),
-            range_id=data.get('blood_range_id')
-        )
+    if "blood_pressure_range_id" not in body:
+        return jsonify({'msg':'El campo blood_pressure_range_id es obligatorio'}), 400
+    
+    if "text" not in body:
+        return jsonify({'msg': "El campo text es obligatorio"}), 400
+    
+    new_recommendation = RecommendationBloodPresure()
+    new_recommendation.blood_pressure_range_id = body['blood_pressure_range_id'],
+    new_recommendation.text = body['text']
 
-        db.session.add(new_recommendation)
-        db.session.commit()
+    db.session.add(new_recommendation)
+    db.session.commit()
 
-        return jsonify({"message": "Recomendación agregada correctamente"}), 201
+    return jsonify({'msg':"blood_pressure_recommendation creada con exito"}), 201
 
-    except KeyError as e:
-        return jsonify({"message": f"Campo requerido faltante: {str(e)}"}), 400
-    except Exception as e:
-        return jsonify({"message": f"Error al agregar la recomendación: {str(e)}"}), 500
+@app.route('/add_blood_test_recommendation', methods= ['POST'])
+def add_blood_test_recommendation():
+    body = request.get_json()
+
+    if body is None:
+        return({'msg': 'El cuerpo de la solicitud no debe estar vacio'}), 400
+
+    if "blood_range_id" not in body:
+        return({'msg': 'El campo blood_range_id no debe estar vacio'}), 400
+    
+    if "text" not in body:
+        return({'msg': 'El campo text no debe estar vacio'}), 400
+    
+    new_recommendation = RecommendationBloodTest()
+    new_recommendation.blood_range_id = body['blood_range_id']
+    new_recommendation.text = body['text']
+
+    db.session.add(new_recommendation)
+    db.session.commit()
+
+    return jsonify({'msg': "blood_test_recommendation creada con exito"}), 201
 
 
-@app.route('/blood_pressure_test', methods=['POST'])
-def check_health():
-    data = request.get_json()
-    systolic = data.get('systolic')
-    diastolic = data.get('diastolic')
-    heart_rate = data.get('heart_rate')
+@app.route('/blood_pressure_form', methods=['POST'])
+def blood_pressure_form():
+    body = request.get_json()
+    systolic = body.get('systolic')
+    diastolic = body.get('diastolic')
+    heart_rate = body.get('heart_rate')
 
     blood_pressure_range = BloodPressureRange.query.filter(
         BloodPressureRange.systolic_min <= systolic,
@@ -508,10 +738,19 @@ def check_health():
 
     
 
+@app.route('/doctor/<int:doctor_id>/availability', methods=['GET'])
+@jwt_required()
+def get_doctor_availability(doctor_id):
+    # Obtener todas las disponibilidades del doctor que no estén reservadas
+    availabilities = Availability.query.filter_by(doctor_id=doctor_id).all()
+    # Convertir cada disponibilidad a un diccionario usando el método
+    availabilities_list = [availability.serialize() for availability in availabilities]
+    # availabilities_list = list(map(lambda availability: availability.serialize(), availabilities))
+    # Devolver la lista de diccionarios como una respuesta JSON
+    return jsonify(availabilities_list)
 
-    
 
-    
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

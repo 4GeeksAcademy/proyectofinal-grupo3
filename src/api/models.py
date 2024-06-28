@@ -148,7 +148,7 @@ class Doctor(db.Model):
     # horario = db.Column(db.Date, nullable=True) # que tipo de dato va? date o dateTime diferencia? tabla -> disponibilidad_doctor
 
     def __repr__(self):
-        return f'<Doctor {self.email}>'
+        return f'<Doctor {self.email} {self.id}>'
     
     def serialize(self):
         return {
@@ -181,7 +181,7 @@ class RecommendationBloodTest(db.Model):
     # blood_pressures = db.relationship('BloodRange', backref='recommendation_blood_range', lazy=True, viewonly=True)
 
     def __repr__(self):
-        return f'<Recommendation {self.id}>'
+        return f'<Recommendation {self.id} {self.text}>'
     
     def serialize(self):
         return {
