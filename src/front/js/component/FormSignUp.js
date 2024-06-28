@@ -33,7 +33,7 @@ export const FormSignUp = (props) => {
     }
 
     try {
-      const response = await fetch(process.env.BACKEND_URL + "signup", {
+      const response = await fetch(process.env.BACKEND_URL + "/signup", {
         
         method: "POST",
         headers: { "Content-Type": "application/json" },
