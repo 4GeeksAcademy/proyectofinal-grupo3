@@ -31,6 +31,11 @@ ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
+CORS(app)  # Permite todas las solicitudes de todos los orígenes
+
+account_sid =  os.getenv('TWILIO_ACCOUNT_SID')
+auth_token =   os.getenv('TWILIO_AUTH_TOKEN')  
+twilio_client = Client(account_sid, auth_token)  
 
 app.config.update(dict(
     DEBUG = False,
@@ -141,7 +146,7 @@ def signup():
     try:
         msg = Message(
             subject="Hola correo de prueba desde la app Dr.Now",
-            sender = "dr.now4geeks@gmail.com",
+            sender = os.getenv('FLASK_MAIL_EMAIL'),
             recipients=[body['email']]  # Correo del nuevo usuario
         )
         msg.html = '<h3>Bienvenido a la app Dr. Now</h3><p> Gracias por registrarte, {}</p>'.format(new_user.nombre)
@@ -152,6 +157,7 @@ def signup():
     return jsonify({'msg': 'Usuario creado exitosamente y correo enviado'}), 201
 
 @app.route('/login', methods=['POST'])
+#@jwt_required()
 def login():
     body = request.get_json(silent=True)
     if body is None:
@@ -164,36 +170,14 @@ def login():
     user = None
     if body['type'] == 'paciente':
         user= Paciente.query.filter_by(email=body['email']).first()
-    elif body['type'] == 'doctor':
+    elif body['type'] == 'doctors':
         user= Doctor.query.filter_by(email=body['email']).first()
 
     if user is None or not bcrypt.check_password_hash(user.password, body['password']):
         return jsonify({'msg': 'Correo electronico o password incorrectos'}), 400
      
     access_token = create_access_token(identity=user.id)
-    return jsonify({'msg':'ok','access_token': access_token}), 200 
-# @app.route('/login', methods=['POST'])
-# #@jwt_required()
-# def login():
-#     body = request.get_json(silent=True)
-#     if body is None:
-#         return jsonify({'msg':"El cuerpo de la solicitud esta vacio"}), 400
-#     if "email" not in body or "password" not in body: 
-#         return jsonify({'msg':"El email y el password son obligatorios"}), 400
-#     if "type" not in body: 
-#         return jsonify({'msg':"El campo type es requerido"}), 400
-
-#     user = None
-#     if body['type'] == 'paciente':
-#         user= Paciente.query.filter_by(email=body['email']).first()
-#     elif body['type'] == 'doctors':
-#         user= Doctor.query.filter_by(email=body['email']).first()
-
-#     if user is None or not bcrypt.check_password_hash(user.password, body['password']):
-#         return jsonify({'msg': 'Correo electronico o password incorrectos'}), 400
-     
-#     access_token = create_access_token(identity=user.id)
-#     return jsonify({'msg':'ok','access_token': access_token}), 200
+    return jsonify({'msg':'ok','access_token': access_token}), 200
      
 # @app.route('/profile', methods=['GET', 'POST'])
 # @jwt_required()
@@ -262,7 +246,91 @@ def login():
 #             #nueva linea abaja
 #         return jsonify({'msg': 'Tipo de usuario no válido'}), 400
 
-#PROFILE DOCTOR Y PACIENTE
+#ruta de repo pasado la que funciona en postman
+# @app.route('/profile', methods=['GET', 'POST'])
+# @jwt_required()
+# def profile():
+#     identity = get_jwt_identity()
+
+#     if request.method == 'GET':
+#         type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
+#         user = None
+
+#         if type == "paciente":
+#             user = Paciente.query.filter_by(id=identity).first()
+#         elif type == 'doctor':
+#             user = Doctor.query.filter_by(id=identity).first()
+
+#         if user:
+#             return jsonify({'msg': user.serialize()}), 200
+#         else:
+#             return jsonify({'msg': "El usuario no existe"}), 404
+
+#     elif request.method == 'POST': # otros metodos put delete elif request.method == 'PUT'
+#         try:
+#             body = request.get_json()
+#             if not body:
+#                 return jsonify({'msg': 'Cuerpo de solicitud JSON no válido'}), 400
+
+#             if body["type"] == "paciente":
+#                 numero_de_telefono = body.get('numero_de_telefono')
+#                 fecha_de_nacimiento = body.get('fecha_de_nacimiento')
+#                 sexo = body.get('sexo')
+
+#                 # Validar que todos los campos necesarios estén presentes
+#                 if not (numero_de_telefono and fecha_de_nacimiento and sexo):
+#                     return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
+
+#                 # Actualizar los datos del paciente con el ID actual
+#                 paciente = Paciente.query.filter_by(id=identity).first()
+#                 if paciente:
+#                     paciente.numero_de_telefono = numero_de_telefono
+#                     paciente.fecha_de_nacimiento = fecha_de_nacimiento
+#                     paciente.sexo = sexo
+#                     # Guardar los cambios en la base de datos (dependiendo de tu configuración)
+#                     db.session.commit()
+#                     return jsonify({'msg': 'Campos del paciente actualizados correctamente'}), 201
+#                 else:
+
+#                     return jsonify({'msg': 'Paciente no encontrado'}), 404
+
+#             elif body["type"] == "doctor":
+#                 especialidad = body.get('especialidad')
+#                 numero_de_telefono = body.get('numero_de_telefono')
+#                 direccion = body.get('direccion')
+#                 ciudad = body.get('ciudad')
+#                 estado = body.get('estado')
+#                 costo = body.get('costo')
+#                 numero_de_licencia = body.get('numero_de_licencia')
+
+#                 # Validar que todos los campos necesarios estén presentes
+#                 if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
+#                     return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
+
+#                 # Actualizar los datos del doctor con el ID actual
+#                 doctor = Doctor.query.filter_by(id=identity).first()
+#                 if doctor:
+#                     doctor.especialidad = especialidad
+#                     doctor.numero_de_telefono = numero_de_telefono
+#                     doctor.direccion = direccion
+#                     doctor.ciudad = ciudad
+#                     doctor.estado = estado
+#                     doctor.costo = costo
+#                     doctor.numero_de_licencia = numero_de_licencia
+#                     # Guardar los cambios en la base de datos (dependiendo de tu configuración)
+#                     db.session.commit()
+#                     return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
+#                 else:
+#                     return jsonify({'msg': 'Doctor no encontrado'}), 404
+
+#             else:
+#                 return jsonify({'msg': 'Tipo de usuario no válido'}), 400
+
+#         except Exception as e:
+#             return jsonify({'msg': str(e)}), 500
+
+
+#PROFILE DOCTOR Y PACIENTE ruta cambiada no funciona ya la probe en postman
 @app.route('/profile', methods=['GET', 'POST', 'PUT'])
 @jwt_required()
 def profile():
@@ -476,7 +544,33 @@ def create_appointment():
     db.session.add(new_appointment)
     db.session.commit()
 
-    return jsonify({'msg':'Cita creada exitosamente'}), 201
+    # Obtener información del doctor y del paciente
+    doctor = Doctor.query.get(doctor_id)
+    paciente = Paciente.query.get(paciente_id)
+
+    # Crear el cuerpo del mensaje
+
+    message_body = (
+        f"Dr. Now: Su cita ha sido creada exitosamente con el.\n"
+        f"Doctor: {doctor.nombre if doctor else 'N/A'} {doctor.apellido if doctor else 'N/A'} \n"
+        f"Especialidad: {doctor.especialidad if doctor else 'N/A'}\n"
+        f"Numero de telefono del Doctor: {doctor.numero_de_telefono if doctor else 'N/A'}\n"
+        f"Dirección: {doctor.direccion if doctor else 'N/A'}, {doctor.ciudad if doctor else 'N/A'}, {doctor.estado if doctor else 'N/A'}\n"
+        f"Paciente: {paciente.nombre if paciente else 'N/A'} {paciente.apellido if paciente else 'N/A'}\n"
+        f"Mensaje: {message}\n"
+        f"Fecha de la cita: {new_appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S')}"
+    )
+
+    # Enviar mensaje a través de Twilio
+
+    twilio_message = twilio_client.messages.create(
+        body =message_body,
+        from_=os.getenv('TWILIO_PHONE_NUMBER'), # Número de Twilio 
+        to=paciente.numero_de_telefono # Número del paciente
+
+    )
+
+    return jsonify({'msg':'Cita creada exitosamente', 'twilio_sid': twilio_message.sid}), 201
 #Para que el paciente cree una cita nueva
 # @app.route('/appointment', methods=['POST'])
 # @jwt_required()
