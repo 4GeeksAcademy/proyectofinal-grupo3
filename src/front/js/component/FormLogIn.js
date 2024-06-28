@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/SignUp.css";
 
@@ -10,9 +10,15 @@ export const FormLogIn = (props) => {
   });
 
   const [error, setError] = useState(null);
-  
-
+  const isMounted = useRef(true); // Referencia para el estado de montaje
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Limpieza al desmontar
+    return () => {
+      isMounted.current = false; 
+    };
+  }, []);
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -24,30 +30,37 @@ export const FormLogIn = (props) => {
     try {
       const response = await fetch(process.env.BACKEND_URL + "login", {
         method: "POST",
-        headers: { "Content-Type": "application/json",  },
-        body: JSON.stringify(({ ...formData, type: props.role }),),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, type: props.role }),
       });
+
+      if (!isMounted.current) return; // Salir si el componente está desmontado
 
       if (response.ok) {
         const data = await response.json();
         console.log("Inicio de sesión exitoso:", data);
         localStorage.setItem("token", data.access_token);
         if (props.role === "paciente") {
-          navigate("/admin-dashboard"); 
+          navigate("/profile_patient");
         } else if (props.role === "doctors") {
           navigate("/profile_doctor");
         } else {
-          navigate("/default-page"); 
-        } 
+          navigate("/default-page");
+        }
       } else {
         const errorData = await response.json();
-        setError(errorData.msg); 
+        if (isMounted.current) {
+          setError(errorData.msg);
+        }
       }
     } catch (error) {
-      console.error("Error de red:", error);
-      setError("Error en la conexión. Inténtalo de nuevo.");
+      if (isMounted.current) {
+        console.error("Error de red:", error);
+        setError("Error en la conexión. Inténtalo de nuevo.");
+      }
     }
   };
+  
 
   return (
     <div className="contenedor">
@@ -89,10 +102,10 @@ export const FormLogIn = (props) => {
           </button>
         </form>
 
-        {/* Mensaje de error */}
+       
         {error && <div className="alert alert-danger">{error}</div>}
 
-        {/* Enlace para abrir el modal de recuperación de contraseña */}
+       
         <a type="forgot" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" className="forgot-password">¿Olvidaste tu contraseña?</a>
 
         {/* Modal de recuperación de contraseña */}

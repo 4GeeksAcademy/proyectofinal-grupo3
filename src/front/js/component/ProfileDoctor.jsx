@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ContactSection from './ContactSection.jsx';
+import { useNavigate } from "react-router-dom";
 
 const ProfileDoctor = () => {
+    const navigate = useNavigate();
     const { id } = useParams(); // Obtener el doctorId desde la URL
     const [formData, setFormData] = useState({
         nombre: '',
@@ -76,6 +78,7 @@ const ProfileDoctor = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem('token')
 
         const method = isEdit ? 'PUT' : 'POST';
         const url = `${process.env.BACKEND_URL}/profile`;
@@ -85,6 +88,7 @@ const ProfileDoctor = () => {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     type: 'doctor',
@@ -104,26 +108,25 @@ const ProfileDoctor = () => {
             const data = await response.json();
             setRespuestaServidor(data);
 
-            if (response.ok) {
-                // Resetea el formulario después de enviar solo si no está editando
-                if (!isEdit) {
-                    setFormData({
-                        nombre: '',
-                        apellido: '',
-                        numero_de_telefono: '',
-                        email: '',
-                        ciudad: '',
-                        especialidad: '',
-                        especialidades_adicionales: [],
-                        numero_de_licencia: '',
-                        direccion: '',
-                        password: '',
-                        costo: '',
-                        estado: '',
-                        foto_perfil: '',
-                    });
-                }
-            }
+
+            // Resetea el formulario después de enviar
+            setFormData({
+                nombre: '',
+                apellido: '',
+                numero_de_telefono: '',
+                email: '',
+                ciudad: '',
+                especialidad: '',
+                especialidades_adicionales: [],
+                numero_de_licencia: '',
+                direccion: '',
+                password: '',
+                costo: '',
+                estado: '',
+                foto_perfil: '',
+            });
+            navigate("/doctors");
+
         } catch (error) {
             console.error('Error:', error);
         }
