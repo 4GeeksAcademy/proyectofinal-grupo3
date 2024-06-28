@@ -178,11 +178,11 @@ def login():
      
     access_token = create_access_token(identity=user.id)
     return jsonify({'msg':'ok','access_token': access_token}), 200
-     
+    
 # @app.route('/profile', methods=['GET', 'POST'])
 # @jwt_required()
 # def profile():
-           
+
 #     if request.method == 'GET':
 #         body = request.get_json(silent=True)
 #         identity= get_jwt_identity()
