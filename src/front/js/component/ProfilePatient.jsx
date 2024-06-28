@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import ContactSection from './ContactSection.jsx';
 import { useNavigate } from "react-router-dom";
+import ContactSection from './ContactSection.jsx';
 
 const ProfilePatient = () => {
     const navigate = useNavigate();
-    const { id } = useParams(); // Obtener el doctorId desde la URL
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -15,25 +13,31 @@ const ProfilePatient = () => {
         sexo: '',
         password: '',
         foto_perfil: '',
+        type: 'paciente',
     });
     const [respuestaServidor, setRespuestaServidor] = useState(null);
 
     useEffect(() => {
-        // Fetch initial doctor data
         const fetchPatientData = async () => {
             try {
                 const response = await fetch(`${process.env.BACKEND_URL}/profile?type=paciente`, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
-                    }
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
                 });
                 const data = await response.json();
+
                 if (response.ok) {
-                    setFormData(prevFormData => ({
-                        ...prevFormData,
-                        ...data.msg,
-                        
-                    }));
+                    // Initialize all fields to avoid null values
+                    setFormData({
+                        nombre: data.msg.nombre || '',
+                        apellido: data.msg.apellido || '',
+                        numero_de_telefono: data.msg.numero_de_telefono || '',
+                        fecha_de_nacimiento: data.msg.fecha_de_nacimiento || '',
+                        email: data.msg.email || '',
+                        sexo: data.msg.sexo || '',
+                        password: '', // No mostrar contraseña en el perfil
+                        foto_perfil: data.msg.foto_perfil || '',
+                        type: 'paciente',
+                    });
                 } else {
                     console.error('Error fetching patient data:', data.msg);
                 }
@@ -43,20 +47,21 @@ const ProfilePatient = () => {
         };
 
         fetchPatientData();
-    }, [id]);
+    }, []); // Empty dependency array ensures this runs only once
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+        setFormData({ ...formData, [name]: value });
     };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('token');
+
+        
+        const formattedFechaNacimiento = formData.fecha_de_nacimiento
+            ? new Date(formData.fecha_de_nacimiento).toISOString().split('T')[0]
+            : null;
 
         try {
             const response = await fetch(`${process.env.BACKEND_URL}/profile`, {
@@ -67,31 +72,21 @@ const ProfilePatient = () => {
                 },
                 body: JSON.stringify({
                     type: 'paciente',
-                     
                     numero_de_telefono: formData.numero_de_telefono,
-                    fecha_de_nacimiento: formData.fecha_de_nacimiento,
-                    foto_perfil: formData.foto_perfil, // Añade la foto de perfil aquí
+                    fecha_de_nacimiento: formattedFechaNacimiento,
+                    foto_perfil: formData.foto_perfil,
+                    sexo: formData.sexo,
                 }),
             });
 
             const data = await response.json();
             setRespuestaServidor(data);
-
-            // Resetea el formulario después de enviar
-            setFormData({
-                nombre: '',
-                apellido: '',
-                numero_de_telefono: '',
-                fecha_de_nacimiento: '',
-                email: '',
-                sexo: '',
-                password: '',
-                foto_perfil: '',
-            });
-            navigate("/");
+            navigate("/"); 
         } catch (error) {
             console.error('Error al enviar los datos:', error);
+            
         }
+        console.log (handleSubmit)
     };
 
     return (
@@ -165,23 +160,23 @@ const ProfilePatient = () => {
                                 />
                             </div>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-6 ">
                             <label className="form-label" htmlFor="fecha_de_nacimiento">Fecha de Nacimiento</label>
                             <input
                                 type="date"
                                 id="fecha_de_nacimiento"
                                 name="fecha_de_nacimiento"
-                                value={formData.fecha_de_nacimiento} // Asegúrate de tener este estado en formData
+                                value={formData.fecha_de_nacimiento} 
                                 onChange={handleChange}
                                 className="form-control"
-                                placeholder="dd/mm/aaaa" // Opcional: mostrar un formato de ejemplo
+                                placeholder="dd/mm/aaaa" 
                             />
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-6 mb-5">
                                 <label className="form-label">sexo</label>
                                 <input
                                     type="text"
-                                    name="nombre"
+                                    name="sexo"
                                     value={formData.sexo}
                                     onChange={handleChange}
                                     className="form-control"
