@@ -15,8 +15,8 @@ import { Footer } from "./component/footer";
 import { RoleSelector } from './pages/RoleSelector.js'; 
 import { HandlerTypeSelector } from "./component/HandlerTypeSelector.jsx";
 
-import Signup from "./component/SignUp.jsx";
-import RolSelector from "./component/RolSelector.jsx";
+//import Signup from "./component/SignUp.jsx";
+//import RolSelector from "./component/RolSelector.jsx";
 
 import DoctorsDirectory  from "./component/DoctorsDirectory.jsx";
 import DoctorsDirectoryDetail from "./component/DoctorsDirectoryDetail.jsx";
@@ -45,8 +45,8 @@ const Layout = () => {
                         
                         <Route element= {<RoleSelector/>} path="/RolSelector/:actionType" />
                         <Route element= {<HandlerTypeSelector/>} path="/:role/:type" />
-                        <Route element= {<Signup />} path="/SignUp" />
-                        <Route element= {<RolSelector/>} path="/RolSelector" />
+                        {/* <Route element= {<Signup />} path="/SignUp" /> */}
+                        {/* <Route element= {<RoleSelector/>} path="/RolSelector" /> */}
 
                         <Route path="/doctors" element={<DoctorsDirectory />} />
                         <Route path="/doctor/:id" element={<DoctorsDirectoryDetail />} />

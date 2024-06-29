@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ContactSection from './ContactSection.jsx';
+import AppointmentsModal from './AppointmentsModal.jsx';
 
 const ProfileDoctor = () => {
     const { id } = useParams(); // Obtener el doctorId desde la URL
@@ -21,17 +22,22 @@ const ProfileDoctor = () => {
     });
     const [respuestaServidor, setRespuestaServidor] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
+    const [showAppointmentsModal, setShowAppointmentsModal] = useState(false);
 
 
     useEffect(() => {
         // Fetch initial doctor data
+        console.log("useEffect del doctor")
         const fetchDoctorData = async () => {
+            console.log("fetch del doctor")
             try {
                 const response = await fetch(`${process.env.BACKEND_URL}/profile?type=doctor`, {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                        'Content-Type': 'application/json'
                     }
                 });
+                console.log("resouesta del perfil doctor", response)
                 const data = await response.json();
                 if (response.ok) {
                     setFormData(prevFormData => ({
@@ -45,10 +51,9 @@ const ProfileDoctor = () => {
             } catch (error) {
                 console.error('Error fetching doctor data:', error);
             }
-            fetchDoctorData();
-
         }
-    }, [id]);
+        fetchDoctorData();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -85,6 +90,7 @@ const ProfileDoctor = () => {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
                 },
                 body: JSON.stringify({
                     type: 'doctor',
@@ -297,6 +303,12 @@ const ProfileDoctor = () => {
                 </div>
             </div>
             <ContactSection />
+            <div className="text-center mt-3">
+                <button className="btn btn-info" onClick={() => setShowAppointmentsModal(true)}>Ver Citas Agendadas</button>
+            </div>
+            {showAppointmentsModal && (
+                <AppointmentsModal doctorId={id} onClose={() => setShowAppointmentsModal(false)} />
+            )}
         </div>
     );
 

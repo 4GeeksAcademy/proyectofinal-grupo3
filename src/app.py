@@ -214,11 +214,11 @@ def login():
 
 #PROFILE DOCTOR Y PACIENTE
 @app.route('/profile', methods=['GET', 'POST', 'PUT'])
-#@jwt_required()
+@jwt_required()
 def profile():
-    #identity = get_jwt_identity()
+    identity = get_jwt_identity()
     # Simulación de una identidad para pruebas
-    identity = 4  # Cambia este valor al ID del usuario doctor que deseas probar
+    #identity = 4  # Cambia este valor al ID del usuario doctor que deseas probar
 
     if request.method == 'GET':
         type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
@@ -396,9 +396,9 @@ def create_appointment():
     if not body or not all(field in body for field in required_fields):
         return jsonify({'msg':'Faltan campos obligatorios'}), 400
     
-    paciente_id = get_jwt_identity()
-     # Hardcodear el paciente_id
-    #paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos (paciente_id)
+    # Hardcodear el paciente_id
+    paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos (paciente_id)
+    #paciente_id = get_jwt_identity()
     doctor_id = body.get('doctor_id')
     availability_id = body.get('availability_id')
     message = body.get('message')
@@ -450,9 +450,15 @@ def create_appointment():
 
 #Para que el paciente obtenga la cita con los datos prellenados en el Agenda
 @app.route('/appointments', methods=['GET'])
+@jwt_required()
 def get_appointment_data():
+    #body = request.get_json()
+    #paciente_id = get_jwt_identity()  # Cambia este valor al id de un paciente existente en tu base de datos
+    #doctor_id = body.get('doctor_id')  # Cambia este valor al id de un doctor existente en tu base de datos
+    #availability_id = body.get('availability_id')  # Cambia este valor al id de disponibilidad adecuada
+
     paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos
-    doctor_id = 1  # Cambia este valor al id de un doctor existente en tu base de datos
+    doctor_id = 6  # Cambia este valor al id de un doctor existente en tu base de datos
     availability_id = 1  # Cambia este valor al id de disponibilidad adecuada
 
     paciente = Paciente.query.get(paciente_id)
@@ -483,12 +489,16 @@ def get_pacient_appointments(paciente_id):
 
 #Para que el doctor desde su perfil pueda ver sus citas agendadas (MODAL)
 @app.route('/doctor/<int:doctor_id>/appointments', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_doctor_appointments(doctor_id):
     appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
 
+
+    
+
+#Analisis Clinicos
 @app.route('/add_blood_range', methods=['POST'])
 def add_blood_range():
     body = request.get_json()
