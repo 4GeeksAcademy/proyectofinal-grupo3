@@ -583,6 +583,41 @@ def create_appointment():
         return jsonify({'msg': "Error al agendar la cita"}), 500
 
     
+    # Obtener información del doctor y del paciente
+    doctor = Doctor.query.get(doctor_id)
+    paciente = Paciente.query.get(paciente_id)
+
+    # Crear el cuerpo del mensaje
+
+    message_body = (
+        f"Dr. Now: Su cita ha sido creada exitosamente con el.\n"
+        f"Doctor: {doctor.nombre if doctor else 'N/A'} {doctor.apellido if doctor else 'N/A'} \n"
+        f"Especialidad: {doctor.especialidad if doctor else 'N/A'}\n"
+        f"Numero de telefono del Doctor: {doctor.numero_de_telefono if doctor else 'N/A'}\n"
+        f"Dirección: {doctor.direccion if doctor else 'N/A'}, {doctor.ciudad if doctor else 'N/A'}, {doctor.estado if doctor else 'N/A'}\n"
+        f"Paciente: {paciente.nombre if paciente else 'N/A'} {paciente.apellido if paciente else 'N/A'}\n"
+        f"Mensaje: {message}\n"
+        f"Fecha de la cita: {new_appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S')}"
+    )
+
+    # if not paciente or not paciente.numero_de_telefono:
+    #     return jsonify({'msg': 'El paciente no tiene un número de teléfono válido'}), 400
+
+
+    # Enviar mensaje a través de Twilio
+    # try:
+    twilio_message = twilio_client.messages.create(
+        body =message_body,
+        from_=os.getenv('TWILIO_PHONE_NUMBER'), # Número de Twilio 
+        to=paciente.numero_de_telefono # Número del paciente
+
+    )
+    return jsonify({'msg':'Cita creada exitosamente', 'twilio_sid': twilio_message.sid}), 201
+    # except Exception as e:
+    #     return jsonify({'msg': f'Error al enviar mensaje de Twilio: {str(e)}'}), 500
+
+
+
 #Para que el paciente cree una cita nueva
 # @app.route('/appointment', methods=['POST'])
 # @jwt_required()
