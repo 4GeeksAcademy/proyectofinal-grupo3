@@ -6,60 +6,60 @@ const BloodTestForm = () => {
     return (
       <form className="bloodTestForm">
       <h1>
-        Blood Test Form
+        Examens de sangre 
       </h1>
       <div className="form-group">
         <label htmlFor="hemoglobin">
-          Hemoglobin (g/dL)
+          Hemoglobina (g/dL)
         </label>
         <input
           className="form-control"
-          id="hemoglobin"
-          placeholder="Enter Hemoglobin value"
+          id="hemoglobina"
+          placeholder="Ingrea tu valor de Hemoglobina"
           type="number"
         />
       </div>
       <div className="form-group">
-        <label htmlFor="hematocrit">
-          Hematocrit (%)
+        <label htmlFor="hematocrito">
+          Hematocrito (%)
         </label>
         <input
           className="form-control"
-          id="hematocrit"
-          placeholder="Enter Hematocrit value"
+          id="hematocrito"
+          placeholder="Ingrea tu valor de Hematocrito"
           type="number"
         />
       </div>
       <div className="form-group">
-        <label htmlFor="glycemia">
-          Glycemia (mg/dL)
+        <label htmlFor="glicemia">
+          Glicemia (mg/dL)
         </label>
         <input
           className="form-control"
           id="glycemia"
-          placeholder="Enter Glycemia value"
+          placeholder="Ingresa tu valor de Glicemia"
           type="number"
         />
       </div>
       <div className="form-group">
-        <label htmlFor="cholesterol">
-          Cholesterol (mg/dL)
+        <label htmlFor="colesterol">
+          Colesterol (mg/dL)
         </label>
         <input
           className="form-control"
-          id="cholesterol"
-          placeholder="Enter Cholesterol value"
+          id="colesterol"
+          placeholder="Ingresa tu valor de Colesterol"
           type="number"
         />
       </div>
       <div className="form-group">
-        <label htmlFor="triglycerides">
-          Triglycerides (mg/dL)
+        <label htmlFor="triglicedios">
+          Triglicedios (mg/dL)
         </label>
         <input
           className="form-control"
-          id="triglycerides"
-          placeholder="Enter Triglycerides value"
+          id="trigicedios"
+          placeholder="Ingresa tu valor de Triglicedios"
           type="number"
         />
       </div>
@@ -67,7 +67,7 @@ const BloodTestForm = () => {
         className="btn btn-primary"
         type="submit"
       >
-        Submit
+        Enviar
       </button>
     </form>
     );

@@ -15,8 +15,8 @@ import { Footer } from "./component/footer";
 import { RoleSelector } from './pages/RoleSelector.js';
 import { HandlerTypeSelector } from "./component/HandlerTypeSelector.jsx";
 
-//import Signup from "./component/SignUp.jsx";
-//import RolSelector from "./component/RolSelector.jsx";
+// import Signup from "./component/SignUp.jsx";
+// import RolSelector from "./component/RolSelector.jsx";
 
 
 import DoctorsDirectory from "./component/DoctorsDirectory.jsx";
