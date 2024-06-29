@@ -24,13 +24,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             fetchDoctors: async () => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/doctors`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/doctors`, {
+                        headers:{
+                            'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                        }
+                        
+                    } );
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     const data = await response.json();
                     console.log("Se ejecuto fetch doctors")
                     setStore({ doctors: data });
+                    
                 } catch (error) {
                     console.error("Error fetching doctors:", error);
                 }
