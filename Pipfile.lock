@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "855729521c5cf7db9e9a0e558e5ce9fa654a0ceed072b6e6b9f6a99030beabff"
+            "sha256": "553bc5f77749286add8954d7a8889931f72ecf50c21458fbfff7a0b838f2fadb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -116,11 +116,11 @@
         },
         "alembic": {
             "hashes": [
-                "sha256:2edcc97bed0bd3272611ce3a98d98279e9c209e7186e43e75bbb1b2bdfdbcc43",
-                "sha256:4932c8558bf68f2ee92b9bbcb8218671c627064d5b08939437af6d77dc05e595"
+                "sha256:1ff0ae32975f4fd96028c39ed9bb3c867fe3af956bd7bb37343b54c9fe7445ef",
+                "sha256:6b8733129a6224a9a711e17c99b08462dbf7cc9670ba8f2e2ae9af860ceb1953"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==1.13.1"
+            "version": "==1.13.2"
         },
         "async-timeout": {
             "hashes": [
@@ -337,6 +337,14 @@
             ],
             "index": "pypi",
             "version": "==4.6.0"
+        },
+        "flask-mail": {
+            "hashes": [
+                "sha256:44083e7b02bbcce792209c06252f8569dd5a325a7aaa76afe7330422bd97881d",
+                "sha256:a451e490931bb3441d9b11ebab6812a16bfa81855792ae1bf9c1e1e22c4e51e7"
+            ],
+            "index": "pypi",
+            "version": "==0.10.0"
         },
         "flask-migrate": {
             "hashes": [
@@ -935,11 +943,11 @@
         },
         "twilio": {
             "hashes": [
-                "sha256:dc1eb456182232e44f1a0e129a8956e7b7b45e4c0fb7f5b25b3ab6fa76e0efad",
-                "sha256:fd18f5e72429dedd2f83df821308d74b961b2a049ddb5c3cf7dd1eff8794fe1b"
+                "sha256:0849fa11b1a8d3a2c3a783c2fe230d7dd9457a086eddc9d9979fba8bb4702b80",
+                "sha256:3c758cc9383ab3b8d740628e6811301dca450c6e10e128e13687b8605c34024f"
             ],
             "index": "pypi",
-            "version": "==9.2.1"
+            "version": "==9.2.2"
         },
         "typing-extensions": {
             "hashes": [
