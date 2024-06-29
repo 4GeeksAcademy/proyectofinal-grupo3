@@ -30,7 +30,13 @@ from flask_cors import CORS
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
+
+
 app = Flask(__name__)
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv("JWT-KEY")
+jwt = JWTManager(app)
+bcrypt = Bcrypt(app)
+# db = SQLAlchemy(app)
 CORS(app)  # Permite todas las solicitudes de todos los orígenes
 
 account_sid =  os.getenv('TWILIO_ACCOUNT_SID')
@@ -53,9 +59,7 @@ mail = Mail(app)
 CORS(app)  # Permite todas las solicitudes de todos los orígenes
 # CORS(app, resources={r"/api/*": {"origins": "https://expert-garbanzo-r446j4rj495qfpj76-3000.app.github.dev/"}})
 
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv("JWT-KEY")
-jwt = JWTManager(app)
-bcrypt = Bcrypt(app)
+
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -157,7 +161,6 @@ def signup():
     return jsonify({'msg': 'Usuario creado exitosamente y correo enviado'}), 201
 
 @app.route('/login', methods=['POST'])
-#@jwt_required()
 def login():
     body = request.get_json(silent=True)
     if body is None:
@@ -808,7 +811,7 @@ def add_blood_test_recommendation():
     return jsonify({'msg': "blood_test_recommendation creada con exito"}), 201
 
 
-@app.route('/blood_pressure_form', methods=['POST'])
+@app.route('/blood_pressure_form', methods=['POST']) 
 def blood_pressure_form():
     body = request.get_json()
     systolic = body.get('systolic')
@@ -843,8 +846,38 @@ def get_doctor_availability(doctor_id):
     # Devolver la lista de diccionarios como una respuesta JSON
     return jsonify(availabilities_list)
 
+@app.route('/blood_test_form', methods=['POST'])
+def blood_test_form():
+    body = request.get_json()
+    hemoglobina = request.get('hemoglobina')
+    hematocritos = body.get('hematocritos')
+    glicemia = body.get('glicemia')
+    colesterol = body.get('colesterol')
+    triglicedios = body.get('triglicedios')
+    if body is None:
+        return({'msg':'El cuerpo de la solicitud no debe estar vacio'}), 400
+    
+    blood_ranges = BloodRange.query.filter(
+        BloodRange.min_range <= hemoglobina,
+        BloodRange.max_range >= hemoglobina,
+        BloodRange.min_range <= hematocritos,
+        BloodRange.max_range >= hematocritos,
+        BloodRange.min_range <= glicemia,
+        BloodRange.max_range >= glicemia,
+        BloodRange.min_range <= colesterol,
+        BloodRange.max_range >= colesterol,
+        BloodRange.min_range <= triglicedios,
+        BloodRange.max_range >= triglicedios,
+    ).first()
+
+    recommendation = []
 
 
+    if blood_ranges.recommendations:
+        for recommendation in blood_ranges.recommendations:
+            return jsonify({"recommendation": recommendation.serialize()}) 
+    else:
+        return jsonify({"recommendation": "No specific recommendation found for the given values."}), 404
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
