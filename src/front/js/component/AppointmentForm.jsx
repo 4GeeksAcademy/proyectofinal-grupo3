@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import agendaImage from '../../img/agenda.png'
 
-const AppointmentForm = ({ onClose }) => {
+const AppointmentForm = ({ doctor, onClose }) => {
+
     const today = new Date();
     const currentDayOfWeek = today.getDay();
 
@@ -14,40 +16,62 @@ const AppointmentForm = ({ onClose }) => {
 
     const [selectedOption, setSelectedOption] = useState('')
 
+    const checkAvailabilities = (availabilities) => {
+        console.log(availabilities)
+
+        const filteredAvailabilities = availabilities.filter(availability => {
+            console.log(availability)
+            console.log(currentDayOfWeek)
+            const isFutureDay = availability.day_of_week > currentDayOfWeek && availability.day_of_week <= 5;
+            const isTodayOrFuture = availability.day_of_week === currentDayOfWeek || isFutureDay;
+            return !availability.is_booked && isTodayOrFuture;
+        });
+
+        if (filteredAvailabilities.length === 1) {
+            setSelectedOption(filteredAvailabilities[0].id.toString())
+
+        }
+        return filteredAvailabilities
+    };
+
     useEffect(() => {
+        console.log(doctor);
+
         const fetchData = async () => {
+            const token = localStorage.getItem("token")
             try {
                 const response = await fetch(`${process.env.BACKEND_URL}/appointments`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 });
 
                 const data = await response.json();
+                console.log(doctor.availabilities)
+                const filteredAvilabilities = checkAvailabilities(doctor.availabilities);
 
-                const filteredAvailabilities = data.doctor.availabilities.filter(availability => {
-                    const isFutureDay = availability.day_of_week > currentDayOfWeek && availability.day_of_week <= 5;
-                    const isTodayOrFuture = availability.day_of_week === currentDayOfWeek || isFutureDay;
-                    return !availability.is_booked && isTodayOrFuture;
-                });
 
+                console.log(filteredAvilabilities)
                 setFormData(prevFormData => ({
                     ...prevFormData,
                     paciente: data.paciente,
-                    doctor: data.doctor,
-                    availabilities: filteredAvailabilities
+                    doctor: doctor,
+                    availabilities: filteredAvilabilities
                 }));
-                if (filteredAvailabilities.length === 1) {
-                    setSelectedOption(filteredAvailabilities[0].id.toString())
-                    console.log(filteredAvailabilities[0].id.toString())
-                    console.log(filteredAvailabilities)
-                }
+
             } catch (error) {
                 console.error('Error al obtener datos:', error);
             }
         };
         fetchData();
+
+
+        /*setFormData(prevFormData => ({
+            ...prevFormData,
+            doctor: doctor,
+            availabilities: filteredAvailabilities
+        }));*/
     }, []);
 
     const handleSelectChange = (e) => {
@@ -59,6 +83,9 @@ const AppointmentForm = ({ onClose }) => {
         const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'];
         return days[dayNumber];
     };
+
+
+
 
 
     const handleSubmit = async (e) => {
@@ -81,7 +108,7 @@ const AppointmentForm = ({ onClose }) => {
         const formattedDate = adjustedDate.toISOString().replace('T', ' ').split('.')[0];
         console.log(formattedDate)
 
-
+        const token = localStorage.getItem("token")
 
         const appointmentDetails = {
             doctor_id: formData.doctor.id,
@@ -96,7 +123,7 @@ const AppointmentForm = ({ onClose }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(appointmentDetails),
             });
@@ -120,7 +147,7 @@ const AppointmentForm = ({ onClose }) => {
         <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50" style={{ zIndex: 3 }}>
             <div className="bg-white p-4 rounded-element box-shadow-blue d-flex flex-column flex-md-row align-items-center w-90 w-md-100">
                 <img
-                    src="/agenda.png"
+                    src={agendaImage}
                     alt="DoctorAgenda"
                     className="rounded-element w-50 w-md-50 mb-4 mb-md-0 me-md-4"
                 />
@@ -130,7 +157,8 @@ const AppointmentForm = ({ onClose }) => {
                         <div className="mb-3">
                             <label className="form-label text-muted d-block text-start">Disponibilidad</label>
                             <select onChange={handleSelectChange} value={selectedOption} className="form-select" aria-label="Default select example">
-                                {formData.availabilities.map((availability, index) => {
+
+                                {formData.availabilities && formData.availabilities.map((availability, index) => {
                                     return <option key={availability.id} value={availability.id} disabled={availability.day_of_week < currentDayOfWeek || availability.day_of_week > 5}>
                                         {`${getDayName(availability.day_of_week)}: ${availability.start_time} - ${availability.end_time}`}
                                     </option>

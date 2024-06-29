@@ -309,7 +309,7 @@ const ProfileDoctor = () => {
                 <button className="btn btn-info" onClick={() => setShowAppointmentsModal(true)}>Ver Citas Agendadas</button>
             </div>
             {showAppointmentsModal && (
-                <AppointmentsModal doctorId={id} onClose={() => setShowAppointmentsModal(false)} />
+                <AppointmentsModal doctorId={formData.id} onClose={() => setShowAppointmentsModal(false)} />
             )}
         </div>
     );

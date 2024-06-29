@@ -49,6 +49,7 @@ CORS(app)  # Permite todas las solicitudes de todos los orígenes
 # CORS(app, resources={r"/api/*": {"origins": "https://expert-garbanzo-r446j4rj495qfpj76-3000.app.github.dev/"}})
 
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv("JWT-KEY")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 
@@ -164,7 +165,7 @@ def login():
     user = None
     if body['type'] == 'paciente':
         user= Paciente.query.filter_by(email=body['email']).first()
-    elif body['type'] == 'doctor':
+    elif body['type'] == 'doctors':
         user= Doctor.query.filter_by(email=body['email']).first()
 
     if user is None or not bcrypt.check_password_hash(user.password, body['password']):
@@ -435,6 +436,7 @@ def doctor(id):
         return jsonify({"error": "Doctor not found"}), 404
     return jsonify(doctor.serialize()), 200
 
+
 @app.route('/appointments', methods=['POST'])
 @jwt_required()
 def create_appointment():
@@ -476,7 +478,13 @@ def create_appointment():
     db.session.add(new_appointment)
     db.session.commit()
 
-    return jsonify({'msg':'Cita creada exitosamente'}), 201
+    if new_appointment:
+        availability.is_booked = body.get("is_booked")
+        db.session.commit()
+        return jsonify({'msg':'Cita creada exitosamente'}), 201
+    return jsonify({'msg': "Error al agendar la cita"}), 500
+
+    
 #Para que el paciente cree una cita nueva
 # @app.route('/appointment', methods=['POST'])
 # @jwt_required()
@@ -546,25 +554,25 @@ def create_appointment():
 @jwt_required()
 def get_appointment_data():
     #body = request.get_json()
-    #paciente_id = get_jwt_identity()  # Cambia este valor al id de un paciente existente en tu base de datos
-    #doctor_id = body.get('doctor_id')  # Cambia este valor al id de un doctor existente en tu base de datos
-    #availability_id = body.get('availability_id')  # Cambia este valor al id de disponibilidad adecuada
+    paciente_id = get_jwt_identity()  # Cambia este valor al id de un paciente existente en tu base de datos
+    #doctor_id = request.args.get('doctor_id')  # Cambia este valor al id de un doctor existente en tu base de datos
+    #availability_id = request.args.get('doctor_id')  # Cambia este valor al id de disponibilidad adecuada
 
-    paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos
-    doctor_id = 6  # Cambia este valor al id de un doctor existente en tu base de datos
-    availability_id = 1  # Cambia este valor al id de disponibilidad adecuada
+    #paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos
+    #doctor_id = 6  # Cambia este valor al id de un doctor existente en tu base de datos
+    #availability_id = 1  # Cambia este valor al id de disponibilidad adecuada
 
     paciente = Paciente.query.get(paciente_id)
-    doctor = Doctor.query.get(doctor_id)
-    availability = Availability.query.get(availability_id)
+    #doctor = Doctor.query.get(doctor_id)
+    #availability = Availability.query.get(availability_id)
 
-    if not paciente or not doctor or not availability:
-        return jsonify({'msg': 'Datos no válidos'}), 400
+    #if not paciente or not doctor or not availability:
+        #return jsonify({'msg': 'Datos no válidos'}), 400
 
     data = {
         'paciente': paciente.serialize(),
-        'doctor': doctor.serialize(),
-        'availability': availability.serialize(),
+        #'doctor': doctor.serialize(),
+        #'availability': availability.serialize(),
     }
 
     return jsonify(data), 200
@@ -582,7 +590,7 @@ def get_pacient_appointments(paciente_id):
 
 #Para que el doctor desde su perfil pueda ver sus citas agendadas (MODAL)
 @app.route('/doctor/<int:doctor_id>/appointments', methods=['GET'])
-#@jwt_required()
+@jwt_required()
 def get_doctor_appointments(doctor_id):
     appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
     appointment_list = [appointment.serialize() for appointment in appointments]
