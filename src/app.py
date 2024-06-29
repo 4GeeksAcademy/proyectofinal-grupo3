@@ -543,19 +543,44 @@ def create_appointment():
         paciente_id=paciente_id,
         doctor_id=doctor_id,
         availability_id =availability_id,
-        message=body.get('message'),
-        appointment_date=datetime.utcnow()
+        message=message,
+        appointment_date=appointment_date
     )
 
-    
-    db.session.add(new_appointment)
-    db.session.commit()
+    doctor = Doctor.query.get(doctor_id)
+    paciente = Paciente.query.get(paciente_id)
 
-    if new_appointment:
-        availability.is_booked = body.get("is_booked")
+    try:
+        
+        db.session.add(new_appointment)
         db.session.commit()
-        return jsonify({'msg':'Cita creada exitosamente'}), 201
-    return jsonify({'msg': "Error al agendar la cita"}), 500
+        
+        if new_appointment:
+            if paciente.numero_de_telefono is not None:
+                message_body = (
+                f"Dr. Now: Su cita ha sido creada exitosamente con el.\n"
+                f"Doctor: {doctor.nombre if doctor else 'N/A'} {doctor.apellido if doctor else 'N/A'} \n"
+                f"Especialidad: {doctor.especialidad if doctor else 'N/A'}\n"
+                f"Numero de telefono del Doctor: {doctor.numero_de_telefono if doctor else 'N/A'}\n"
+                f"Dirección: {doctor.direccion if doctor else 'N/A'}, {doctor.ciudad if doctor else 'N/A'}, {doctor.estado if doctor else 'N/A'}\n"
+                f"Paciente: {paciente.nombre if paciente else 'N/A'} {paciente.apellido if paciente else 'N/A'}\n"
+                f"Mensaje: {message}\n"
+                f"Fecha de la cita: {new_appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S')}"
+            )
+
+                twilio_message = twilio_client.messages.create(
+                    body =message_body,
+                    from_=os.getenv('TWILIO_PHONE_NUMBER'), # Número de Twilio 
+                    to=paciente.numero_de_telefono # Número del paciente
+                )
+                print(twilio_message.sid) 
+            availability.is_booked = body.get("is_booked")
+            db.session.commit()
+            return jsonify({'msg':'Cita creada exitosamente'}), 201
+    except Exception as error:    
+        db.session.rollback()
+        print(error)
+        return jsonify({'msg': "Error al agendar la cita"}), 500
 
     
 #Para que el paciente cree una cita nueva
