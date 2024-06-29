@@ -176,8 +176,12 @@ class Doctor(db.Model):
 class RecommendationBloodTest(db.Model):
     __tablename__="recommendation_blood_test"
     id = db.Column(db.Integer, primary_key=True)
-    blood_range_id = db.Column(db.Integer, db.ForeignKey('blood_range.id'), nullable=True)
     text = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    min_range = db.Column(db.Float, nullable=False)
+    max_range = db.Column(db.Float, nullable=False)
+    specialist = db.Column(db.Text, nullable=False)
+
     # blood_pressures = db.relationship('BloodRange', backref='recommendation_blood_range', lazy=True, viewonly=True)
 
     def __repr__(self):
@@ -186,8 +190,11 @@ class RecommendationBloodTest(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'blood_range_id': self.blood_range_id,
-            'text': self.text
+            'text': self.text,
+            'name': self.name,
+            'min_range': self.min_range,
+            'max_range': self.max_range,
+            'specialist': self.specialist
         }
     
 class RecommendationBloodPresure(db.Model):
@@ -324,7 +331,7 @@ class BloodRange(db.Model):
     min_range = db.Column(db.Float, nullable=True)
     max_range = db.Column(db.Float, nullable=True)
     
-    recommendation = db.relationship('RecommendationBloodTest', backref="blood_range", lazy=True)
+    # recommendation = db.relationship('RecommendationBloodTest', backref="blood_range", lazy=True)
 
     def __repr__(self):
         return f'<Range {self.name} {self.id}>' 
