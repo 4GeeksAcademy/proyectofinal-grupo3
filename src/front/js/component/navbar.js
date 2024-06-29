@@ -1,27 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from "react-router-dom"; // Importa useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import "../../styles/navbar.css";
+import { jwtDecode } from 'jwt-decode';
 
 export const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate(); 
+  const [userType, setUserType] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Verificar el estado de inicio de sesión al cargar el componente y al cambiar la ruta
     const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token); 
-  }, [navigate]); // Agrega navigate a la lista de dependencias del useEffect
+    setIsLoggedIn(!!token);
+
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setUserType(decodedToken.type || decodedToken.role);
+
+        
+        if (userType === 'doctors') {
+          navigate('/profile_doctors');
+        } else if (userType === 'paciente') {
+          navigate('/profile_patient');
+        }
+      } catch (error) {
+        console.error('Error al decodificar el token:', error);
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+        navigate('/');
+      }
+    }
+  }, [navigate]); 
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    navigate('/'); 
+    navigate('/');
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-transparent">
       <div className="container-fluid">
-        {/* Botón para colapsar el menú en pantallas pequeñas */}
         <button
           className="navbar-toggler"
           type="button"
@@ -35,12 +54,10 @@ export const Navbar = () => {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-          {/* Enlace a la página principal */}
           <Link className="navbar-brand" to="/">
             Dr.Now
           </Link>
 
-          {/* Lista de elementos del menú */}
           <ul className="navbar-nav me-auto mb-2 mb-lg-0 mt-2">
             <li className="nav-item">
               <Link className="nav-link" aria-current="page" to="/">
@@ -48,16 +65,16 @@ export const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link active" to="/doctors">
-                Directorio
+              <Link className="nav-link" to="/doctors">
+                Agenda tu cita
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/ingresar-valores">
+              <Link className="nav-link" to="/analysis">
                 Ingresa tus valores
               </Link>
             </li>
-            <li className="nav-item">
+            { /*<li className="nav-item">
               <Link className="nav-link" to="/blog">
                 Blog
               </Link>
@@ -66,20 +83,11 @@ export const Navbar = () => {
               <Link className="nav-link" to="/contactenos">
                 Contáctenos
               </Link>
-            </li>
+            </li>*/}
           </ul>
 
-          {/* Botones de inicio de sesión/registro/cierre de sesión */}
           <div className="d-flex">
-            {isLoggedIn ? (
-              <button 
-                className="btn btn-outline-light" 
-                type="button"
-                onClick={handleLogout}
-              >
-                Cerrar Sesión
-              </button>
-            ) : (
+            {!isLoggedIn && (
               <>
                 <Link to="/RolSelector/login">
                   <button className="btn btn-outline-light" type="button">
@@ -92,6 +100,44 @@ export const Navbar = () => {
                   </button>
                 </Link>
               </>
+            )}
+
+            {isLoggedIn && (
+              <div className="dropdown me-3">
+                <button 
+                  className="btn btn-secondary dropdown-toggle" 
+                  type="button" 
+                  id="dropdownMenuButton1" 
+                  data-bs-toggle="dropdown" 
+                  aria-expanded="false"
+                >
+                  Mi cuenta
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <Link 
+                      to={userType === 'doctors' ? '/profile_doctor' : '/profile_patient'} 
+                      className="dropdown-item p-3"
+                    >
+                      Mi perfil
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/appointments" className="dropdown-item p-3">
+                      Mis citas
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item btn btn-outline-light ms-2"
+                      type="button"
+                      onClick={handleLogout}
+                    >
+                      Cerrar sesión
+                    </button>
+                  </li>
+                </ul>
+              </div>
             )}
           </div>
         </div>
