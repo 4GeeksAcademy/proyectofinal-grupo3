@@ -11,6 +11,8 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { HeroSection } from "./component/hero"
 import { Footer } from "./component/footer";
+import Blog from './component/Blog.jsx';
+import ArticleDetail from './component/ArticleDetail.jsx';
 
 import { RoleSelector } from './pages/RoleSelector.js';
 import { HandlerTypeSelector } from "./component/HandlerTypeSelector.jsx";
@@ -56,6 +58,9 @@ const Layout = () => {
 
                         <Route path="/contact" element={<ContactSection />} />
                         <Route path="/doctors" element={<DoctorsDirectory />} />
+                        <Route path="/blog" element={<Blog />} />
+                        <Route path="/blog/:id" element={<ArticleDetail />} />
+
                         <Route element={<PrivateRoute />} >
                             <Route path="/doctor/:id" element={<DoctorsDirectoryDetail />} />
                             <Route path="/profile_doctor" element={<ProfileDoctor />} />
