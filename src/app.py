@@ -526,16 +526,13 @@ def doctor(id):
 def create_appointment():
     body = request.get_json()
     required_fields = ['doctor_id', 'availability_id', 'message','appointment_date']
-
     if not body or not all(field in body for field in required_fields):
         return jsonify({'msg':'Faltan campos obligatorios'}), 400
-    
     paciente_id = get_jwt_identity()
     doctor_id = body.get('doctor_id')
     availability_id = body.get('availability_id')
     message = body.get('message'),
     appointment_date = body.get('appointment_date')
-
     if 'doctor_id' not in body:
         return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
     if 'availability_id' not in body:
@@ -544,12 +541,12 @@ def create_appointment():
         return jsonify({'msg':'El campo message es obligatorios'}), 400
     if 'appointment_date' not in body:
         return jsonify({'msg':'El campo appointment_name es obligatorios'}), 400
-
-    
     availability = Availability.query.get(availability_id)
     if not availability or availability.doctor_id != doctor_id:
         return jsonify({'msg': 'Disponibilidad no válida'}), 400
-
+    #esto lo puse nuevo
+    if availability.is_booked:
+        return jsonify({'msg': 'Esta disponibilidad ya está reservada'}), 400
     new_appointment = Appointment(
         paciente_id=paciente_id,
         doctor_id=doctor_id,
@@ -557,15 +554,13 @@ def create_appointment():
         message=message,
         appointment_date=appointment_date
     )
-
     doctor = Doctor.query.get(doctor_id)
     paciente = Paciente.query.get(paciente_id)
-
     try:
-        
         db.session.add(new_appointment)
+        #esto lo puse nuevo
+        availability.is_booked = True
         db.session.commit()
-        
         if new_appointment:
             if paciente.numero_de_telefono is not None:
                 message_body = (
@@ -578,17 +573,16 @@ def create_appointment():
                 f"Mensaje: {message}\n"
                 f"Fecha de la cita: {new_appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S')}"
             )
-
                 twilio_message = twilio_client.messages.create(
                     body =message_body,
-                    from_=os.getenv('TWILIO_PHONE_NUMBER'), # Número de Twilio 
+                    from_=os.getenv('TWILIO_PHONE_NUMBER'), # Número de Twilio
                     to=paciente.numero_de_telefono # Número del paciente
                 )
-                print(twilio_message.sid) 
-            availability.is_booked = body.get("is_booked")
-            db.session.commit()
+                print(twilio_message.sid)
+            # availability.is_booked = body.get("is_booked")
+            # db.session.commit()
             return jsonify({'msg':'Cita creada exitosamente'}), 201
-    except Exception as error:    
+    except Exception as error:
         db.session.rollback()
         print(error)
         return jsonify({'msg': "Error al agendar la cita"}), 500

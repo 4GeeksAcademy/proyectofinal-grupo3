@@ -4,7 +4,7 @@ const ReviewPatients = ({ onReviewSubmitted }) => {
     const [review, setReview] = useState('');
     const [doctorId, setDoctorId] = useState('');
     const [doctorOptions, setDoctorOptions] = useState([]);
-    const [patientName, setPatientName] = useState('');
+    //const [patientName, setPatientName] = useState('');
 
     useEffect(() => {
         async function fetchDoctorOptions() {
@@ -89,7 +89,7 @@ const ReviewPatients = ({ onReviewSubmitted }) => {
                             ))}
                         </select>
                     </div>
-                    <div className="col-md-12 mt-3">
+                    {/* <div className="col-md-12 mt-3">
                         <label className="form-label">Paciente</label>
                         <input
                             type="text"
@@ -98,7 +98,7 @@ const ReviewPatients = ({ onReviewSubmitted }) => {
                             className="form-control"
                             readOnly
                         />
-                    </div>
+                    </div> */}
                     <div className="col-md-12 mt-3">
                         <label className="form-label">Reseña</label>
                         <textarea
