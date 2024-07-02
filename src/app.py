@@ -3,10 +3,13 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
+
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
 from api.models import db, Paciente, Doctor, BloodPressure, BloodPressureRange, Availability, Appointment, BloodTest, UserRole, BloodRange, RecommendationBloodPresure, RecommendationBloodTest, Specialties
+from api.helpers import get_user_by_email, generate_token, verify_token, send_reset_email
+
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -20,10 +23,9 @@ from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 
 from flask_mail import Mail, Message
-
 from twilio.rest import Client 
-
 from flask_cors import CORS
+
 
 # from models import Person
 
@@ -61,6 +63,7 @@ CORS(app)  # Permite todas las solicitudes de todos los orígenes
 
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv("JWT-KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
+app.config['SECURITY_PASSWORD_SALT']= os.getenv("SECURITY_PASSWORD_SALT")
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 
@@ -538,6 +541,11 @@ def create_appointment():
     availability = Availability.query.get(availability_id)
     if not availability or availability.doctor_id != doctor_id:
         return jsonify({'msg': 'Disponibilidad no válida'}), 400
+    
+    #esto lo puse nuevo
+    if availability.is_booked:
+        return jsonify({'msg': 'Esta disponibilidad ya está reservada'}), 400
+
 
     new_appointment = Appointment(
         paciente_id=paciente_id,
@@ -553,6 +561,8 @@ def create_appointment():
     try:
         
         db.session.add(new_appointment)
+        #esto lo puse nuevo
+        availability.is_booked = True
         db.session.commit()
         
         if new_appointment:
@@ -574,8 +584,10 @@ def create_appointment():
                     to=paciente.numero_de_telefono # Número del paciente
                 )
                 print(twilio_message.sid) 
-            availability.is_booked = body.get("is_booked")
-            db.session.commit()
+
+            # availability.is_booked = body.get("is_booked")
+            # db.session.commit()
+
             return jsonify({'msg':'Cita creada exitosamente'}), 201
     except Exception as error:    
         db.session.rollback()
@@ -895,6 +907,71 @@ def evaluate_blood_test():
     check_recommendation(body['trigliceridos'], 'Triglicéridos')
 
     return jsonify({'recommendations': recommendations}), 200
+
+@app.route('/forgot_password', methods=['POST'])
+def forgot_password():
+    body = request.get_json()
+
+    if not body or 'email' not in body or 'user_type' not in body:
+        return jsonify({'msg': 'El email y el tipo de ususario son requeridos'}), 400
+    
+    email = body['email']
+    user_type = body['user_type']
+
+    # Verifica que email sea una cadena antes de pasarlo a la función
+    if not isinstance(email, str):
+        return jsonify({'msg': 'El email debe ser una cadena válida'}), 400
+
+    user = get_user_by_email(email, user_type)
+    if not user:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+    
+    token = generate_token(user)  # Generar el token usando email
+    send_reset_email(user, token)
+
+    return jsonify({'msg': 'Correo de restablecimiento de contraseña enviado'}), 200
+
+@app.route('/reset_password/<token>', methods=['POST'])
+def reset_password(token):
+    body = request.get_json()
+
+    if not body or 'password' not in body or 'confirm_password' not in body:
+        return jsonify({'msg': 'La nueva contraseña y la confirmación son requeridas'}), 400
+    
+    if body['password'] !=body['confirm_password']:
+        return jsonify({'msg': 'Las contraseñas no coinciden'}), 400
+    
+    user_id, user_type = verify_token(token)
+    if user_type == 'paciente':
+        user_info = Paciente.query.get(user_id)
+        user_email = user_info.email
+    else:
+        user_info = Doctor.query.get(user_id)
+        user_email = user_info.email
+    print(verify_token(token))
+    
+    if not user_email:
+        return jsonify({'msg': 'Token inválido o expirado'}), 400
+
+    user = get_user_by_email(user_email, user_type)
+    if not user:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+    
+    user.password = bcrypt.generate_password_hash(body['password']).decode('utf-8')
+    db.session.commit()
+
+    return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
+
+    
+
+
+
+
+
+
+
+
+    
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
