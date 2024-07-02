@@ -5,10 +5,10 @@ import "../../../styles/bloodPressureForm.css"
 const BloodPressureForm = () => {
   return (
     <form className="blood-pressure-form">
-    <h1>Blood Pressure Measurement</h1> {/* Clearer title */}
+    <h1>Presion arterial</h1> {/* Clearer title */}
     <div className="form-group">
       <label htmlFor="systolicPressure" className="form-label">
-        Systolic Pressure (mmHg)
+        Presion sistolica (mmHg)
       </label>
       <input
         type="number" // Input type for numerical values
@@ -20,7 +20,7 @@ const BloodPressureForm = () => {
     </div>
     <div className="form-group">
       <label htmlFor="diastolicPressure" className="form-label">
-        Diastolic Pressure (mmHg)
+        Presion diastolica (mmHg)
       </label>
       <input
         type="number"
@@ -32,7 +32,7 @@ const BloodPressureForm = () => {
     </div>
     <div className="form-group">
       <label htmlFor="heartRate" className="form-label">
-        Heart Rate (bpm)
+        Frecuencia cardiaca (bpm)
       </label>
       <input
         type="number"
@@ -42,9 +42,11 @@ const BloodPressureForm = () => {
         required
       />
     </div>
-    <button className="btn btn-primary" type="submit">
-      Submit Reading
+    <div className='consulta'>
+    <button className="botonConsulta btn btn-primary" type="submit">
+      Ingresar datos
     </button>
+    </div>
   </form>
   );
 };

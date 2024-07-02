@@ -10,19 +10,21 @@ export const Navbar = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const type = localStorage.getItem('type');
+    console.log({type})
     setIsLoggedIn(!!token);
-
+    
     if (token) {
       try {
-        const decodedToken = jwtDecode(token);
-        setUserType(decodedToken.type || decodedToken.role);
-
+       
+        setUserType(type);
         
-        if (userType === 'doctors') {
-          navigate('/profile_doctors');
-        } else if (userType === 'paciente') {
-          navigate('/profile_patient');
-        }
+
+        // if (userType === 'doctors') {
+        //   navigate('/profile_doctors');
+        // } else if (userType === 'paciente') {
+        //   navigate('/profile_patient');
+        // }
       } catch (error) {
         console.error('Error al decodificar el token:', error);
         localStorage.removeItem('token');
@@ -30,13 +32,16 @@ export const Navbar = () => {
         navigate('/');
       }
     }
-  }, [navigate]); 
+    
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
     navigate('/');
   };
+  
+  console.log(userType)
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-transparent">
@@ -104,21 +109,18 @@ export const Navbar = () => {
 
             {isLoggedIn && (
               <div className="dropdown me-3">
-                <button 
-                  className="btn btn-secondary dropdown-toggle" 
-                  type="button" 
-                  id="dropdownMenuButton1" 
-                  data-bs-toggle="dropdown" 
+                <button
+                  className="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   Mi cuenta
                 </button>
                 <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
-                    <Link 
-                      to={userType === 'doctors' ? '/profile_doctor' : '/profile_patient'} 
-                      className="dropdown-item p-3"
-                    >
+                    <Link to={userType === 'doctors' ? '/profile_doctor' : '/profile_patient'} className="dropdown-item p-3">
                       Mi perfil
                     </Link>
                   </li>

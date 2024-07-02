@@ -39,7 +39,10 @@ export const FormLogIn = (props) => {
       if (response.ok) {
         const data = await response.json();
         console.log("Inicio de sesión exitoso:", data);
+        
         localStorage.setItem("token", data.access_token);
+        localStorage.setItem("type", props.role)
+        
         if (props.role === "paciente") {
           navigate("/profile_patient");
         } else if (props.role === "doctors") {

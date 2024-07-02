@@ -6,11 +6,11 @@ const BloodTestForm = () => {
     return (
       <form className="bloodTestForm">
       <h1>
-        Blood Test Form
+      Análisis de Sangre
       </h1>
       <div className="form-group">
         <label htmlFor="hemoglobin">
-          Hemoglobin (g/dL)
+          Hemoglobina (g/dL)
         </label>
         <input
           className="form-control"
@@ -21,7 +21,7 @@ const BloodTestForm = () => {
       </div>
       <div className="form-group">
         <label htmlFor="hematocrit">
-          Hematocrit (%)
+          Hematocrito (%)
         </label>
         <input
           className="form-control"
@@ -32,7 +32,7 @@ const BloodTestForm = () => {
       </div>
       <div className="form-group">
         <label htmlFor="glycemia">
-          Glycemia (mg/dL)
+          Glicemia (mg/dL)
         </label>
         <input
           className="form-control"
@@ -43,7 +43,7 @@ const BloodTestForm = () => {
       </div>
       <div className="form-group">
         <label htmlFor="cholesterol">
-          Cholesterol (mg/dL)
+          Colesterol (mg/dL)
         </label>
         <input
           className="form-control"
@@ -54,7 +54,7 @@ const BloodTestForm = () => {
       </div>
       <div className="form-group">
         <label htmlFor="triglycerides">
-          Triglycerides (mg/dL)
+          Trigliceridos (mg/dL)
         </label>
         <input
           className="form-control"
@@ -63,12 +63,11 @@ const BloodTestForm = () => {
           type="number"
         />
       </div>
-      <button
-        className="btn btn-primary"
-        type="submit"
-      >
-        Submit
-      </button>
+      <div className='consulta'>
+    <button className="botonConsulta btn btn-primary" type="submit">
+      Ingresar datos
+    </button>
+    </div>
     </form>
     );
   };

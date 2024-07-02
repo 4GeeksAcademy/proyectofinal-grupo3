@@ -1,9 +1,15 @@
 .blood-pressure-form {
-    width: 400px; /* Adjust width as needed */
-    margin: 0 auto; /* Center the form horizontally */
+    width: 500px; 
+    margin: 0 auto; 
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: radial-gradient(50% 50% at 50% 50%, rgb(255,255,255)32.81%,
+     rgb(247.58,252.57,255) 97.64%);
+    background-color: rgb(255,255,255,1);
+    ;
+    color: #0069ab;
+    margin-bottom: 20px;
   }
   
   .form-group {
@@ -21,3 +27,8 @@
     border-radius: 3px;
   }
   
+  
+  .consulta{
+    display: flex;
+    justify-content: center;
+  }

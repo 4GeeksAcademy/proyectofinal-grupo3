@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import ContactSection from './ContactSection.jsx';
+import AppointmentsModalPaciente from './AppointmentsModalPaciente.jsx';
 
 const ProfilePatient = () => {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ const ProfilePatient = () => {
         type: 'paciente',
     });
     const [respuestaServidor, setRespuestaServidor] = useState(null);
+    const [ShowAppointmentsModalPaciente, setShowAppointmentsModalPaciente] = useState(false);
 
     useEffect(() => {
         const fetchPatientData = async () => {
@@ -34,8 +36,7 @@ const ProfilePatient = () => {
                         fecha_de_nacimiento: data.msg.fecha_de_nacimiento || '',
                         email: data.msg.email || '',
                         sexo: data.msg.sexo || '',
-                        password: '', // No mostrar contraseña en el perfil
-                        foto_perfil: data.msg.foto_perfil || '',
+                        password: '', 
                         type: 'paciente',
                     });
                 } else {
@@ -47,7 +48,7 @@ const ProfilePatient = () => {
         };
 
         fetchPatientData();
-    }, []); // Empty dependency array ensures this runs only once
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -86,7 +87,7 @@ const ProfilePatient = () => {
             console.error('Error al enviar los datos:', error);
             
         }
-        console.log (handleSubmit)
+        
     };
 
     return (
@@ -95,17 +96,7 @@ const ProfilePatient = () => {
                 <div className="box-shadow-blue rounded-element p-4 w-50">
                     <h2 className="text-center gradient-text fw-bold">Completa tu perfil</h2>
                     <form onSubmit={handleSubmit}>
-                        <div className="text-center mb-3">
-                            <label className="form-label">Foto de Perfil (URL)</label>
-                            <input
-                                type="text"
-                                name="foto_perfil"
-                                value={formData.foto_perfil}
-                                onChange={handleChange}
-                                className="form-control"
-                                placeholder="Ingrese la URL de su foto de perfil"
-                            />
-                        </div>
+                        
                         {formData.foto_perfil && (
                             <div className="text-center mb-3">
                                 <img src={formData.foto_perfil} alt="Foto de Perfil" className="img-fluid rounded-circle" style={{ maxWidth: '150px' }} />
@@ -200,6 +191,12 @@ const ProfilePatient = () => {
                 </div>
             </div>
             <ContactSection />
+            <div className="text-center mt-3">
+                <button className="btn btn-info" onClick={() => setShowAppointmentsModalPaciente(true)}>Ver Citas Agendadas</button>
+            </div>
+            {ShowAppointmentsModalPaciente && (
+                <AppointmentsModalPaciente pacienteId={id} onClose={() => setShowAppointmentsModalPaciente(false)} />
+            )}
         </div>
     );
 };
