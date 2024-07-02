@@ -4,7 +4,7 @@ const ReviewComments = ({ reviews_comments }) => {
     return (
         <div className="mt-4">
             <h3 className="text-center gradient-text fw-bold">Testimonios de los pacientes:</h3>
-            <div className="row justify-content-start">
+            <div className="row justify-content-between">
                 {reviews_comments.map((comment, index) => (
                     <div key={index} className="col-md-4 my-3">
                         <div className="card card-reviews">
@@ -16,7 +16,7 @@ const ReviewComments = ({ reviews_comments }) => {
                                 />
                                 <div>
                                     <span className="card-text">{comment.comentario}</span>
-                                    <h6 className="card-title">Nombre del paciente</h6>
+                                    <h6 className="card-title">{comment.patient_nombre}</h6>
                                 </div>
                             </div>
                         </div>

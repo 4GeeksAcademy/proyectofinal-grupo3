@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Paciente, Doctor, BloodPressure, BloodPressureRange, Availability, Appointment, BloodTest, UserRole, BloodRange, RecommendationBloodPresure, RecommendationBloodTest, Specialties
+from api.models import db, Paciente, Doctor, BloodPressure, BloodPressureRange, Availability, Appointment, BloodTest, UserRole, BloodRange, RecommendationBloodPresure, RecommendationBloodTest, Specialties, Contact, Review
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -253,96 +253,10 @@ def login():
 #         return jsonify({'msg': 'Tipo de usuario no válido'}), 400
 
 #ruta de repo pasado la que funciona en postman
-@app.route('/profile', methods=['GET', 'POST'])
-@jwt_required()
-def profile():
-    identity = get_jwt_identity()
-
-    if request.method == 'GET':
-        type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
-        user = None
-
-        if type == "paciente":
-            user = Paciente.query.filter_by(id=identity).first()
-        elif type == 'doctor':
-            user = Doctor.query.filter_by(id=identity).first()
-
-        if user:
-            return jsonify({'msg': user.serialize()}), 200
-        else:
-            return jsonify({'msg': "El usuario no existe"}), 404
-
-    elif request.method == 'POST': # otros metodos put delete elif request.method == 'PUT'
-        try:
-            body = request.get_json()
-            if not body:
-                return jsonify({'msg': 'Cuerpo de solicitud JSON no válido'}), 400
-
-            if body["type"] == "paciente":
-                numero_de_telefono = body.get('numero_de_telefono')
-                fecha_de_nacimiento = body.get('fecha_de_nacimiento')
-                sexo = body.get('sexo')
-
-                # Validar que todos los campos necesarios estén presentes
-                if not (numero_de_telefono and fecha_de_nacimiento and sexo):
-                    return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
-
-                # Actualizar los datos del paciente con el ID actual
-                paciente = Paciente.query.filter_by(id=identity).first()
-                if paciente:
-                    paciente.numero_de_telefono = numero_de_telefono
-                    paciente.fecha_de_nacimiento = fecha_de_nacimiento
-                    paciente.sexo = sexo
-                    # Guardar los cambios en la base de datos (dependiendo de tu configuración)
-                    db.session.commit()
-                    return jsonify({'msg': 'Campos del paciente actualizados correctamente'}), 201
-                else:
-
-                    return jsonify({'msg': 'Paciente no encontrado'}), 404
-
-            elif body["type"] == "doctor":
-                especialidad = body.get('especialidad')
-                numero_de_telefono = body.get('numero_de_telefono')
-                direccion = body.get('direccion')
-                ciudad = body.get('ciudad')
-                estado = body.get('estado')
-                costo = body.get('costo')
-                numero_de_licencia = body.get('numero_de_licencia')
-
-                # Validar que todos los campos necesarios estén presentes
-                if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
-                    return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
-
-                # Actualizar los datos del doctor con el ID actual
-                doctor = Doctor.query.filter_by(id=identity).first()
-                if doctor:
-                    doctor.especialidad = especialidad
-                    doctor.numero_de_telefono = numero_de_telefono
-                    doctor.direccion = direccion
-                    doctor.ciudad = ciudad
-                    doctor.estado = estado
-                    doctor.costo = costo
-                    doctor.numero_de_licencia = numero_de_licencia
-                    # Guardar los cambios en la base de datos (dependiendo de tu configuración)
-                    db.session.commit()
-                    return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
-                else:
-                    return jsonify({'msg': 'Doctor no encontrado'}), 404
-
-            else:
-                return jsonify({'msg': 'Tipo de usuario no válido'}), 400
-
-        except Exception as e:
-            return jsonify({'msg': str(e)}), 500
-
-
-#PROFILE DOCTOR Y PACIENTE ruta cambiada no funciona ya la probe en postman
-# @app.route('/profile', methods=['GET', 'POST', 'PUT'])
+# @app.route('/profile', methods=['GET', 'POST'])
 # @jwt_required()
 # def profile():
 #     identity = get_jwt_identity()
-#     # Simulación de una identidad para pruebas
-#     # identity = 4  # Cambia este valor al ID del usuario doctor que deseas probar
 
 #     if request.method == 'GET':
 #         type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
@@ -357,8 +271,6 @@ def profile():
 #             return jsonify({'msg': user.serialize()}), 200
 #         else:
 #             return jsonify({'msg': "El usuario no existe"}), 404
-
-
 
 #     elif request.method == 'POST': # otros metodos put delete elif request.method == 'PUT'
 #         try:
@@ -396,9 +308,6 @@ def profile():
 #                 estado = body.get('estado')
 #                 costo = body.get('costo')
 #                 numero_de_licencia = body.get('numero_de_licencia')
-#                 especialidades_adicionales = body.get('especialidades_adicionales')
-#                 foto_perfil = body.get('foto_perfil')
-                                
 
 #                 # Validar que todos los campos necesarios estén presentes
 #                 if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
@@ -414,19 +323,8 @@ def profile():
 #                     doctor.estado = estado
 #                     doctor.costo = costo
 #                     doctor.numero_de_licencia = numero_de_licencia
-#                     doctor.foto_perfil = foto_perfil
 #                     # Guardar los cambios en la base de datos (dependiendo de tu configuración)
 #                     db.session.commit()
-
-#                       # Manejo de especialidades adicionales
-#                     existing_specialties = {s.especialidades: s for s in doctor.especialidades_adicionales}
-#                     for specialty in especialidades_adicionales:
-#                         if specialty not in existing_specialties:
-#                             new_specialty = Specialties(doctor_id=doctor.id, especialidades=specialty)
-#                             db.session.add(new_specialty)
-#                     db.session.commit()
-
-
 #                     return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
 #                 else:
 #                     return jsonify({'msg': 'Doctor no encontrado'}), 404
@@ -436,64 +334,166 @@ def profile():
 
 #         except Exception as e:
 #             return jsonify({'msg': str(e)}), 500
+
+
+#PROFILE DOCTOR Y PACIENTE ruta cambiada no funciona ya la probe en postman
+@app.route('/profile', methods=['GET', 'POST', 'PUT'])
+@jwt_required()
+def profile():
+    identity = get_jwt_identity()
+    # Simulación de una identidad para pruebas
+    # identity = 4  # Cambia este valor al ID del usuario doctor que deseas probar
+
+    if request.method == 'GET':
+        type = request.args.get('type') #pide sacar info de la url por eso la url tiene? type=doctor
+        user = None
+
+        if type == "paciente":
+            user = Paciente.query.filter_by(id=identity).first()
+        elif type == 'doctor':
+            user = Doctor.query.filter_by(id=identity).first()
+
+        if user:
+            return jsonify({'msg': user.serialize()}), 200
+        else:
+            return jsonify({'msg': "El usuario no existe"}), 404
+
+
+
+    elif request.method == 'POST': # otros metodos put delete elif request.method == 'PUT'
+        try:
+            body = request.get_json()
+            if not body:
+                return jsonify({'msg': 'Cuerpo de solicitud JSON no válido'}), 400
+
+            if body["type"] == "paciente":
+                numero_de_telefono = body.get('numero_de_telefono')
+                fecha_de_nacimiento = body.get('fecha_de_nacimiento')
+                sexo = body.get('sexo')
+
+                # Validar que todos los campos necesarios estén presentes
+                if not (numero_de_telefono and fecha_de_nacimiento and sexo):
+                    return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
+
+                # Actualizar los datos del paciente con el ID actual
+                paciente = Paciente.query.filter_by(id=identity).first()
+                if paciente:
+                    paciente.numero_de_telefono = numero_de_telefono
+                    paciente.fecha_de_nacimiento = fecha_de_nacimiento
+                    paciente.sexo = sexo
+                    # Guardar los cambios en la base de datos (dependiendo de tu configuración)
+                    db.session.commit()
+                    return jsonify({'msg': 'Campos del paciente actualizados correctamente'}), 201
+                else:
+
+                    return jsonify({'msg': 'Paciente no encontrado'}), 404
+
+            elif body["type"] == "doctor":
+                especialidad = body.get('especialidad')
+                numero_de_telefono = body.get('numero_de_telefono')
+                direccion = body.get('direccion')
+                ciudad = body.get('ciudad')
+                estado = body.get('estado')
+                costo = body.get('costo')
+                numero_de_licencia = body.get('numero_de_licencia')
+                especialidades_adicionales = body.get('especialidades_adicionales')
+                foto_perfil = body.get('foto_perfil')
+                                
+
+                # Validar que todos los campos necesarios estén presentes
+                if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
+                    return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
+
+                # Actualizar los datos del doctor con el ID actual
+                doctor = Doctor.query.filter_by(id=identity).first()
+                if doctor:
+                    doctor.especialidad = especialidad
+                    doctor.numero_de_telefono = numero_de_telefono
+                    doctor.direccion = direccion
+                    doctor.ciudad = ciudad
+                    doctor.estado = estado
+                    doctor.costo = costo
+                    doctor.numero_de_licencia = numero_de_licencia
+                    doctor.foto_perfil = foto_perfil
+                    # Guardar los cambios en la base de datos (dependiendo de tu configuración)
+                    db.session.commit()
+
+                      # Manejo de especialidades adicionales
+                    existing_specialties = {s.especialidades: s for s in doctor.especialidades_adicionales}
+                    for specialty in especialidades_adicionales:
+                        if specialty not in existing_specialties:
+                            new_specialty = Specialties(doctor_id=doctor.id, especialidades=specialty)
+                            db.session.add(new_specialty)
+                    db.session.commit()
+
+
+                    return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
+                else:
+                    return jsonify({'msg': 'Doctor no encontrado'}), 404
+
+            else:
+                return jsonify({'msg': 'Tipo de usuario no válido'}), 400
+
+        except Exception as e:
+            return jsonify({'msg': str(e)}), 500
         
 
  
-#     elif request.method == 'PUT':
-#         try:
-#             body = request.get_json()
-#             if not body:
-#                 return jsonify({'msg': 'Cuerpo de solicitud JSON no válido'}), 400
+    elif request.method == 'PUT':
+        try:
+            body = request.get_json()
+            if not body:
+                return jsonify({'msg': 'Cuerpo de solicitud JSON no válido'}), 400
 
-#             if body["type"] == "paciente":
-#                 # Lógica de actualización para pacientes
-#                 pass
+            if body["type"] == "paciente":
+                # Lógica de actualización para pacientes
+                pass
 
-#             elif body["type"] == "doctor":
-#                 especialidad = body.get('especialidad')
-#                 numero_de_telefono = body.get('numero_de_telefono')
-#                 direccion = body.get('direccion')
-#                 ciudad = body.get('ciudad')
-#                 estado = body.get('estado')
-#                 costo = body.get('costo')
-#                 numero_de_licencia = body.get('numero_de_licencia')
-#                 especialidades_adicionales = body.get('especialidades_adicionales')
-#                 foto_perfil = body.get('foto_perfil')
+            elif body["type"] == "doctor":
+                especialidad = body.get('especialidad')
+                numero_de_telefono = body.get('numero_de_telefono')
+                direccion = body.get('direccion')
+                ciudad = body.get('ciudad')
+                estado = body.get('estado')
+                costo = body.get('costo')
+                numero_de_licencia = body.get('numero_de_licencia')
+                especialidades_adicionales = body.get('especialidades_adicionales')
+                foto_perfil = body.get('foto_perfil')
 
-#                 # Validar que todos los campos necesarios estén presentes
-#                 if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
-#                     return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
+                # Validar que todos los campos necesarios estén presentes
+                if not (especialidad and numero_de_telefono and direccion and ciudad and estado and costo and numero_de_licencia):
+                    return jsonify({'msg': 'Faltan campos obligatorios en la solicitud'}), 422
 
-#                 # Actualizar los datos del doctor con el ID actual
-#                 doctor = Doctor.query.filter_by(id=identity).first()
-#                 if doctor:
-#                     doctor.especialidad = especialidad
-#                     doctor.numero_de_telefono = numero_de_telefono
-#                     doctor.direccion = direccion
-#                     doctor.ciudad = ciudad
-#                     doctor.estado = estado
-#                     doctor.costo = costo
-#                     doctor.numero_de_licencia = numero_de_licencia
-#                     doctor.foto_perfil = foto_perfil
-#                     db.session.commit()
+                # Actualizar los datos del doctor con el ID actual
+                doctor = Doctor.query.filter_by(id=identity).first()
+                if doctor:
+                    doctor.especialidad = especialidad
+                    doctor.numero_de_telefono = numero_de_telefono
+                    doctor.direccion = direccion
+                    doctor.ciudad = ciudad
+                    doctor.estado = estado
+                    doctor.costo = costo
+                    doctor.numero_de_licencia = numero_de_licencia
+                    doctor.foto_perfil = foto_perfil
+                    db.session.commit()
 
-#                     # Manejo de especialidades adicionales
-#                     existing_specialties = {s.especialidades: s for s in doctor.especialidades_adicionales}
-#                     for specialty in especialidades_adicionales:
-#                         if specialty not in existing_specialties:
-#                             new_specialty = Specialties(doctor_id=doctor.id, especialidades=specialty)
-#                             db.session.add(new_specialty)
-#                     db.session.commit()
+                    # Manejo de especialidades adicionales
+                    existing_specialties = {s.especialidades: s for s in doctor.especialidades_adicionales}
+                    for specialty in especialidades_adicionales:
+                        if specialty not in existing_specialties:
+                            new_specialty = Specialties(doctor_id=doctor.id, especialidades=specialty)
+                            db.session.add(new_specialty)
+                    db.session.commit()
 
-#                     return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
-#                 else:
-#                     return jsonify({'msg': 'Doctor no encontrado'}), 404
+                    return jsonify({'msg': 'Campos del doctor actualizados correctamente'}), 201
+                else:
+                    return jsonify({'msg': 'Doctor no encontrado'}), 404
 
-#             else:
-#                 return jsonify({'msg': 'Tipo de usuario no válido'}), 400
+            else:
+                return jsonify({'msg': 'Tipo de usuario no válido'}), 400
 
-#         except Exception as e:
-#             return jsonify({'msg': str(e)}), 500
+        except Exception as e:
+            return jsonify({'msg': str(e)}), 500
         
 
 #DOCTOR
@@ -501,6 +501,17 @@ def profile():
 def doctors():
      doctors = Doctor.query.all()
      return jsonify([doctor.serialize() for doctor in doctors]), 200
+
+@app.route('/doctors', methods=['GET'])
+def get_doctors():
+    doctors = Doctor.query.all()
+    doctors_list = [{
+        'id': doctor.id,
+        'nombre': doctor.nombre,
+        'apellido': doctor.apellido,
+    } for doctor in doctors]
+
+    return jsonify(doctors_list), 200
     
 @app.route('/api/doctors/<int:id>', methods=['GET'])
 def doctor(id):
@@ -515,16 +526,13 @@ def doctor(id):
 def create_appointment():
     body = request.get_json()
     required_fields = ['doctor_id', 'availability_id', 'message','appointment_date']
-
     if not body or not all(field in body for field in required_fields):
         return jsonify({'msg':'Faltan campos obligatorios'}), 400
-    
     paciente_id = get_jwt_identity()
     doctor_id = body.get('doctor_id')
     availability_id = body.get('availability_id')
     message = body.get('message'),
     appointment_date = body.get('appointment_date')
-
     if 'doctor_id' not in body:
         return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
     if 'availability_id' not in body:
@@ -533,12 +541,12 @@ def create_appointment():
         return jsonify({'msg':'El campo message es obligatorios'}), 400
     if 'appointment_date' not in body:
         return jsonify({'msg':'El campo appointment_name es obligatorios'}), 400
-
-    
     availability = Availability.query.get(availability_id)
     if not availability or availability.doctor_id != doctor_id:
         return jsonify({'msg': 'Disponibilidad no válida'}), 400
-
+    #esto lo puse nuevo
+    if availability.is_booked:
+        return jsonify({'msg': 'Esta disponibilidad ya está reservada'}), 400
     new_appointment = Appointment(
         paciente_id=paciente_id,
         doctor_id=doctor_id,
@@ -546,15 +554,13 @@ def create_appointment():
         message=message,
         appointment_date=appointment_date
     )
-
     doctor = Doctor.query.get(doctor_id)
     paciente = Paciente.query.get(paciente_id)
-
     try:
-        
         db.session.add(new_appointment)
+        #esto lo puse nuevo
+        availability.is_booked = True
         db.session.commit()
-        
         if new_appointment:
             if paciente.numero_de_telefono is not None:
                 message_body = (
@@ -567,17 +573,16 @@ def create_appointment():
                 f"Mensaje: {message}\n"
                 f"Fecha de la cita: {new_appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S')}"
             )
-
                 twilio_message = twilio_client.messages.create(
                     body =message_body,
-                    from_=os.getenv('TWILIO_PHONE_NUMBER'), # Número de Twilio 
+                    from_=os.getenv('TWILIO_PHONE_NUMBER'), # Número de Twilio
                     to=paciente.numero_de_telefono # Número del paciente
                 )
-                print(twilio_message.sid) 
-            availability.is_booked = body.get("is_booked")
-            db.session.commit()
+                print(twilio_message.sid)
+            # availability.is_booked = body.get("is_booked")
+            # db.session.commit()
             return jsonify({'msg':'Cita creada exitosamente'}), 201
-    except Exception as error:    
+    except Exception as error:
         db.session.rollback()
         print(error)
         return jsonify({'msg': "Error al agendar la cita"}), 500
@@ -895,6 +900,72 @@ def evaluate_blood_test():
     check_recommendation(body['trigliceridos'], 'Triglicéridos')
 
     return jsonify({'recommendations': recommendations}), 200
+
+
+@app.route('/contact', methods=['POST'])
+def create_contact():
+    data = request.get_json()
+    full_name = data.get('fullName')
+    email = data.get('email')
+    comments = data.get('comments')
+
+    if not full_name or not email or not comments:
+        return jsonify({'error': 'Todos los campos son obligatorios'}), 400
+
+    new_contact = Contact(full_name=full_name, email=email, comments=comments)
+    db.session.add(new_contact)
+    db.session.commit()
+
+    return jsonify({'message': 'Formulario enviado correctamente!'}), 201
+
+
+@app.route('/reviews', methods=['POST'])
+@jwt_required()
+def create_review():
+    current_user_id = get_jwt_identity()
+    data = request.get_json()
+
+    # Validar la entrada de datos
+    if not data or not 'doctor_id' in data or not 'comentario' in data:
+        return jsonify({'msg': 'Faltan datos requeridos'}), 400
+
+    try:
+        new_review = Review(
+            doctor_id=data['doctor_id'],
+            patient_id=current_user_id,
+            comentario=data['comentario'],
+            puntuacion=data.get('puntuacion', 5)  # Valor por defecto 5 si no se proporciona puntuación
+        )
+        db.session.add(new_review)
+        db.session.commit()
+        return jsonify({'msg': 'Reseña creada exitosamente'}), 201
+    except Exception as e:
+        return jsonify({'msg': f'Error al crear la reseña: {str(e)}'}), 400
+    
+    
+    
+@app.route('/reviews/doctor/<int:doctor_id>', methods=['GET'])
+def get_reviews(doctor_id):
+    reviews = Review.query.filter_by(doctor_id=doctor_id).all()
+    reviews_list = [{
+        'id': review.id,
+        'doctor_id': review.doctor_id,
+        'doctor_nombre': f"{review.doctor.nombre} {review.doctor.apellido}",  # Nombre completo del doctor
+        'patient_id': review.patient_id,
+        'patient_nombre': f"{review.patient.nombre} {review.patient.apellido}",  # Nombre completo del paciente
+        'comentario': review.comentario,
+        'puntuacion': review.puntuacion,
+        'created_at': review.created_at
+    } for review in reviews]
+
+    return jsonify(reviews_list), 200
+
+# @app.route('/reviews/doctor/<int:doctor_id>', methods=['GET'])
+# def get_reviews(doctor_id):
+#     reviews = Review.query.filter_by(doctor_id=doctor_id).all()
+#     reviews_list = [review.serialize() for review in reviews]
+
+#     return jsonify(reviews_list), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ export const HeroSection_2 = () => {
     return (
         <section className="HeroSection-2 bsb-hero-2 px-3  mb-5  mt-5">
             <div className="MedicalDirectory">
-                <h3 className="display-6 fw-bold mb-3" >Directorio médico y agenda medica en
+                <h3 className="display-6 fw-bold mb-3" >Directorio médico y agenda médica en
                     <br />
                     <span>un solo lugar.</span> </h3>
                 <p className="fs6 mb-5">
@@ -55,7 +55,7 @@ export const HeroSection_2 = () => {
                     </div>
                 </div>
             </div>
-            <Link to="/doctors">
+            <Link to="/analysis">
                 <button type="button" className="btn btn-hero-2 bsb-btn-xl ">
                     Analiza tus valores
                 </button>

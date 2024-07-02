@@ -80,9 +80,9 @@ const DoctorsDirectory = () => {
                     filteredDoctors.map((doctor, index) => (
                         <div key={index} className="col-md-4 mb-4">
                             <div className="card-custom">
-                                <div className="card-body d-flex align-items-center">
-                                    <div className="pe-3">
-                                        <img src={doctor.foto_perfil} alt={doctor.nombre} className="rounded-circle shadow-sm" style={{ width: '6rem', height: '6rem', objectFit: 'cover' }} />
+                                <div className="d-flex align-items-center pt-4">
+                                    <div className="ps-3">
+                                        <img src={doctor.foto_perfil} alt={doctor.nombre} className="rounded-circle shadow-sm me-3" style={{ width: '6rem', height: '6rem', objectFit: 'cover' }} />
                                     </div>
                                     <div>
                                         {doctor.destacado && (
@@ -105,7 +105,7 @@ const DoctorsDirectory = () => {
                                     </div>
                                 </div>
                                 <div className="p-4">
-                                    <p className="text-secondary mb-1">{doctor.ciudad}</p>
+                                    <p className="text-secondary mb-1">Ciudad: {doctor.ciudad}</p>
                                     <p className="text-secondary mb-1">Costo de la consulta: {doctor.costo}</p>
                                     <p className="text-secondary mb-0">Dirección: {doctor.direccion}</p>
                                 </div>

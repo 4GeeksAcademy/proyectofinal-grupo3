@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import ContactSection from './ContactSection.jsx';
+import ReviewPatients from './ReviewPatients.jsx';
 
 const ProfilePatient = () => {
     const navigate = useNavigate();
@@ -15,6 +16,7 @@ const ProfilePatient = () => {
         foto_perfil: '',
         type: 'paciente',
     });
+
     const [respuestaServidor, setRespuestaServidor] = useState(null);
 
     useEffect(() => {
@@ -58,7 +60,7 @@ const ProfilePatient = () => {
         e.preventDefault();
         const token = localStorage.getItem('token');
 
-        
+
         const formattedFechaNacimiento = formData.fecha_de_nacimiento
             ? new Date(formData.fecha_de_nacimiento).toISOString().split('T')[0]
             : null;
@@ -81,12 +83,12 @@ const ProfilePatient = () => {
 
             const data = await response.json();
             setRespuestaServidor(data);
-            navigate("/"); 
+            navigate("/");
         } catch (error) {
             console.error('Error al enviar los datos:', error);
-            
+
         }
-        console.log (handleSubmit)
+        console.log(handleSubmit)
     };
 
     return (
@@ -166,27 +168,23 @@ const ProfilePatient = () => {
                                 type="date"
                                 id="fecha_de_nacimiento"
                                 name="fecha_de_nacimiento"
-                                value={formData.fecha_de_nacimiento} 
+                                value={formData.fecha_de_nacimiento}
                                 onChange={handleChange}
                                 className="form-control"
-                                placeholder="dd/mm/aaaa" 
+                                placeholder="dd/mm/aaaa"
                             />
                         </div>
                         <div className="col-md-6 mb-5">
-                                <label className="form-label">sexo</label>
-                                <input
-                                    type="text"
-                                    name="sexo"
-                                    value={formData.sexo}
-                                    onChange={handleChange}
-                                    className="form-control"
-                                    placeholder="Ingrese su nombre"
-                                />
-                            </div>
-
-
-
-
+                            <label className="form-label">sexo</label>
+                            <input
+                                type="text"
+                                name="sexo"
+                                value={formData.sexo}
+                                onChange={handleChange}
+                                className="form-control"
+                                placeholder="Ingrese su nombre"
+                            />
+                        </div>
 
                         <div className="d-grid">
                             <button type="submit" className="btn btn-primary">Guardar Perfil</button>
@@ -199,6 +197,7 @@ const ProfilePatient = () => {
                     )}
                 </div>
             </div>
+            <ReviewPatients doctorId={1} onReviewSubmitted={() => console.log("Review submitted")} />
             <ContactSection />
         </div>
     );

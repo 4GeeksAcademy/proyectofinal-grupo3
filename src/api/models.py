@@ -143,7 +143,8 @@ class Doctor(db.Model):
 
     appointments = db.relationship('Appointment', backref='doctor_relationship', lazy=True)
     availabilities = db.relationship('Availability', backref='doctor', lazy=True, uselist=True)
-    resenas = db.relationship('Review', backref='doctor', lazy=True)  # Relación con la tabla de reseñas
+    #reviews = db.relationship('Review', back_populates='doctor', lazy=True)  # Relación con la tabla de reseñas
+    reviews_list = db.relationship('Review', back_populates='doctor', lazy=True)  # Cambiado a 'reviews_list' para evitar conflicto
     especialidades_adicionales = db.relationship('Specialties', backref='doctor', lazy=True)  # Relación con la tabla Specialty
     # horario = db.Column(db.Date, nullable=True) # que tipo de dato va? date o dateTime diferencia? tabla -> disponibilidad_doctor
 
@@ -168,7 +169,8 @@ class Doctor(db.Model):
             "foto_perfil": self.foto_perfil,
             "numero_de_resenas": self.numero_de_resenas,  # Serialización del número de reseñas
             "availabilities": [availability.serialize() for availability in self.availabilities], 
-            "resenas": [resena.serialize() for resena in self.resenas],  # Serialización de las reseñas
+            #"reviews": [review.serialize() for review in self.reviews],  # Serialización de las reseñas
+            "reviews": [review.serialize() for review in self.reviews_list],  # Serialización de las reseñas
             "especialidades_adicionales": [especialidad.serialize() for especialidad in self.especialidades_adicionales]
             # do not serialize the password, its a security breach
         }
@@ -351,18 +353,29 @@ class Review(db.Model):
     __tablename__ = "review"
     id = db.Column(db.Integer, primary_key=True)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('paciente.id'), nullable=False)
     comentario = db.Column(db.String(500), nullable=False)
-    puntuacion = db.Column(db.Integer, nullable=False)  # Asumiendo que las reseñas también tienen una puntuación
+    puntuacion = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
+
+    doctor = db.relationship('Doctor', backref=db.backref('reviews', lazy=True))# Mantenido como 'reviews' aquí
+    patient = db.relationship('Paciente', backref=db.backref('patient_reviews', lazy=True))# Cambiado a 'patient_reviews'
+
+    #doctor = db.relationship('Doctor', backref=db.backref('reviews', lazy=True))
+    #patient = db.relationship('Paciente', backref=db.backref('reviews', lazy=True))
 
     def __repr__(self):
-        return f'<Review {self.id} for Doctor {self.doctor_id}>'
+        return f'<Review {self.id} for Doctor {self.doctor_id} by Patient {self.patient_id}>'
 
     def serialize(self):
         return {
             "id": self.id,
             "doctor_id": self.doctor_id,
+            "patient_id": self.patient_id,
+            "patient_nombre": f"{self.patient.nombre} {self.patient.apellido}",  # Incluyendo el nombre completo del paciente
             "comentario": self.comentario,
-            "puntuacion": self.puntuacion
+            "puntuacion": self.puntuacion,
+            "created_at": self.created_at.isoformat()  # Convertir a string en formato ISO 8601
         }
 
 
@@ -389,6 +402,8 @@ def after_delete_review(mapper, connection, target):
         session.commit()
     session.close()
 
+
+
 class Specialties(db.Model):
     __tablename__ = "specialties"
     id = db.Column(db.Integer, primary_key=True)
@@ -404,3 +419,13 @@ class Specialties(db.Model):
             "doctor_id": self.doctor_id,
             "especialidades": self.especialidades
         }
+
+
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    full_name = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    comments = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return f'<Contact {self.full_name}>'

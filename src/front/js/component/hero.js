@@ -10,10 +10,10 @@ export const HeroSection = () => {
             <div className="container overflow-hidden">
                 <div className="container-text row gy-3 gy-lg-0 align-items-lg-center justify-content-lg-between">
                     <div className="col-12 col-lg-6 order-1 order-lg-0">
-                        <h4 className="display-3 fw-bold mb-3">Interpreta tu <span>examen</span> médico, detecta a tiempo y vive sin preocupaciones.
+                        <h4 className="display-3 fw-bold mb-3">Interpreta tu <span>exámen</span> médico, detecta a tiempo y vive sin preocupaciones.
                         </h4>
                         <p className="fs-4 mb-5 container-text-paragraph">
-                            Mantenga su salud bajo control, revisando la dinamica de la misma interpretando sus examanes de laboratorios. Prevenga posibles enfermedades al monitorizar su salud.
+                            Mantenga su salud bajo control, revisando la dinámica de la misma interpretando sus exámanes de laboratorios. Prevenga posibles enfermedades al monitorizar su salud.
                         </p>
                         <div className="d-grid gap-2 d-sm-flex">
                             <Link to="/analysis">
