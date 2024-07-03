@@ -57,7 +57,7 @@ export const FormLogIn = (props) => {
       }
     } catch (error) {
       if (isMounted.current) {
-        console.error("Error de red:", error);
+        // console.error("Error de red:", error);
         setError("Error en la conexión. Inténtalo de nuevo.");
       }
     }

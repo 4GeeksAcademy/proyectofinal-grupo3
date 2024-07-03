@@ -12,3 +12,6 @@ length = 32 #ajusta la longitud segun tus necesidades de seguridad
 security_salt = ''.join(secrets.choice(characters)for i in range(length)) 
 
 print ('cadena aleatoria generada', security_salt)
+
+#correr en la terminal el comando $python3 generate_salt.py 
+# desde la raiz del documento 

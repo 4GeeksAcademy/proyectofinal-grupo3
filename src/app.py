@@ -849,7 +849,7 @@ def add_blood_test_recommendation():
     db.session.commit()
     return jsonify({"message": "Recommendation added successfully!"}), 200
 
-@app.route('/blood_pressure_form ', methods=['POST']) 
+@app.route('/blood_pressure_form', methods=['POST']) 
 def blood_pressure_form():
     body = request.get_json()
     systolic = body.get('systolic')
@@ -905,8 +905,13 @@ def evaluate_blood_test():
     check_recommendation(body['glicemia'], 'Glicemia')
     check_recommendation(body['colesterol'], 'Colesterol')
     check_recommendation(body['trigliceridos'], 'Triglicéridos')
+    
 
-    return jsonify({'recommendations': recommendations}), 200
+    #return jsonify({'recommendations': recommendations}), 200
+    response = jsonify({'recommendations': recommendations})
+    response.headers.add('Access-Control-Allow-Origin', 'https://organic-robot-5gqxrr6vxq4qc4qgp-3000.app.github.dev')
+
+    return response, 200
 
 @app.route('/forgot_password', methods=['POST'])
 def forgot_password():
