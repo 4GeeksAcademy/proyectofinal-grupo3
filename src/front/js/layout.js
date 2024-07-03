@@ -56,13 +56,14 @@ const Layout = () => {
 
                         <Route path="/contact" element={<ContactSection />} />
                         <Route path="/doctors" element={<DoctorsDirectory />} />
-                        <Route element={<Analysis />} path="/analysis" />
+                        
                         <Route element={<PrivateRoute />} >
                             <Route path="/doctor/:id" element={<DoctorsDirectoryDetail />} />
                             <Route path="/profile_doctor" element={<ProfileDoctor />} />
                             <Route path="/profile_patient" element={<ProfilePatient />} />
                             <Route path="/forgot_password" element={<ForgotPassword />} />
                             <Route path="/new_password" element={<NewPassword />} />
+                            <Route element={<Analysis/>} path="/analysis" />
                             
                         </Route>
                         <Route element={<h1>Not found!</h1>} />
