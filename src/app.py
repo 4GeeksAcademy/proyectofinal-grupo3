@@ -39,7 +39,9 @@ app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv(
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 # db = SQLAlchemy(app)
-CORS(app)  # Permite todas las solicitudes de todos los orígenes
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+#CORS(app)  # Permite todas las solicitudes de todos los orígenes
 
 account_sid =  os.getenv('TWILIO_ACCOUNT_SID')
 auth_token =   os.getenv('TWILIO_AUTH_TOKEN')  
@@ -769,12 +771,6 @@ def add_blood_pressure_range():
     return jsonify({'msg':'blood_range agregado con exito'}), 201
 
 
-
-
-
-
-
-
     # try:
     #     new_range = BloodPressureRange(
     #         name=body['name'],
@@ -849,6 +845,18 @@ def add_blood_test_recommendation():
     db.session.commit()
     return jsonify({"message": "Recommendation added successfully!"}), 200
 
+
+@app.route('/doctor/<int:doctor_id>/availability', methods=['GET'])
+@jwt_required()
+def get_doctor_availability(doctor_id):
+    # Obtener todas las disponibilidades del doctor que no estén reservadas
+    availabilities = Availability.query.filter_by(doctor_id=doctor_id).all()
+    # Convertir cada disponibilidad a un diccionario usando el método
+    availabilities_list = [availability.serialize() for availability in availabilities]
+    # availabilities_list = list(map(lambda availability: availability.serialize(), availabilities))
+    # Devolver la lista de diccionarios como una respuesta JSON
+    return jsonify(availabilities_list)
+
 @app.route('/blood_pressure_form', methods=['POST']) 
 def blood_pressure_form():
     body = request.get_json()
@@ -871,17 +879,6 @@ def blood_pressure_form():
     else:
         return jsonify({"recommendation": "No specific recommendation found for the given values."}), 404
 
-@app.route('/doctor/<int:doctor_id>/availability', methods=['GET'])
-@jwt_required()
-def get_doctor_availability(doctor_id):
-    # Obtener todas las disponibilidades del doctor que no estén reservadas
-    availabilities = Availability.query.filter_by(doctor_id=doctor_id).all()
-    # Convertir cada disponibilidad a un diccionario usando el método
-    availabilities_list = [availability.serialize() for availability in availabilities]
-    # availabilities_list = list(map(lambda availability: availability.serialize(), availabilities))
-    # Devolver la lista de diccionarios como una respuesta JSON
-    return jsonify(availabilities_list)
-
 @app.route('/evaluate_blood_test', methods=['POST'])
 def evaluate_blood_test():
     body = request.get_json()
@@ -890,28 +887,32 @@ def evaluate_blood_test():
     
     recommendations = []
 
+    
+
     def check_recommendation(value, name):
+        try:
+            float_value = float(value)
+        except ValueError:
+            return  # Manejar caso donde el valor no es convertible a float
+
         recs = RecommendationBloodTest.query.filter(RecommendationBloodTest.name.like(f"%{name}%")).all()
         for rec in recs:
-            if rec.min_range <= value <= rec.max_range:
+            if rec.min_range <= float_value <= rec.max_range:
                 recommendations.append({
                     "name": rec.name,
                     "text": rec.text,
                     "specialist": rec.specialist
                 })
     #se ejecuta la funcion check_recommendation recibe valor y el nombre del examen que se hiso 
-    check_recommendation(body['hemoglobina'], 'Hemoglobina')
-    check_recommendation(body['hematocrito'], 'Hematocritos')
-    check_recommendation(body['glicemia'], 'Glicemia')
-    check_recommendation(body['colesterol'], 'Colesterol')
-    check_recommendation(body['trigliceridos'], 'Triglicéridos')
+    check_recommendation(body.get('hemoglobina'), 'Hemoglobina')
+    check_recommendation(body.get('hematocrito'), 'Hematocrito')
+    check_recommendation(body.get('glicemia'), 'Glicemia')
+    check_recommendation(body.get('colesterol'), 'Colesterol')
+    check_recommendation(body.get('trigliceridos'), 'Trigliceridos')
     
 
-    #return jsonify({'recommendations': recommendations}), 200
-    response = jsonify({'recommendations': recommendations})
-    response.headers.add('Access-Control-Allow-Origin', 'https://organic-robot-5gqxrr6vxq4qc4qgp-3000.app.github.dev')
-
-    return response, 200
+    return jsonify({'recommendations': recommendations}), 200
+   
 
 @app.route('/forgot_password', methods=['POST'])
 def forgot_password():
