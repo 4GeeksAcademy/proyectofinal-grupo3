@@ -39,7 +39,8 @@ app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv(
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 # db = SQLAlchemy(app)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
+# CORS(app, resources={r"/*": {"origins": "*"}})
 
 #CORS(app)  # Permite todas las solicitudes de todos los orígenes
 
@@ -708,9 +709,6 @@ def get_doctor_appointments(doctor_id):
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
 
-
-    
-
 #Analisis Clinicos
 @app.route('/add_blood_range', methods=['POST'])
 def add_blood_range():
@@ -737,7 +735,6 @@ def add_blood_range():
     db.session.commit()
 
     return jsonify({'msg':"blood_range agregado con exito"}), 201
-
 
 @app.route('/add_blood_pressure_range', methods=['POST'])
 def add_blood_pressure_range():
@@ -969,16 +966,6 @@ def reset_password(token):
     return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
 
     
-
-
-
-
-
-
-
-
-    
-
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
