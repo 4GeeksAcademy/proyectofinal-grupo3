@@ -129,6 +129,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
             });
 
             if (response.ok) {
+                alert('Cita agendada con exito')
                 const data = await response.json();
                 console.log('Cita creada exitosamente:', data);
                 onClose();
