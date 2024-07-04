@@ -49,7 +49,7 @@ def verify_token(token):
         return None
     
 def send_reset_email(user, token):
-    reset_url = f"https://curly-fishstick-jj5q776r4xv5355v5-3000.app.github.dev/reset_password/?token={token}"
+    reset_url = f"https://supreme-guacamole-v6vqrr4pq6gpf677-3000.app.github.dev/reset_password/?token={token}"
     html = render_template('reset_password.html', reset_url=reset_url)
     msg = Message('Restablecer su password', sender=current_app.config['MAIL_USERNAME'], recipients=[user.email])
     msg.html = html
