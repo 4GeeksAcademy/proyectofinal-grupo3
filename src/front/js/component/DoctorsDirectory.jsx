@@ -19,24 +19,6 @@ const DoctorsDirectory = () => {
     const [showInitialMessage, setShowInitialMessage] = useState(true);
 
 
-    /*useEffect(() => {
-        setDoctors(doctorsList);
-    }, []);*/
-
-    /*useEffect(() => {
-        const fetchDoctors = async () => {
-            try {
-                const response = await fetch(`${process.env.BACKEND_URL}/api/doctors`);
-                const data = await response.json();
-                setDoctors(data);
-            } catch (error) {
-                console.log("Error fetching doctors:", error);
-            }
-        };
-
-        fetchDoctors();
-    }, []);*/
-
     useEffect(() => {
         actions.fetchDoctors();
     }, []);
