@@ -33,25 +33,25 @@ const BloodPressureForm = () => {
   };
 
   return (
-    <form className="blood-pressure-form">
-      <h1>Presión arterial</h1> {/* Clearer title */}
+    <form className="blood-pressure-form" onSubmit={handleSubmit}>
+      <h1>Presión Arterial</h1>
       <div className="form-group">
         <label htmlFor="systolicPressure" className="form-label">
-        Presión sistólica (mmHg)
+        Presión Sistólica (mmHg)
         </label>
         <input
           type="number" // Input type for numerical values
           className="form-control"
           id="systolicPressure"
           value={systolicPressure}
-          placeholder="Enter Systolic Pressure"
+          placeholder="Sistólica"
           onChange={(e) => setSystolicPressure(e.target.value)}
           required // Mark as required
         />
       </div>
       <div className="form-group">
         <label htmlFor="diastolicPressure" className="form-label">
-        Presión diastólica (mmHg)
+        Presión Diastólica (mmHg)
         </label>
         <input
           type="number"
@@ -59,20 +59,20 @@ const BloodPressureForm = () => {
           id="diastolicPressure"
           value={diastolicPressure}
           onChange={(e) => setDiastolicPressure(e.target.value)}
-          placeholder="Enter Diastolic Pressure"
+          placeholder="Distólica"
           required
 
         />
       </div>
       <div className="form-group">
         <label htmlFor="heartRate" className="form-label">
-          Frecuencia cardiaca (bpm)
+          Frecuencia Cardíaca (bpm)
         </label>
         <input
           type="number"
           className="form-control"
           id="heartRate"
-          placeholder="Enter Heart Rate"
+          placeholder="Ingrese su frecuencia cardíaca"
           value={heartRate}
           onChange={(e) => setHeartRate(e.target.value)}
           required
@@ -80,13 +80,13 @@ const BloodPressureForm = () => {
       />
     </div>
     <button className="btn btn-primary" type="submit">
-      Submit Reading
+      Enviar Resultados
     </button>
 
     {recommendation && (
         <div className="recommendation">
-          <h2>Recommendation</h2>
-          <p>{recommendation.text}</p>
+          <h2 className='mb-2'> <strong>  Recomendaciones: </strong> </h2>
+          <p>  {recommendation.text}  </p>
         </div>
       )}
 
