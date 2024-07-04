@@ -103,6 +103,9 @@ const BloodTestForm = () => {
       <div className="form-group">
         <label htmlFor="colesterol">
           Colesterol (mg/dL)
+          </label>
+        <label htmlFor="hematocrit">
+          Hematocrito (%)
         </label>
         <input
           className="form-control"

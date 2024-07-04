@@ -47,13 +47,14 @@ justify-content: space-around;
 }
 .doc {
    margin-bottom: 15px;
-   border-radius: 20px;
+   border-radius: 15px;
    font-size: 28px;
    font-weight: 650;
    letter-spacing: 2px;
-   color: #007bff;
+   color: #ffffff;
+   border: transparent;
    
 }
 .doc:hover{
-    color: blue;
+    color: rgb(255, 255, 255);
 }

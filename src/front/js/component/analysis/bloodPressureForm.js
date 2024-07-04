@@ -33,65 +33,66 @@ const BloodPressureForm = () => {
   };
 
   return (
-    <form className="blood-pressure-form" onSubmit={handleSubmit}>
-    <h1>Blood Pressure Measurement</h1> {/* Clearer title */}
-    <div className="form-group">
-      <label htmlFor="systolicPressure" className="form-label">
-        Systolic Pressure (mmHg)
-      </label>
-      <input
-        type="number" // Input type for numerical values
-        className="form-control"
-        id="systolicPressure"
-        value={systolicPressure}
-        placeholder="Enter Systolic Pressure"
-        onChange={(e) => setSystolicPressure(e.target.value)}
-        required // Mark as required
-      />
-    </div>
-    <div className="form-group">
-      <label htmlFor="diastolicPressure" className="form-label">
-        Diastolic Pressure (mmHg)
-      </label>
-      <input
-        type="number"
-        className="form-control"
-        id="diastolicPressure"
-        value={diastolicPressure}
-        onChange={(e) => setDiastolicPressure(e.target.value)}
-        placeholder="Enter Diastolic Pressure"
-        required
-        
-      />
-    </div>
-    <div className="form-group">
-      <label htmlFor="heartRate" className="form-label">
-        Heart Rate (bpm)
-      </label>
-      <input
-        type="number"
-        className="form-control"
-        id="heartRate"
-        placeholder="Enter Heart Rate"
-        value={heartRate}
+    <form className="blood-pressure-form">
+      <h1>Presion arterial</h1> {/* Clearer title */}
+      <div className="form-group">
+        <label htmlFor="systolicPressure" className="form-label">
+          Presion sistolica (mmHg)
+        </label>
+        <input
+          type="number" // Input type for numerical values
+          className="form-control"
+          id="systolicPressure"
+          value={systolicPressure}
+          placeholder="Enter Systolic Pressure"
+          onChange={(e) => setSystolicPressure(e.target.value)}
+          required // Mark as required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="diastolicPressure" className="form-label">
+          Presion diastolica (mmHg)
+        </label>
+        <input
+          type="number"
+          className="form-control"
+          id="diastolicPressure"
+          value={diastolicPressure}
+          onChange={(e) => setDiastolicPressure(e.target.value)}
+          placeholder="Enter Diastolic Pressure"
+          required
+
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="heartRate" className="form-label">
+          Frecuencia cardiaca (bpm)
+        </label>
+        <input
+          type="number"
+          className="form-control"
+          id="heartRate"
+          placeholder="Enter Heart Rate"
+          value={heartRate}
           onChange={(e) => setHeartRate(e.target.value)}
           required
-        
-      />
-    </div>
-    <button className="btn btn-primary" type="submit">
-      Submit Reading
-    </button>
 
-    {recommendation && (
-        <div className="recommendation">
-          <h2>Recommendation</h2>
-          <p>{recommendation.text}</p>
-        </div>
-      )}
+        />
+      </div>
+      <div className='consulta'>
+        <button className="botonConsulta btn btn-primary" type="submit">
+          Ingresar datos
+        </button>
 
+        {recommendation && (
+          <div className="recommendation">
+            <h2>Recommendation</h2>
+            <p>{recommendation.text}</p>
+          </div>
+        )}
+      </div>
 
-  </form>
+    </form>
   );
 };
 

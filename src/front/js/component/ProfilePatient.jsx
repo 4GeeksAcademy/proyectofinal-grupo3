@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ContactSection from './ContactSection.jsx';
 import ReviewPatients from './ReviewPatients.jsx';
+import AppointmentsModalPaciente from './AppointmentsModalPaciente.jsx';
 
 const ProfilePatient = () => {
     const navigate = useNavigate();
@@ -12,12 +13,13 @@ const ProfilePatient = () => {
         fecha_de_nacimiento: '',
         email: '',
         sexo: '',
-        password: '',
+        id: '',
         foto_perfil: '',
         type: 'paciente',
     });
 
     const [respuestaServidor, setRespuestaServidor] = useState(null);
+    const [ShowAppointmentsModalPaciente, setShowAppointmentsModalPaciente] = useState(false);
 
     useEffect(() => {
         const fetchPatientData = async () => {
@@ -25,23 +27,17 @@ const ProfilePatient = () => {
                 const response = await fetch(`${process.env.BACKEND_URL}/profile?type=paciente`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
                 });
-                const data = await response.json();
+                
 
                 if (response.ok) {
-                    // Initialize all fields to avoid null values
+                    const data = await response.json(); 
+                    console.log(data)
                     setFormData({
-                        nombre: data.msg.nombre || '',
-                        apellido: data.msg.apellido || '',
-                        numero_de_telefono: data.msg.numero_de_telefono || '',
-                        fecha_de_nacimiento: data.msg.fecha_de_nacimiento || '',
-                        email: data.msg.email || '',
-                        sexo: data.msg.sexo || '',
-                        password: '', // No mostrar contraseña en el perfil
-                        foto_perfil: data.msg.foto_perfil || '',
+                        ...data.msg,
                         type: 'paciente',
                     });
                 } else {
-                    console.error('Error fetching patient data:', data.msg);
+                    console.error('Error fetching patient data:');
                 }
             } catch (error) {
                 console.error('Error fetching patient data:', error);
@@ -49,7 +45,7 @@ const ProfilePatient = () => {
         };
 
         fetchPatientData();
-    }, []); // Empty dependency array ensures this runs only once
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -60,10 +56,10 @@ const ProfilePatient = () => {
         e.preventDefault();
         const token = localStorage.getItem('token');
 
-
-        const formattedFechaNacimiento = formData.fecha_de_nacimiento
-            ? new Date(formData.fecha_de_nacimiento).toISOString().split('T')[0]
-            : null;
+        
+        // const formattedFechaNacimiento = formData.fecha_de_nacimiento
+        //     ? new Date(formData.fecha_de_nacimiento).toISOString().split('T')[0]
+        //     : null;
 
         try {
             const response = await fetch(`${process.env.BACKEND_URL}/profile`, {
@@ -78,6 +74,7 @@ const ProfilePatient = () => {
                     fecha_de_nacimiento: formattedFechaNacimiento,
                     foto_perfil: formData.foto_perfil,
                     sexo: formData.sexo,
+                    id: id,
                 }),
             });
 
@@ -88,7 +85,7 @@ const ProfilePatient = () => {
             console.error('Error al enviar los datos:', error);
 
         }
-        console.log(handleSubmit)
+        
     };
 
     return (
@@ -97,17 +94,7 @@ const ProfilePatient = () => {
                 <div className="box-shadow-blue rounded-element p-4 w-50">
                     <h2 className="text-center gradient-text fw-bold">Completa tu perfil</h2>
                     <form onSubmit={handleSubmit}>
-                        <div className="text-center mb-3">
-                            <label className="form-label">Foto de Perfil (URL)</label>
-                            <input
-                                type="text"
-                                name="foto_perfil"
-                                value={formData.foto_perfil}
-                                onChange={handleChange}
-                                className="form-control"
-                                placeholder="Ingrese la URL de su foto de perfil"
-                            />
-                        </div>
+                        
                         {formData.foto_perfil && (
                             <div className="text-center mb-3">
                                 <img src={formData.foto_perfil} alt="Foto de Perfil" className="img-fluid rounded-circle" style={{ maxWidth: '150px' }} />
@@ -199,6 +186,12 @@ const ProfilePatient = () => {
             </div>
             <ReviewPatients doctorId={1} onReviewSubmitted={() => console.log("Review submitted")} />
             <ContactSection />
+            <div className="text-center mt-3">
+                <button className="btn btn-info" onClick={() => setShowAppointmentsModalPaciente(true)}>Ver Citas Agendadas</button>
+            </div>
+            {ShowAppointmentsModalPaciente && (
+                <AppointmentsModalPaciente pacienteId={formData.id} onClose={() => setShowAppointmentsModalPaciente(false)} />
+            )}
         </div>
     );
 };
