@@ -1,44 +1,65 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 function NewPassword() {
-  const [email, setEmail] = useState('');
-  const [newPassword, setNewPassword] = useState(''); // New state for new password
-  const [confirmPassword, setConfirmPassword] = useState(''); // State for confirmation
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  // Capturar el token de la URL
+  const location = new URLSearchParams(useLocation().search)
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Estado para mostrar mensajes de éxito/error
+  
+  const token = location.get('token')
   const navigate = useNavigate();
+
+  // const [email, setEmail] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
     if (newPassword !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
+      alert('Las contraseñas no coinciden');
       return;
     }
 
     try {
-      // Send password reset request to your backend here
-      // ...
 
-      setMessage('Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña.');
-      setError(''); // Clear any previous errors
-      // You can use the navigate function here to redirect after successful password reset
-    } catch (err) {
-      setError('Error al procesar la solicitud. Por favor, inténtalo de nuevo.');
-      setMessage(''); // Clear any previous messages
+      // Hacer una solicitud al backend para actualizar la contraseña
+      const response = await fetch(process.env.BACKEND_URL + `/reset_password/${token}`, { // - `/reset_password/${token}`
+
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+
+        },
+        body: JSON.stringify({ password: newPassword, confirm_password: confirmPassword }) // <- { token, newPassword }
+      });
+
+      if (response.ok) {
+        alert('Password has been successfully reset');
+
+
+      } else {
+
+        alert('Failed to reset password');
+      }
+    } catch (error) {
+      console.error('Error', error);
+      alert('An error occurred while resetting the password');
     }
   };
 
   return (
-    <div>
+    <div className='container'>
       <h2>Recuperar Contraseña</h2>
+      
       <form onSubmit={handleSubmit}>
         {/* ... (email input remains the same) ... */}
-        <div>
-          <label htmlFor="newPassword">ingrese el codigo</label>
+        <div className='mb-3'>
+          <label htmlFor="newPassword" className="form-label">Nueva Contraseña</label>
           <input
             type="password"
+            className="form-control"
             id="newPassword"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
@@ -46,16 +67,20 @@ function NewPassword() {
           />
         </div>
         <div>
-          <label htmlFor="newPassword">Nueva Contraseña:</label>
+          <label htmlFor="confirmPassword" className="form-label">Nueva Contraseña:</label>
           <input
             type="password"
-            id="newPassword"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            className="form-control"
+            id="cconfirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
         </div>
-        <div>
+        <button className="btn btn-primary" type="submit"> Restablecer Contraseña</button>
+
+
+        {/* <div>
           <label htmlFor="confirmPassword">Confirmar Contraseña:</label>
           <input
             type="password"
@@ -68,7 +93,7 @@ function NewPassword() {
         <button type="submit">Restablecer Contraseña</button>
 
         {message && <p style={{ color: 'green' }}>{message}</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>} */}
       </form>
     </div>
   );

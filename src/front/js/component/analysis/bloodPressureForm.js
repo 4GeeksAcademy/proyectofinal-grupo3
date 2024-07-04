@@ -17,7 +17,7 @@ const BloodPressureForm = () => {
     };
 
     try {
-      const response = await fetch(`https://didactic-eureka-g4q7rr9x7xrxhv6g9-3001.app.github.dev/blood_pressure_form`, { // `${process.env.BACKEND_URL}/profile` fetch(process.env.BACKEND_URL + "login",  Asegúrate de que la URL esté correcta
+      const response = await fetch(process.env.BACKEND_URL + "/blood_pressure_form", { // `${process.env.BACKEND_URL}/profile` fetch(process.env.BACKEND_URL + "login",  Asegúrate de que la URL esté correcta
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

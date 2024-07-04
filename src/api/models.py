@@ -187,7 +187,7 @@ class RecommendationBloodTest(db.Model):
     # blood_pressures = db.relationship('BloodRange', backref='recommendation_blood_range', lazy=True, viewonly=True)
 
     def __repr__(self):
-        return f'<Recommendation {self.id} {self.text}>'
+        return f'<Recommendation {self.id} {self.name} {self.text}>'
     
     def serialize(self):
         return {

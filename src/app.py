@@ -3,6 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
+
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
@@ -11,7 +12,7 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from datetime import datetime 
-
+from api.helpers import get_user_by_email, generate_token, verify_token, send_reset_email
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
@@ -20,10 +21,9 @@ from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 
 from flask_mail import Mail, Message
-
 from twilio.rest import Client 
-
 from flask_cors import CORS
+
 
 # from models import Person
 
@@ -37,7 +37,10 @@ app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv(
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 # db = SQLAlchemy(app)
-CORS(app)  # Permite todas las solicitudes de todos los orígenes
+CORS(app)
+# CORS(app, resources={r"/*": {"origins": "*"}})
+
+#CORS(app)  # Permite todas las solicitudes de todos los orígenes
 
 account_sid =  os.getenv('TWILIO_ACCOUNT_SID')
 auth_token =   os.getenv('TWILIO_AUTH_TOKEN')  
@@ -61,6 +64,7 @@ CORS(app)  # Permite todas las solicitudes de todos los orígenes
 
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv("JWT-KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
+app.config['SECURITY_PASSWORD_SALT']= os.getenv("SECURITY_PASSWORD_SALT")
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 
@@ -699,9 +703,6 @@ def get_doctor_appointments(doctor_id):
     appointment_list = [appointment.serialize() for appointment in appointments]
     return jsonify(appointment_list)
 
-
-    
-
 #Analisis Clinicos
 @app.route('/add_blood_range', methods=['POST'])
 def add_blood_range():
@@ -728,7 +729,6 @@ def add_blood_range():
     db.session.commit()
 
     return jsonify({'msg':"blood_range agregado con exito"}), 201
-
 
 @app.route('/add_blood_pressure_range', methods=['POST'])
 def add_blood_pressure_range():
@@ -760,12 +760,6 @@ def add_blood_pressure_range():
     db.session.commit()
 
     return jsonify({'msg':'blood_range agregado con exito'}), 201
-
-
-
-
-
-
 
 
     # try:
@@ -842,7 +836,19 @@ def add_blood_test_recommendation():
     db.session.commit()
     return jsonify({"message": "Recommendation added successfully!"}), 200
 
-@app.route('/blood_pressure_form ', methods=['POST']) 
+
+@app.route('/doctor/<int:doctor_id>/availability', methods=['GET'])
+@jwt_required()
+def get_doctor_availability(doctor_id):
+    # Obtener todas las disponibilidades del doctor que no estén reservadas
+    availabilities = Availability.query.filter_by(doctor_id=doctor_id).all()
+    # Convertir cada disponibilidad a un diccionario usando el método
+    availabilities_list = [availability.serialize() for availability in availabilities]
+    # availabilities_list = list(map(lambda availability: availability.serialize(), availabilities))
+    # Devolver la lista de diccionarios como una respuesta JSON
+    return jsonify(availabilities_list)
+
+@app.route('/blood_pressure_form', methods=['POST']) 
 def blood_pressure_form():
     body = request.get_json()
     systolic = body.get('systolic')
@@ -864,17 +870,6 @@ def blood_pressure_form():
     else:
         return jsonify({"recommendation": "No specific recommendation found for the given values."}), 404
 
-@app.route('/doctor/<int:doctor_id>/availability', methods=['GET'])
-@jwt_required()
-def get_doctor_availability(doctor_id):
-    # Obtener todas las disponibilidades del doctor que no estén reservadas
-    availabilities = Availability.query.filter_by(doctor_id=doctor_id).all()
-    # Convertir cada disponibilidad a un diccionario usando el método
-    availabilities_list = [availability.serialize() for availability in availabilities]
-    # availabilities_list = list(map(lambda availability: availability.serialize(), availabilities))
-    # Devolver la lista de diccionarios como una respuesta JSON
-    return jsonify(availabilities_list)
-
 @app.route('/evaluate_blood_test', methods=['POST'])
 def evaluate_blood_test():
     body = request.get_json()
@@ -883,23 +878,32 @@ def evaluate_blood_test():
     
     recommendations = []
 
+    
+
     def check_recommendation(value, name):
+        try:
+            float_value = float(value)
+        except ValueError:
+            return  # Manejar caso donde el valor no es convertible a float
+
         recs = RecommendationBloodTest.query.filter(RecommendationBloodTest.name.like(f"%{name}%")).all()
         for rec in recs:
-            if rec.min_range <= value <= rec.max_range:
+            if rec.min_range <= float_value <= rec.max_range:
                 recommendations.append({
                     "name": rec.name,
                     "text": rec.text,
                     "specialist": rec.specialist
                 })
     #se ejecuta la funcion check_recommendation recibe valor y el nombre del examen que se hiso 
-    check_recommendation(body['hemoglobina'], 'Hemoglobina')
-    check_recommendation(body['hematocrito'], 'Hematocritos')
-    check_recommendation(body['glicemia'], 'Glicemia')
-    check_recommendation(body['colesterol'], 'Colesterol')
-    check_recommendation(body['trigliceridos'], 'Triglicéridos')
+    check_recommendation(body.get('hemoglobina'), 'Hemoglobina')
+    check_recommendation(body.get('hematocrito'), 'Hematocrito')
+    check_recommendation(body.get('glicemia'), 'Glicemia')
+    check_recommendation(body.get('colesterol'), 'Colesterol')
+    check_recommendation(body.get('trigliceridos'), 'Trigliceridos')
+    
 
     return jsonify({'recommendations': recommendations}), 200
+   
 
 
 @app.route('/contact', methods=['POST'])
@@ -967,6 +971,61 @@ def get_reviews(doctor_id):
 
 #     return jsonify(reviews_list), 200
 
+@app.route('/forgot_password', methods=['POST'])
+def forgot_password():
+    body = request.get_json()
+
+    if not body or 'email' not in body or 'user_type' not in body:
+        return jsonify({'msg': 'El email y el tipo de ususario son requeridos'}), 400
+    
+    email = body['email']
+    user_type = body['user_type']
+
+    # Verifica que email sea una cadena antes de pasarlo a la función
+    if not isinstance(email, str):
+        return jsonify({'msg': 'El email debe ser una cadena válida'}), 400
+
+    user = get_user_by_email(email, user_type)
+    if not user:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+    
+    token = generate_token(user)  # Generar el token usando email
+    send_reset_email(user, token)
+
+    return jsonify({'msg': 'Correo de restablecimiento de contraseña enviado'}), 200
+
+@app.route('/reset_password/<token>', methods=['POST'])
+def reset_password(token):
+    body = request.get_json()
+
+    if not body or 'password' not in body or 'confirm_password' not in body:
+        return jsonify({'msg': 'La nueva contraseña y la confirmación son requeridas'}), 400
+    
+    if body['password'] !=body['confirm_password']:
+        return jsonify({'msg': 'Las contraseñas no coinciden'}), 400
+    
+    user_id, user_type = verify_token(token)
+    if user_type == 'paciente':
+        user_info = Paciente.query.get(user_id)
+        user_email = user_info.email
+    else:
+        user_info = Doctor.query.get(user_id)
+        user_email = user_info.email
+    print(verify_token(token))
+    
+    if not user_email:
+        return jsonify({'msg': 'Token inválido o expirado'}), 400
+
+    user = get_user_by_email(user_email, user_type)
+    if not user:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+    
+    user.password = bcrypt.generate_password_hash(body['password']).decode('utf-8')
+    db.session.commit()
+
+    return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
+
+    
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))

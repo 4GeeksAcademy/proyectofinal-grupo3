@@ -48,7 +48,7 @@ export const FormSignUp = (props) => {
         setError(errorData.msg);
       }
     } catch (error) {
-      console.error("Error de red:", error);
+      // console.error("Error de red:", error);
       setError("Error en la conexión. Inténtalo de nuevo.");
     }
   };
