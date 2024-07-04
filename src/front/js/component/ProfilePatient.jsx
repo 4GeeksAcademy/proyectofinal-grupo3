@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ContactSection from './ContactSection.jsx';
 import AppointmentsModalPaciente from './AppointmentsModalPaciente.jsx';
 
@@ -12,7 +12,7 @@ const ProfilePatient = () => {
         fecha_de_nacimiento: '',
         email: '',
         sexo: '',
-        password: '',
+        id: '',
         foto_perfil: '',
         type: 'paciente',
     });
@@ -25,22 +25,17 @@ const ProfilePatient = () => {
                 const response = await fetch(`${process.env.BACKEND_URL}/profile?type=paciente`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
                 });
-                const data = await response.json();
+                
 
                 if (response.ok) {
-                    // Initialize all fields to avoid null values
+                    const data = await response.json(); 
+                    console.log(data)
                     setFormData({
-                        nombre: data.msg.nombre || '',
-                        apellido: data.msg.apellido || '',
-                        numero_de_telefono: data.msg.numero_de_telefono || '',
-                        fecha_de_nacimiento: data.msg.fecha_de_nacimiento || '',
-                        email: data.msg.email || '',
-                        sexo: data.msg.sexo || '',
-                        password: '', 
+                        ...data.msg,
                         type: 'paciente',
                     });
                 } else {
-                    console.error('Error fetching patient data:', data.msg);
+                    console.error('Error fetching patient data:');
                 }
             } catch (error) {
                 console.error('Error fetching patient data:', error);
@@ -60,9 +55,9 @@ const ProfilePatient = () => {
         const token = localStorage.getItem('token');
 
         
-        const formattedFechaNacimiento = formData.fecha_de_nacimiento
-            ? new Date(formData.fecha_de_nacimiento).toISOString().split('T')[0]
-            : null;
+        // const formattedFechaNacimiento = formData.fecha_de_nacimiento
+        //     ? new Date(formData.fecha_de_nacimiento).toISOString().split('T')[0]
+        //     : null;
 
         try {
             const response = await fetch(`${process.env.BACKEND_URL}/profile`, {
@@ -77,6 +72,7 @@ const ProfilePatient = () => {
                     fecha_de_nacimiento: formattedFechaNacimiento,
                     foto_perfil: formData.foto_perfil,
                     sexo: formData.sexo,
+                    id: id,
                 }),
             });
 
@@ -195,7 +191,7 @@ const ProfilePatient = () => {
                 <button className="btn btn-info" onClick={() => setShowAppointmentsModalPaciente(true)}>Ver Citas Agendadas</button>
             </div>
             {ShowAppointmentsModalPaciente && (
-                <AppointmentsModalPaciente pacienteId={id} onClose={() => setShowAppointmentsModalPaciente(false)} />
+                <AppointmentsModalPaciente pacienteId={formData.id} onClose={() => setShowAppointmentsModalPaciente(false)} />
             )}
         </div>
     );

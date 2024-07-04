@@ -42,6 +42,7 @@ export const FormLogIn = (props) => {
         
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("type", props.role)
+        localStorage.setItem("id",props.id)
         
         if (props.role === "paciente") {
           navigate("/profile_patient");

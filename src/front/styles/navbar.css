@@ -26,5 +26,7 @@
     border-bottom: 0%;
     border-radius: 12px;
   }
-
+.close {
+  width: fit-content;
+}
     

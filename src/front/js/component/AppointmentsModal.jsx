@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const AppointmentsModal = ({ doctorId = 6, onClose }) => {
+const AppointmentsModal = ({ doctorId, onClose }) => {
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {

@@ -41,7 +41,7 @@ export const Navbar = () => {
     navigate('/');
   };
   
-  console.log(userType)
+  
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-transparent">
@@ -124,14 +124,14 @@ export const Navbar = () => {
                       Mi perfil
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="/appointments" className="dropdown-item p-3">
                       Mis citas
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <button
-                      className="dropdown-item btn btn-outline-light ms-2"
+                      className="close dropdown-item btn btn-outline-light ms-1"
                       type="button"
                       onClick={handleLogout}
                     >
