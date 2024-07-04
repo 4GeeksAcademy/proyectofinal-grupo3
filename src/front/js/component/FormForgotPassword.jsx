@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import "../../styles/FormForgotPassword.css";
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -22,8 +23,12 @@ function ForgotPassword() {
 
       if (response.ok) {
         const data = await response.json();
+        alert('Correo enviado');
         setMessage(data.mesg); // Muestra el mensaje de éxito del backend
         setError(''); // Limpia cualquier error anterior
+        
+        
+
       } else {
         const errorData = await response.json();
         setError(errorData.msg); // Muestra el mensaje de error del backend
@@ -37,7 +42,7 @@ function ForgotPassword() {
   };
 
   return (
-    <div>
+    <div className="contenedor">
       <h2>Recuperar Contraseña</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -63,7 +68,7 @@ function ForgotPassword() {
             <option value="doctor">Doctor</option>
           </select>
         </div>
-        <button type="submit">Enviar código</button>
+        <button className="mt-5" type="submit">Enviar código</button>
 
         {message && <p style={{ color: 'green' }}>{message}</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
