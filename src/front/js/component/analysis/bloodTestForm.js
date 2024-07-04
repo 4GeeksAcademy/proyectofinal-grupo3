@@ -100,13 +100,14 @@ const BloodTestForm = () => {
           type="number"
         />
       </div>
+
       <div className="form-group">
         <label htmlFor="colesterol">
           Colesterol (mg/dL)
           </label>
-        <label htmlFor="hematocrit">
+        {/* <label htmlFor="hematocrito">
           Hematocrito (%)
-        </label>
+        </label> */}
         <input
           className="form-control"
           id="colesterol"
@@ -116,6 +117,8 @@ const BloodTestForm = () => {
           onChange={handleChange}
         />
       </div>
+      
+      
       <div className="form-group">
         <label htmlFor="trigliceridos">
           Triglicéridos (g/dL)
