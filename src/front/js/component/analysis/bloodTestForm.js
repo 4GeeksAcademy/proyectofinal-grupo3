@@ -55,8 +55,8 @@ const BloodTestForm = () => {
   
   return (
     <form className="bloodTestForm" onSubmit={handleSubmit}>
-      <h1>
-        Examenes de sangre
+      <h1 >
+        Exámenes de Sangre
       </h1>
       <div className="form-group">
         <label htmlFor="hemoglobina">
@@ -74,19 +74,16 @@ const BloodTestForm = () => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="hematocrito">Hematocrito (%)</label>
+        <label htmlFor="hematocrito">Hematócrito (%)</label>
         <input
           type="number"
           className="form-control"
           id="hematocrito"
-          placeholder="Ingresa tu valor de Hematocrito"
+          placeholder="Ingresa tu valor de Hematócrito"
           value={formData.hematocrito}
           onChange={handleChange}
         />
       </div>
-
-
-
       <div className="form-group">
         <label htmlFor="glicemia">
           Glicemia (g/dL)
@@ -105,9 +102,6 @@ const BloodTestForm = () => {
         <label htmlFor="colesterol">
           Colesterol (mg/dL)
           </label>
-        {/* <label htmlFor="hematocrito">
-          Hematocrito (%)
-        </label> */}
         <input
           className="form-control"
           id="colesterol"
@@ -127,16 +121,17 @@ const BloodTestForm = () => {
           className="form-control"
           id="trigliceridos"
           placeholder="Ingrea tu valor de Triglicéridos"
-          value={formData.trigliceridos}
-          onChange={handleChange}
           type="number"
+          value={formData.trigliceridos}
+          onChange={handleChange} 
+          
         />
       </div>
       <button
-        className="btn btn-primary"
+        className="btn btn-primary mb-3"
         type="submit"
       >
-        Enviar
+        Enviar Resultados
       </button>
 
       {recommendations && (
