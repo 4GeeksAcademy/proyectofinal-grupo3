@@ -164,7 +164,7 @@ def login():
     user = None
     if body['type'] == 'paciente':
         user= Paciente.query.filter_by(email=body['email']).first()
-    elif body['type'] == 'doctor':
+    elif body['type'] == 'doctors':
         user= Doctor.query.filter_by(email=body['email']).first()
 
     if user is None or not bcrypt.check_password_hash(user.password, body['password']):
