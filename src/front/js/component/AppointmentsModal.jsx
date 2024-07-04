@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const AppointmentsModal = ({ doctorId = 6, onClose }) => {
+const AppointmentsModal = ({ doctorId, onClose }) => {
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
@@ -9,7 +9,7 @@ const AppointmentsModal = ({ doctorId = 6, onClose }) => {
                 const response = await fetch(`${process.env.BACKEND_URL}/doctor/${doctorId}/appointments`, {
                     headers: {
                         'Content-Type': 'application/json',
-                        //Authorization: `Bearer ${localStorage.getItem('token')}`
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 });
                 const data = await response.json();

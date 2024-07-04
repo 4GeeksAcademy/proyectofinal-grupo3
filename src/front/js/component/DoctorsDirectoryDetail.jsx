@@ -50,7 +50,7 @@ const DoctorsDirectoryDetail = () => {
                     <p className="d-flex align-items-center justify-content-center text-muted" style={{ lineHeight: '1.5' }}>
                         {doctor.especialidad}
                         <button
-                            className="text-primary ms-2 btn btn-link p-0"
+                            className="ms-2 p-1"
                             onClick={handleOpenModal}
                         >
                             Ver más
@@ -81,7 +81,7 @@ const DoctorsDirectoryDetail = () => {
                 </div>
             </div>
             <div className='container position-relative' style={{ zIndex: overlayActive ? 0 : 2 }}>
-                <ReviewComments reviews_comments={doctor.resenas} />
+                <ReviewComments reviews_comments={doctor.reviews} />
             </div>
             {(modalOpen || appointmentOpen) && (
                 <div className="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-50" style={{ zIndex: 1 }}></div>

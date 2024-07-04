@@ -32,9 +32,9 @@ export const ScientificArticleCard = () => {
                         Únete a nuestra comunidad de lectores y descubre cómo vivir una vida más saludable y feliz.
                     </p>
                     
-                    <Link to="/doctors">
+                    <Link to="/blog">
                         <button type="button" className="btn btn-article-card-2 bsb-btn-xl ">
-¡Se miembro nuestro blog hoy mismo!                          
+                            ¡Se miembro nuestro blog hoy mismo!                          
                         </button>
                     </Link>
                 </div>

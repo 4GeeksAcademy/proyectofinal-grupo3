@@ -304,13 +304,20 @@ const ProfileDoctor = () => {
                     )}
                 </div>
             </div>
-            <ContactSection />
-            <div className="text-center mt-3">
-                <button className="btn btn-info" onClick={() => setShowAppointmentsModal(true)}>Ver Citas Agendadas</button>
+
+            <div className="d-flex justify-content-center p-4">
+                <div className="box-shadow-blue rounded-element p-4 w-50">
+                    <h2 className="text-center gradient-text fw-bold">Citas Agendadas del doctor</h2>
+                    <div className="text-center mt-3">
+                        <button className="btn btn-primary" onClick={() => setShowAppointmentsModal(true)}>Ver Citas Agendadas</button>
+                    </div>
+                    {showAppointmentsModal && (
+                        <AppointmentsModal doctorId={formData.id} onClose={() => setShowAppointmentsModal(false)} />
+                    )}
+                </div>
             </div>
-            {showAppointmentsModal && (
-                <AppointmentsModal doctorId={id} onClose={() => setShowAppointmentsModal(false)} />
-            )}
+
+            <ContactSection />
         </div>
     );
 

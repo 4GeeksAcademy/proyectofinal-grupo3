@@ -23,7 +23,7 @@
 .card-reviews {
     width: 100%;
     max-width: 300px; /* Ajusta el ancho máximo de las tarjetas */
-    min-height: 100px; /* Ajusta la altura mínima de las tarjetas */
+    min-height: 200px; /* Ajusta la altura mínima de las tarjetas */
     box-shadow: 0 4px 8px rgba(0, 164, 244, 0.2); /* Sombra azul */
     transition: box-shadow 0.3s ease;
     border-radius: 20px; /* Redondea más los bordes de la tarjeta */
