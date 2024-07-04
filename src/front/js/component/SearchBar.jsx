@@ -12,29 +12,6 @@ const SearchBar = () => {
     const [cities, setCities] = useState([]);
     const navigate = useNavigate();
 
-    /*useEffect(() => {
-        const uniqueSpecialties = [...new Set(doctors.map(doctor => doctor.specialty))];
-        const uniqueCities = [...new Set(doctors.map(doctor => doctor.city))];
-        setSpecialties(uniqueSpecialties);
-        setCities(uniqueCities);
-    }, []);*/
-
-    /*useEffect(() => {
-        const getDoctors = async () => {
-            try {
-                const response = await fetch(`${process.env.BACKEND_URL}/api/doctors`);
-                const data = await response.json();
-                const uniqueSpecialties = [...new Set(data.map(doctor => doctor.especialidad))];
-                const uniqueCities = [...new Set(data.map(doctor => doctor.ciudad))];
-                setSpecialties(uniqueSpecialties);
-                setCities(uniqueCities);
-            } catch (error) {
-                console.log("Error fetching doctors:", error);
-            }
-        };
-
-        getDoctors();
-    }, []);*/
 
     useEffect(() => {
         if (store.doctors.length === 0) {
