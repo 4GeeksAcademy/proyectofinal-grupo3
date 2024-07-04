@@ -33,14 +33,10 @@ static_file_dir = os.path.join(os.path.dirname(
 
 
 app = Flask(__name__)
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv("JWT-KEY")
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY") 
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
-# db = SQLAlchemy(app)
 CORS(app)
-# CORS(app, resources={r"/*": {"origins": "*"}})
-
-#CORS(app)  # Permite todas las solicitudes de todos los orígenes
 
 account_sid =  os.getenv('TWILIO_ACCOUNT_SID')
 auth_token =   os.getenv('TWILIO_AUTH_TOKEN')  
@@ -59,10 +55,7 @@ app.config.update(dict(
 
 mail = Mail(app)
 
-CORS(app)  # Permite todas las solicitudes de todos los orígenes
-# CORS(app, resources={r"/api/*": {"origins": "https://expert-garbanzo-r446j4rj495qfpj76-3000.app.github.dev/"}})
-
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  # Change this!-> os.getenv("JWT-KEY")
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT-KEY")  
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
 app.config['SECURITY_PASSWORD_SALT']= os.getenv("SECURITY_PASSWORD_SALT")
 jwt = JWTManager(app)
@@ -592,70 +585,6 @@ def create_appointment():
         return jsonify({'msg': "Error al agendar la cita"}), 500
 
     
-#Para que el paciente cree una cita nueva
-# @app.route('/appointment', methods=['POST'])
-# @jwt_required()
-# def create_appointment():
-#     body = request.get_json()
-#     required_fields = ['doctor_id', 'availability_id', 'message', 'appointment_date']
-
-#     if not body or not all(field in body for field in required_fields):
-#         return jsonify({'msg':'Faltan campos obligatorios'}), 400
-    
-#     paciente_id = get_jwt_identity()
-#      # Hardcodear el paciente_id
-#     #paciente_id = 1  # Cambia este valor al id de un paciente existente en tu base de datos (paciente_id)
-#     doctor_id = body.get('doctor_id')
-#     availability_id = body.get('availability_id')
-#     message = body.get('message')
-#     appointment_date_str = body.get('appointment_date')
-    
-#     if 'doctor_id' not in body:
-#         return jsonify({'msg':'EL campo doctor_id es obligatorios'}), 400
-#     if 'availability_id' not in body:
-#         return jsonify({'msg':'El campo availability_id es obligatorios'}), 400
-#     if not appointment_date_str:
-#         return jsonify({'msg': 'El campo appointment_date es obligatorio'}), 400
-    
-#     availability = Availability.query.get(availability_id)
-#     if not availability or availability.doctor_id != doctor_id:
-#         return jsonify({'msg': 'Disponibilidad no válida'}), 400
-    
-
-#     # Procesar el campo appointment_date
-#     appointment_date_str = body.get('appointment_date')
-#     if appointment_date_str:
-#         try:
-#             appointment_date = datetime.fromisoformat(appointment_date_str)
-#         except ValueError:
-#             return jsonify({'msg': 'Formato de fecha inválido'}), 400
-#     else:
-#         appointment_date = datetime.utcnow()
-
-    
-#     new_appointment = Appointment(
-#         paciente_id=paciente_id,
-#         doctor_id=doctor_id,
-#         availability_id=availability_id,
-#         message=message,
-#         appointment_date=appointment_date
-#     )
-   
-#     db.session.add(new_appointment)
-#     db.session.commit()
-#     if new_appointment:
-#         availability.is_booked = body.get("is_booked")
-#         
-
-
-#         return jsonify({'msg':'Cita creada'}), 201
-    
-#     return jsonify({'msg': "Error al agendar la cita"}), 500
-    
-    #  appoiment = Appointment.query.filter_by(paciente_id = paciente_id, doctor_id= doctor_id).first()
-    # print(appoiment.serialize())
-
-
 #Para que el paciente obtenga la cita con los datos prellenados en el Agenda
 @app.route('/appointments', methods=['GET'])
 @jwt_required()
