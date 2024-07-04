@@ -25,7 +25,7 @@ const BloodTestForm = () => {
     console.log(formData)
     try {
       // Asegúrate de que la URL esté correcta y accesible
-      const response = await fetch('https://curly-fishstick-jj5q776r4xv5355v5-3001.app.github.dev/evaluate_blood_test', {
+      const response = await fetch(process.env.BACKEND_URL + "/evaluate_blood_test", {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json',
