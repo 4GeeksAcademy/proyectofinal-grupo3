@@ -663,6 +663,8 @@ def add_blood_range():
 def add_blood_pressure_range():
     body = request.get_json()
     if body is None:
+        return jsonify({'msg':"El campo name es obligatorio"}),400
+    if body is None:
         return jsonify({"message": "El cuerpo de la solicitud no debe estar vacio"}), 400
     if "systolic_min" is None:
         return jsonify({"message": "El campo systolic_min no debe estar vacio"}), 400
@@ -678,6 +680,7 @@ def add_blood_pressure_range():
         return jsonify({"message": "El campo heart_rate_max no debe estar vacio"}), 400
     
     new_range = BloodPressureRange()
+    new_range.name = body['name']
     new_range.systolic_min = body['systolic_min'],
     new_range.systolic_max = body['systolic_max'],
     new_range.diastolic_min = body['diastolic_min'],
