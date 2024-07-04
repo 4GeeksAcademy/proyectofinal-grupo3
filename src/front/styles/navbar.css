@@ -1,0 +1,32 @@
+.navbar-brand {
+  font-family: "Clash Display-Semibold", Helvetica;
+  font-size: 35px;
+  font-weight: 700;
+  color: #0069ab !important;
+  }
+.nav-link {
+    font-size: 20px;
+    font-weight: 400;
+
+  }
+.nav-link:hover {
+  color: #0069ab !important;
+}
+
+  .signup {
+    background: linear-gradient(180deg, rgb(166.81, 226.09, 255) 0%, rgb(0, 149.26, 222.06)100%);
+    background-color: rgba(255,255,255,1);
+    border-bottom: 0%;
+    border-radius: 12px;
+  }
+
+  .btn {
+    background: linear-gradient(180deg, rgb(166.81, 226.09, 255) 0%, rgb(0, 149.26, 222.06)100%);
+    background-color: rgba(255,255,255,1);
+    border-bottom: 0%;
+    border-radius: 12px;
+  }
+.close {
+  width: fit-content;
+}
+    

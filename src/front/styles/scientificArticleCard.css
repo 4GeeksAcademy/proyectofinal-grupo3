@@ -1,0 +1,106 @@
+.card-blog {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+h1 span{
+  background: linear-gradient(to right, #f1ebeb, #00a4f4, #208bfd);
+    /* De azul claro a azul oscuro, a blanco suave */
+    -webkit-background-clip: text;
+    /* Para navegadores antiguos */
+    background-clip: text;
+    /* Recortar el degradado al texto */
+    color: transparent;
+    /* Ocultar el color original del texto */
+}
+
+.card-blog h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.card-blog-body {
+  display: flex;
+  align-items: center;
+}
+
+.card-blog-body {
+  display: flex;
+  /* Mantener la disposición en fila */
+  align-items: center;
+  /* Alinear verticalmente el contenido */
+  justify-content: space-between;
+  /* Distribuir el espacio entre la imagen y el texto */
+  width: 80%;
+  /* Reducir el ancho del contenedor */
+  margin: 0 auto;
+  /* Centrar el contenedor horizontalmente */
+  padding: 20px;
+}
+
+.card-blog-img {
+  flex: 1;
+  /* Ocupar la mitad del ancho disponible */
+  max-width: 600px;
+  /* Ancho máximo para la imagen */
+ 
+  margin-right: 20px;
+  /* Margen derecho para separar la imagen del texto */
+}
+
+.card-blog-img img {
+  width: 100%;
+  /* Ajustar la imagen al ancho del contenedor */
+  height: auto;
+  /* Mantener la proporción de la imagen */
+  border-radius: 5px;
+}
+
+.card-blog-text {
+  flex: 1;
+  /* Ocupar la mitad del ancho disponible */
+}
+
+.card-blog-text p {
+  text-align: justify;
+  /* Alineación justificada para un mejor flujo de texto */
+  margin-bottom: 20px;
+  /* Margen inferior para separar párrafos */
+  font-size: 16px; /* Tamaño de fuente base */
+  line-height: 1.6; /* Altura de línea para mayor espacio entre líneas */
+  margin-bottom: 20px; /* Margen inferior para separar párrafos */
+}
+
+ul {
+  text-align: left;
+  /* Alineación justificada para un mejor flujo de texto */
+  list-style-type: none;
+}
+
+.btn-article-card-2{
+  background: #00a4f4;
+  color: white;
+  border: none;
+  /* Remove the default border */
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  /* Adjust padding as needed */
+  /* Adjust padding as needed */
+  border-radius: 0.5rem;
+  /* Adjust border radius as needed */
+  bottom: 20px;
+  /* Set a bottom margin from the edge of the container */
+  margin: 0 auto;
+  /* Center button horizontally */
+  cursor: pointer;
+  /* Indicate an interactive element */
+}
+
+.btn-article-card-2:hover {
+  background-color: #007bb5;
+  color: white;
+}

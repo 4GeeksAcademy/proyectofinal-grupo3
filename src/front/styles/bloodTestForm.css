@@ -1,0 +1,52 @@
+.bloodTestForm {
+    width: 500px; /* Adjust width as needed */
+    margin: 0 auto; /* Center the form horizontally */
+    padding: 20px; /* Add spacing inside the form */
+    border-radius: 5px; /* Add rounded corners */
+    background-color: #f7f7f7; /* Light background color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: radial-gradient(50% 50% at 50% 50%, rgb(255,255,255)32.81%,
+     rgb(247.58,252.57,255) 97.64%);
+    background-color: rgb(255,255,255,1);
+    ;
+    color: #0069ab;
+    margin-bottom: 20px ;
+  }
+  
+  .bloodTestForm h1 {
+    /*text-align: center; /* Center the title */
+    /*font-size: 1.8rem; /* Increase title font size */
+    margin-bottom: 20px; /* Add space below the title */
+  }
+  
+  .form-group {
+    margin-bottom: 15px; /* Add space between form groups */
+  }
+  
+  .form-label {
+    font-weight: bold; /* Make labels bolder for better readability */
+    margin-bottom: 5px; /* Add space below the label */
+    display: block; /* Ensure labels are on a new line */
+  }
+  
+  .form-control {
+    width: 100%; /* Make input fields full width */
+    padding: 10px; /* Add padding to input fields */
+    border: 1px solid #ccc; /* Add a thin border */
+    border-radius: 3px; /* Add rounded corners to input fields */
+  }
+  
+  .btn-primary {
+    background-color: #007bff; /* Blue primary button color */
+    color: white; /* White text color */
+    border: none; /* Remove default button border */
+    border-radius: 5px; /* Add rounded corners to button */
+    padding: 10px 20px; /* Add padding to button */
+    font-weight: bold; /* Make button text bold */
+    cursor: pointer; /* Change cursor to pointer on hover */
+  }
+  
+  .btn-primary:hover {
+    background-color: #0069d9; /* Darken button color on hover */
+  }
+  

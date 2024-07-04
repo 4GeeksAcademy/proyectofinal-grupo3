@@ -1,0 +1,60 @@
+.container-rol{
+
+width: 100%;
+height: 800px;
+
+}
+.tittle {
+    
+    width: 100%;
+height: 100px;
+text-align: center;
+margin-top: 20px;
+font-size: 42px;
+font-weight: 800;
+}
+.Roles{
+    
+    width: 100%;
+height: 300px;
+display: flex;
+justify-content: center;
+justify-content: space-around;
+}
+.paciente {
+    
+    width: 400px;
+    height: 300px;
+    border-radius: 15px;
+    background: radial-gradient(58% 50% at 50% 50%, rgb(53.12, 188.81, 255) 38.13%, rgb(0, 139.97, 208,25) 100%);
+  border: 2px solid transparent;
+  box-shadow: 3.12px 9.37px 21.85px #00000eef;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  padding: 15;
+}
+.doctor {
+    width: 400px;
+    height: 300px;
+    border-radius: 15px;
+    background: radial-gradient(58% 50% at 50% 50%, rgb(53.12, 188.81, 255) 38.13%, rgb(0, 139.97, 208,25) 100%);
+  border: 2px solid transparent;
+  box-shadow: 3.12px 9.37px 21.85px #00000eef;
+  display: flex;
+  justify-content: center;
+ align-items: end;
+}
+.doc {
+   margin-bottom: 15px;
+   border-radius: 15px;
+   font-size: 28px;
+   font-weight: 650;
+   letter-spacing: 2px;
+   color: #ffffff;
+   border: transparent;
+   
+}
+.doc:hover{
+    color: rgb(255, 255, 255);
+}

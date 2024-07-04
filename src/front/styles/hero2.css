@@ -1,0 +1,143 @@
+
+.HeroSection-2 {
+    max-width: 95%; /* Ajusta el ancho máximo de la sección */
+    margin: 0 auto; /* Centra la sección horizontalmente */
+    padding: 3rem; /* Agrega espacio alrededor del contenido */
+}
+
+
+
+
+h3 span {
+    font-size: 2.2rem; /* Aumenta el tamaño de la fuente para mayor visibilidad */
+    font-weight: bold; /* Texto en negrita para mayor impacto */
+    margin-bottom: 1.5rem; /* Espacio entre el título y la descripción */
+    background: linear-gradient(to right, #208bfd, #00a4f4, #f1ebeb);
+    /* De azul claro a azul oscuro, a blanco suave */
+    -webkit-background-clip: text;
+    /* Para navegadores antiguos */
+    background-clip: text;
+    /* Recortar el degradado al texto */
+    color: transparent;
+    /* Ocultar el color original del texto */
+}
+
+
+
+.MedicalDirectory p {
+    font-size: 1rem; /* Tamaño de fuente cómodo para la lectura */
+    line-height: 1.6; /* Mayor espacio entre líneas para mejorar la legibilidad */
+    margin-bottom: 2rem; /* Espacio entre la descripción y el resto del contenido */
+}
+
+.container-img-text {
+    display: flex; /* Activar diseño flexbox */
+    flex-direction: row; /* Organizar elementos en fila */
+    align-items: flex-start; /* Alinear verticalmente desde la parte superior */
+    gap: 2rem; /* Espacio entre el contenedor de imagen y el contenedor de texto */
+} 
+
+
+.container-img-2 {
+display: flex;    
+    flex: 1; /* Permite que el contenedor se expanda para ocupar el espacio disponible */
+    align-items: center;
+    height: auto;
+    /* Mantiene la proporción de aspecto de la imagen */
+    object-fit: cover;
+    /* Cubre el contenedor completamente, manteniendo la proporción de aspecto */
+    width: 50%; /* Ocupa el auto del ancho disponible */
+}
+
+.container-text-2 {
+    align-items: flex-start;
+    /* Alinea el contenido verticalmente en la parte superior */
+    width: 100%;
+    /* Ocupa todo el ancho disponible */
+    flex-wrap: wrap;
+    /* Permite que los elementos se distribuyan en varias filas si es necesario */
+    justify-content: left;
+    /* Alinear elementos a la derecha por defecto */
+    text-align: left;
+    /* Alinear todo el texto a la izquierda */
+}
+
+.btn-hero-2 {
+    background: #00a4f4;
+    color: white;
+    border: none;
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    /* Adjust padding as needed */
+    border-radius: 0.5rem;
+    /* Adjust border radius as needed */
+    bottom: 20px;
+    /* Set a bottom margin from the edge of the container */
+    margin: 0 auto;
+    /* Center button horizontally */
+    cursor: pointer;
+    /* Indicate an interactive element */
+    transition: background-color 0.3s ease;
+    /* Add a smooth hover transition */
+    justify-content: space-between; /* Distribute elements horizontally with rightmost element on the right */
+}
+
+.btn-hero-2:hover {
+    background-color: #007bb5;
+        color: white;
+}
+
+.MedicalDirectory p {
+    font-size: 1.1rem;
+    /* Adjust font size for readability */
+    line-height: 1.6;
+    /* Increase line height for better spacing */
+    max-width: 700px;
+    /* Limit paragraph width for better layout */
+    text-align: left;
+    /* Center the text within the section */
+}
+/* Styles for the List of Benefits */
+.MedicalDirectory ul {
+    list-style: none;
+    /* Remove default bullet points */
+    padding: 0;
+    /* Reset default padding */
+    margin: 2rem 0;
+    /* Add some margin for spacing */
+}
+
+.MedicalDirectory li {
+    display: flex;
+    /* Arrange list items horizontally */
+    align-items: left;
+    /* Align content vertically within list items */
+    margin-bottom: 1rem;
+    /* Add margin between list items */
+}
+
+i {
+    font-size: 1.2rem;
+    /* Increase icon size for visibility */
+    margin-right: 1rem;
+    /* Add space between icon and text */
+}
+
+.MedicalDirectory li p {
+    font-size: 1rem;
+    /* Adjust font size for readability */
+}
+
+.MedicalDirectory li i {
+    font-size: 1rem;
+    margin-right: 1rem;
+}
+
+/* Contenedor de imagen */
+.container-img-list-group {
+    flex: 1;
+    align-items: center;
+    height: auto;
+    object-fit: cover;
+    width: 10%;
+}
