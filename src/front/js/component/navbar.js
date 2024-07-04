@@ -79,16 +79,16 @@ export const Navbar = () => {
                 Ingresa tus valores
               </Link>
             </li>
-            { /*<li className="nav-item">
+            <li className="nav-item">
               <Link className="nav-link" to="/blog">
                 Blog
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/contactenos">
+              <Link className="nav-link" to="/contact">
                 Contáctenos
               </Link>
-            </li>*/}
+            </li> 
           </ul>
 
           <div className="d-flex">
