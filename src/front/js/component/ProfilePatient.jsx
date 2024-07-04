@@ -71,10 +71,10 @@ const ProfilePatient = () => {
                 body: JSON.stringify({
                     type: 'paciente',
                     numero_de_telefono: formData.numero_de_telefono,
-                    fecha_de_nacimiento: formattedFechaNacimiento,
+                    fecha_de_nacimiento: formData.fecha_de_nacimiento,
                     foto_perfil: formData.foto_perfil,
                     sexo: formData.sexo,
-                    id: id,
+                    // id: id,
                 }),
             });
 
@@ -184,14 +184,20 @@ const ProfilePatient = () => {
                     )}
                 </div>
             </div>
-            <ReviewPatients doctorId={1} onReviewSubmitted={() => console.log("Review submitted")} />
-            <ContactSection />
-            <div className="text-center mt-3">
-                <button className="btn btn-info" onClick={() => setShowAppointmentsModalPaciente(true)}>Ver Citas Agendadas</button>
+           
+            <div className="d-flex justify-content-center p-4">
+                <div className="box-shadow-blue rounded-element p-4 w-50">
+                    <h2 className="text-center gradient-text fw-bold">Citas Agendadas </h2>
+                    <div className="text-center mt-3">
+                        <button className="btn btn-primary" onClick={() => setShowAppointmentsModalPaciente(true)}>Ver Citas Agendadas</button>
+                    </div>
+                    {ShowAppointmentsModalPaciente && (
+                        <AppointmentsModalPaciente pacienteId={formData.id} onClose={() => setShowAppointmentsModalPaciente(false)} />
+                    )}
+                </div>
             </div>
-            {ShowAppointmentsModalPaciente && (
-                <AppointmentsModalPaciente pacienteId={formData.id} onClose={() => setShowAppointmentsModalPaciente(false)} />
-            )}
+            <ReviewPatients doctorId={formData.doctorId} onReviewSubmitted={() => console.log("Review submitted")} />
+            <ContactSection />
         </div>
     );
 };

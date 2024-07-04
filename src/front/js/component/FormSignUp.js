@@ -42,8 +42,7 @@ export const FormSignUp = (props) => {
 
       if (response.ok) {
         console.log("Registro exitoso");
-        navigate("/profile"); // Redirige a la página principal (ajusta la ruta)
-      } else {
+        navigate("/RolSelector/login"); // Redirige a la página principal 
         const errorData = await response.json();
         setError(errorData.msg);
       }

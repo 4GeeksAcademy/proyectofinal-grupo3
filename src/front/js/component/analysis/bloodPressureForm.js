@@ -34,10 +34,10 @@ const BloodPressureForm = () => {
 
   return (
     <form className="blood-pressure-form">
-      <h1>Presion arterial</h1> {/* Clearer title */}
+      <h1>Presión arterial</h1> {/* Clearer title */}
       <div className="form-group">
         <label htmlFor="systolicPressure" className="form-label">
-          Presion sistolica (mmHg)
+        Presión sistólica (mmHg)
         </label>
         <input
           type="number" // Input type for numerical values
@@ -51,7 +51,7 @@ const BloodPressureForm = () => {
       </div>
       <div className="form-group">
         <label htmlFor="diastolicPressure" className="form-label">
-          Presion diastolica (mmHg)
+        Presión diastólica (mmHg)
         </label>
         <input
           type="number"

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import "../../styles/FormForgotPassword.css";
 
 function NewPassword() {
   // Capturar el token de la URL
@@ -37,6 +38,8 @@ function NewPassword() {
 
       if (response.ok) {
         alert('Password has been successfully reset');
+        navigate("/RolSelector/login");
+
 
 
       } else {
@@ -50,12 +53,12 @@ function NewPassword() {
   };
 
   return (
-    <div className='container'>
+    <div className='contenedor'>
       <h2>Recuperar Contraseña</h2>
       
       <form onSubmit={handleSubmit}>
         {/* ... (email input remains the same) ... */}
-        <div className='mb-3'>
+        <div className='mb-3 mt-3'>
           <label htmlFor="newPassword" className="form-label">Nueva Contraseña</label>
           <input
             type="password"
@@ -77,7 +80,7 @@ function NewPassword() {
             required
           />
         </div>
-        <button className="btn btn-primary" type="submit"> Restablecer Contraseña</button>
+        <button className="btn btn-primary mt-3" type="submit"> Restablecer Contraseña</button>
 
 
         {/* <div>

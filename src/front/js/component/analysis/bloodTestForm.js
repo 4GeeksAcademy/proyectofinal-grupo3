@@ -56,7 +56,7 @@ const BloodTestForm = () => {
   return (
     <form className="bloodTestForm" onSubmit={handleSubmit}>
       <h1>
-        Examens de sangre
+        Examenes de sangre
       </h1>
       <div className="form-group">
         <label htmlFor="hemoglobina">
@@ -104,6 +104,7 @@ const BloodTestForm = () => {
         <label htmlFor="colesterol">
           Colesterol (mg/dL)
           </label>
+          
         <label htmlFor="hematocrit">
           Hematocrito (%)
         </label>
