@@ -1,6 +1,6 @@
 
 import jwt
-from flask import url_for, current_app
+from flask import url_for, current_app, render_template
 from flask_mail import Mail, Message
 from flask_jwt_extended import create_access_token, decode_token
 from flask_bcrypt import Bcrypt
@@ -32,7 +32,7 @@ def generate_token(user):
         'user_type': user_type
     }
 
-    access_token = create_access_token (identity = user.id, additional_claims=additional_claims)
+    access_token = create_access_token (identity=user.id, additional_claims=additional_claims)
     return access_token
 
 #funcion para verificar token
@@ -48,13 +48,36 @@ def verify_token(token):
     except jwt.InvalidTokenError:
         return None
     
-    #funcion para enviar correo electronico de restablecimiento de contraseña 
 def send_reset_email(user, token):
-    reset_url = url_for('reset_password', token=token, _external=True)
+    reset_url = f"https://curly-fishstick-jj5q776r4xv5355v5-3000.app.github.dev/reset_password/?token={token}"
+    html = render_template('reset_password.html', reset_url=reset_url)
     msg = Message('Restablecer su password', sender=current_app.config['MAIL_USERNAME'], recipients=[user.email])
-    msg.body = f'''Para restablecer su password, haga clic en el siguiente enlace:
-{reset_url}
-Si no solicitó este cambio, ignore este correo electronico.
-'''
+    msg.html = html
+
+
     mail.send(msg)
+    
+# def send_reset_email(user, token):
+#     reset_url = url_for('reset_password', token=token, _external=True, _scheme='https')
+   
+#     reset_url.replace('https://localhost:3001', 'https://curly-fishstick-jj5q776r4xv5355v5-3000.app.github.dev')
+    
+#     msg = Message('Restablecer su password', sender=current_app.config['MAIL_USERNAME'], recipients=[user.email])
+#     msg.body = f'''Para restablecer su password, haga clic en el siguiente enlace:
+# {reset_url}
+# Si no solicitó este cambio, ignore este correo electrónico.
+# '''
+#     mail.send(msg)    
+
+
+    #funcion para enviar correo electronico de restablecimiento de contraseña 
+
+# def send_reset_email(user, token):
+#     reset_url = url_for('reset_password', token=token, _external=True _scheme='https')
+#     msg = Message('Restablecer su password', sender=current_app.config['MAIL_USERNAME'], recipients=[user.email])
+#     msg.body = f'''Para restablecer su password, haga clic en el siguiente enlace:
+# {reset_url}
+# Si no solicitó este cambio, ignore este correo electronico.
+# '''
+#     mail.send(msg)
 
